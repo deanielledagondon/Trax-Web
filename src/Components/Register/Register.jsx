@@ -1,8 +1,8 @@
-import React from "react";
 import './Register.css';
 import '../../App.css'
 import { Link, NavLink } from "react-router-dom"
-
+import { supabase } from "../Helper/supabaseClient";
+import React, { useState } from 'react';
 
 import video from '../../LoginAssets/registrar vid placeholder.mp4'
 import logo from '../../LoginAssets/long-registrar.png'
@@ -10,7 +10,45 @@ import { FaRegUserCircle } from "react-icons/fa";
 import { MdAlternateEmail } from "react-icons/md";
 import { TbPassword } from "react-icons/tb"
 
+
 const Register = () => {
+
+  const [formData, setFormData] = useState({
+    fullName: '', fullEmail: '', fullPassword: ''
+  })
+
+  console.log(formData)
+
+  function handleChange(event){
+    setFormData((prevFormData)=>{
+      return{
+        ...prevFormData,[event.target.name]:event.target.value
+      }
+    })
+  }
+
+  async function handleSubmit(e){
+    e.preventDefault()
+    try {
+      const { data, error } = await supabase.auth.signUp(
+        {
+          email: formData.fullEmail,
+          password: formData.fullPassword,
+          options: {
+            data: {
+              full_name: formData.fullName,
+            }
+          }
+        }
+      )
+      if (error)throw error
+      alert('Check your email for verification link')
+
+    } catch (error) {
+      alert(error)
+    }
+  }
+
   return (
     <div className="registerPage flex">
     <div className="container flex">
@@ -40,12 +78,12 @@ const Register = () => {
           <h3>Sign Up</h3>
         </div>
 
-        <form action="" className='form grid'>
+        <form action="" className='form grid' onSubmit={handleSubmit}>
         <div className="inputDiv">
             <label htmlFor ="name" >Name</label>
             <div className="input flex">
               <FaRegUserCircle className='icon'/>
-              <input type="text" id="name" placeholder="Enter Full Name"/>
+              <input type="text" id="name" name="fullName" placeholder="Enter Full Name" onChange={handleChange}/>
             </div>
           </div>
 
@@ -53,7 +91,7 @@ const Register = () => {
             <label htmlFor ="email" >Email</label>
             <div className="input flex">
               <MdAlternateEmail className='icon'/>
-              <input type="text" id="email" placeholder="Enter Email"/>
+              <input type="text" id="email" name="fullEmail" placeholder="Enter Email" onChange={handleChange}/>
             </div>
           </div>
 
@@ -61,7 +99,7 @@ const Register = () => {
             <label htmlFor ="password" >Password</label>
             <div className="input flex">
               <TbPassword className='icon'/>
-              <input type="text" id="password" placeholder="Enter Password"/>
+              <input type="password" id="password" name="fullPassword" placeholder="Enter Password" onChange={handleChange}/>
             </div>
           </div>
 

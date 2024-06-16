@@ -1,7 +1,8 @@
-import React from "react"
+import React, { useState } from 'react';
 import './Login.css'
 import '../../App.css'
-import { Link, NavLink } from "react-router-dom"
+import { Link, NavLink, useNavigate} from "react-router-dom"
+import { supabase } from '../Helper/supabaseClient';
 
 import video from '../../LoginAssets/login-vid.mp4'
 import logo from '../../LoginAssets/long-registrar.png'
@@ -9,8 +10,44 @@ import { MdAlternateEmail } from "react-icons/md";
 import { TbPassword } from "react-icons/tb"
 
 
-
+//{token}
 const Login = () => {
+
+  let navigate = useNavigate()
+
+  const [formData, setFormData] = useState({
+    fullEmail: '', fullPassword: ''
+  })
+
+  console.log(formData)
+
+  function handleChange(event){
+    setFormData((prevFormData)=>{
+      return{
+        ...prevFormData,[event.target.name]:event.target.value
+      }
+    })
+  }
+
+  async function handleSubmit(e){
+    e.preventDefault()
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: formData.fullEmail,
+        password: formData.fullPassword,
+      })
+      console.log(data)
+      // setToken(data)
+      navigate('./dashboard')
+
+      if (error)throw error
+      alert('Successfully logged in!')
+    } catch (error) {
+      alert(error)
+    }
+  }
+
+
   return (
     <div className="loginPage flex">
     <div className="container flex">
@@ -40,13 +77,13 @@ const Login = () => {
           <h3>Welcome Back!</h3>
         </div>
 
-        <form action="" className='form grid'>
+        <form action="" className='form grid' onSubmit={handleSubmit}>
           {/* <span>Please login to continue</span> */}
           <div className="inputDiv">
             <label htmlFor ="email" >Email</label>
             <div className="input flex">
               <MdAlternateEmail className='icon'/>
-              <input type="text" id="email" placeholder="Enter Email"/>
+              <input type="text" id="email" name="fullEmail" placeholder="Enter Email" onChange={handleChange}/>
             </div>
           </div>
 
@@ -54,7 +91,7 @@ const Login = () => {
             <label htmlFor ="password" >Password</label>
             <div className="input flex">
               <TbPassword className='icon'/>
-              <input type="text" id="password" placeholder="Enter Password"/>
+              <input type="password" id="password" name="fullPassword" placeholder="Enter Password" onChange={handleChange}/>
             </div>
           </div>
 
