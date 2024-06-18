@@ -4,8 +4,8 @@ import { Link, NavLink } from "react-router-dom"
 import { supabase } from "../Helper/supabaseClient";
 import React, { useState } from 'react';
 
-import video from '../../LoginAssets/registrar vid placeholder.mp4'
-import logo from '../../LoginAssets/long-registrar.png'
+import video from '../../Assets/registrar vid placeholder.mp4'
+import logo from '../../Assets/long-registrar.png'
 import { FaRegUserCircle } from "react-icons/fa";
 import { MdAlternateEmail } from "react-icons/md";
 import { TbPassword } from "react-icons/tb"

@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
+@import '~react-pro-sidebar/dist/scss/styles.scss';
+
 *{
     padding: 0;
     margin: 0;
@@ -10,13 +12,12 @@
 
 // default style
 :root{
-    --primaryColor: hsl(245, 74%, 15%);
-    // --hoverColor:hsl(239, 74%, 60%);
+    --primaryColor: #141b2d;
     --paleGreen:hsl(96, 75%, 89%);
     --whiteColor:hsl(0, 0%, 100%);
     --blackColor:hsl(0, 0%, 0%);
     --greyText:hsl(0, 0%, 75%);
-    --bgColor:hsl(113, 11%, 85%);
+    --bgColor: #fcfcfc; /* Align with theme.js light mode background */
     --inputColor:hsl(330, 12%, 97%);
     --ustpColor: hsl(245, 74%, 15%);
     --greenColor: hsl(96, 88%, 35%);
@@ -41,6 +42,42 @@
 
 
 }
+
+
+.App{
+    display: flex;
+    position: relative;
+}
+
+
+//sidebar container
+.ps-sidebar-root{
+    position: sticky !important;
+    top: 0;
+    height: 100vh;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    border: 0 !important;
+}
+
+//sidebar text color
+.ps-menu-root{
+    color: white !important;
+}
+
+//hover over menuitems color
+.ps-menu-button:hover {
+    background-color: white  !important;
+    color: black  !important;
+}
+
+//text and background color for submenu
+.ps-submenu-content {
+    color: black !important;
+    background-color: white  !important;
+}
+
+
 
 
 .flex{

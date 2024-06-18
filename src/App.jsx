@@ -1,9 +1,16 @@
 // import { Routes, Route } from 'react-router-dom';
 import './App.css'
+import React, { useState, useEffect } from 'react';
+
 import Dashboard from './Components/Dashboard/Dashboard'
 import Login from './Components/Login/Login'
 import Register from './Components/Register/Register'
-import React, { useState, useEffect } from 'react';
+
+import Queue from './Components/Queue/Queue'
+import LogHistory from './Components/Logbook/LogHistory'
+import Analytics from './Components/Analytics/Analytics'
+import Feedback from './Components/Feedback/Feedback'
+
 
 import {
   createBrowserRouter,
@@ -25,13 +32,30 @@ const router = createBrowserRouter([
     path: '/dashboard',
     element: <div><Dashboard/></div>
   },
+  {
+    path: '/queue',
+    element: <div><Queue/></div>
+  },
 
+  {
+    path: '/logbook',
+    element: <div><LogHistory/></div>
+  },
+
+  {
+    path: '/analytics',
+    element: <div><Analytics/></div>
+  },
+
+  {
+    path: '/feedback',
+    element: <div><Feedback/></div>
+  },
 
 ])
 
 
 function App() {
-
   const [token, setToken] = useState(false)
 
   if(token){
@@ -47,16 +71,10 @@ function App() {
 
   return (
       <div>
-        {/* <Routes>
-          <Route path={'/'} element={<Login setToken={setToken}/>}/>
-          <Route path={'/register'} element={<Register/>}/>
-          {token?<Route path={'/dashboard'} element={<Dashboard/>}/>:""}
-        </Routes> */}
+        <RouterProvider router={router} />
+        </div>
 
-        <RouterProvider router = {router}/>
-
-      </div>
-  )
+  );
 }
 
 export default App
