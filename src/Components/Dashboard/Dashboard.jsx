@@ -1,4 +1,5 @@
-import React, { useState } from 'react'; 
+import React, { useState, useEffect } from 'react'; 
+// import { useNavigate } from "react-router-dom/dist"
 import { tokens } from "../../theme";
 import { Box, Button, IconButton, Typography } from "@mui/material";
 import { mockQueue } from "../Data/mockData";
@@ -25,15 +26,49 @@ import StatBox from "../../Charts/StatBox";
 
 const Dashboard = ({token}) => {  
   const [theme, colorMode] = useMode();
+  const [setIsSidebar] = useState(true);
   const colors = tokens(theme.palette.mode);
-  const [setIsSidebar] = useState(true); // Remove if not needed
 
-  // let navigate = useNavigate();
+
+  // const [user, setUser] = useState(null);
+  // let navigate = useNavigate()
 
   // function handleLogout(){
-  //   sessionStorage.removeItem('token')
+  //   localStorage.removeItem('sb-swqywqargpfwcyvpqhkn-auth-token')
+  //   localStorage.removeItem('user');
+  //   localStorage.removeItem('token');
   //   navigate('/')
   // }
+
+  // useEffect(() => {
+  //   // Retrieve the user data from local storage
+  //   const storedUser = JSON.parse(localStorage.getItem('user'));
+  //   const token = localStorage.getItem('token');
+
+  //   if (!storedUser || !token) {
+  //     alert('No user data found. Please log in.');
+  //     navigate('/'); // Redirect to login if no user data found
+  //     return;
+  //   }
+
+  //   setUser(storedUser);
+  // }, [navigate]);
+
+  //   // Retrieve the user data from local storage
+  //   const user = JSON.parse(localStorage.getItem('user'));
+  //   const token = localStorage.getItem('token');
+
+  //   if (!user || !token) {
+  //     alert('No user data found. Please log in.');
+  //     navigate('/') // Redirect to login if no user data found
+  //     return;
+  //   }
+
+  //   console.log(user)
+  //   console.log(token)
+  //   // Display user data on the dashboard
+  //   document.getElementById('user').textContent = `Welcome, ${user.user_metadata.full_name}`
+  // });
 
   return (
     <ColorModeContext.Provider value={colorMode}>

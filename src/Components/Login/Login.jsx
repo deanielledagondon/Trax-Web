@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './Login.css'
-import '../../App.css'
+import '../../App.scss'
 import { Link, NavLink, useNavigate} from "react-router-dom"
 import { supabase } from '../Helper/supabaseClient';
 
@@ -10,7 +10,6 @@ import { MdAlternateEmail } from "react-icons/md";
 import { TbPassword } from "react-icons/tb"
 
 
-//{token}
 const Login = () => {
 
   let navigate = useNavigate()
@@ -37,13 +36,19 @@ const Login = () => {
         password: formData.fullPassword,
       })
       console.log(data)
-      // setToken(data)
+      if (error) {
+        console.error('Error signing in:', error.message);
+        alert(`Login failed: ${error.message}`);
+        return;
+      }
+      console.log('Sign-in successful:', data);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('token', data.session.access_token);
+      alert('Login successful!');
       navigate('./dashboard')
-
-      if (error)throw error
-      alert('Successfully logged in!')
     } catch (error) {
-      alert(error)
+      console.error('Unexpected error:', error);
+      alert('An unexpected error occurred. Please try again.');
     }
   }
 

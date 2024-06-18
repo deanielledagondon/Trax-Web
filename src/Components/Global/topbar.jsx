@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Box, IconButton, useTheme, Typography, Fade } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, IconButton, useTheme, Typography, Menu, MenuItem } from '@mui/material';
 import { useContext } from 'react';
 import { ColorModeContext, tokens } from '../../theme';
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
@@ -17,6 +17,28 @@ const Topbar = () => {
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
 
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('token'); // Remove token from sessionStorage
+    handleClose(); // Close the menu
+    window.location.href = '/'; // Redirect to the login page
+  };
+
+  // Example user data (replace with actual logged-in user data)
+  const userData = {
+    name: 'John Doe',
+    position: 'Admin',
+    email: 'john.doe@example.com'
+  };
 
   return (
     <Box display='flex' justifyContent='space-between' alignItems='center' p={2}>
@@ -53,12 +75,28 @@ const Topbar = () => {
         <IconButton>
           <NotificationsOutlinedIcon />
         </IconButton>
-        <IconButton>
-          <SettingsOutlinedIcon />
-        </IconButton>
-        <IconButton>
+        <IconButton onClick={handleClick}>
           <PersonOutlinedIcon />
         </IconButton>
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          <MenuItem onClick={handleClose}>
+            <Typography variant="body1" sx={{ fontWeight: 'bold', mb: 1 }}>{userData.name}</Typography>
+            <Typography variant="body2" sx={{ mb: 1 }}>{userData.position}</Typography>
+            <Typography variant="body2" sx={{ mb: 1 }}>{userData.email}</Typography>
+            <Box display="flex" alignItems="center">
+              <IconButton>
+                <SettingsOutlinedIcon fontSize="small" />
+              </IconButton>
+              <IconButton onClick={handleLogout}>
+                Logout
+              </IconButton>
+            </Box>
+          </MenuItem>
+        </Menu>
       </Box>
     </Box>
   );
