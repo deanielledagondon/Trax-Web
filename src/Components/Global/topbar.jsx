@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, IconButton, useTheme, Typography, Menu, MenuItem } from '@mui/material';
 import { useContext } from 'react';
 import { ColorModeContext, tokens } from '../../theme';
@@ -16,6 +16,7 @@ const Topbar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
+  const [user, setUser] = useState(null);
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -26,12 +27,28 @@ const Topbar = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  
 
-  const handleLogout = () => {
-    sessionStorage.removeItem('token'); // Remove token from sessionStorage
-    handleClose(); // Close the menu
-    window.location.href = '/'; // Redirect to the login page
-  };
+  function handleLogout(){
+    localStorage.removeItem('sb-swqywqargpfwcyvpqhkn-auth-token')
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    window.location.href = '/';
+  }
+
+  useEffect(() => {
+    // Retrieve the user data from local storage
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    const token = localStorage.getItem('token');
+
+    if (!storedUser || !token) {
+      // alert('No user data found. Please log in.');
+      window.location.href = '/'; // Redirect to login if no user data found
+      return;
+    }
+
+    setUser(storedUser);
+  },);
 
   // Example user data (replace with actual logged-in user data)
   const userData = {
@@ -84,9 +101,9 @@ const Topbar = () => {
           onClose={handleClose}
         >
           <MenuItem onClick={handleClose}>
-            <Typography variant="body1" sx={{ fontWeight: 'bold', mb: 1 }}>{userData.name}</Typography>
+            <Typography variant="body1" sx={{ fontWeight: 'bold', mb: 1 }}>{user ? user.user_metadata.full_name : 'User'}</Typography>
             <Typography variant="body2" sx={{ mb: 1 }}>{userData.position}</Typography>
-            <Typography variant="body2" sx={{ mb: 1 }}>{userData.email}</Typography>
+            <Typography variant="body2" sx={{ mb: 1 }}>{user ? user.user_metadata.email : 'Email'}</Typography>
             <Box display="flex" alignItems="center">
               <IconButton>
                 <SettingsOutlinedIcon fontSize="small" />

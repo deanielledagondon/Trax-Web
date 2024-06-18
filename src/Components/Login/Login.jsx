@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Login.css'
 import '../../App.scss'
 import { Link, NavLink, useNavigate} from "react-router-dom"
@@ -8,10 +8,11 @@ import video from '../../Assets/login-vid.mp4'
 import logo from '../../Assets/long-registrar.png'
 import { MdAlternateEmail } from "react-icons/md";
 import { TbPassword } from "react-icons/tb"
+import { useAuth } from '../AuthContext';
 
 
 const Login = () => {
-
+  const { session } = useAuth();
   let navigate = useNavigate()
 
   const [formData, setFormData] = useState({
@@ -27,6 +28,12 @@ const Login = () => {
       }
     })
   }
+
+  useEffect(() => {
+    if (session) {
+      navigate('/dashboard'); // Redirect to dashboard if user is already logged in
+    }
+  }, [session, navigate]);
 
   async function handleSubmit(e){
     e.preventDefault()
@@ -44,8 +51,7 @@ const Login = () => {
       console.log('Sign-in successful:', data);
       localStorage.setItem('user', JSON.stringify(data.user));
       localStorage.setItem('token', data.session.access_token);
-      alert('Login successful!');
-      navigate('./dashboard')
+      navigate('/dashboard')
     } catch (error) {
       console.error('Unexpected error:', error);
       alert('An unexpected error occurred. Please try again.');

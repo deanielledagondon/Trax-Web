@@ -1,5 +1,5 @@
 import './App.css'
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import Dashboard from './Components/Dashboard/Dashboard'
 import Login from './Components/Login/Login'
@@ -16,6 +16,9 @@ import {
   RouterProvider,
 } from 'react-router-dom'
 
+import { AuthProvider } from './Components/AuthContext';
+import ProtectedRoute from './Components/ProtectedRoute';
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -29,49 +32,37 @@ const router = createBrowserRouter([
 
   {
     path: '/dashboard',
-    element: <div><Dashboard/></div>
+    element: <div><ProtectedRoute element={<Dashboard />}/></div>
   },
   {
     path: '/queue',
-    element: <div><Queue/></div>
+    element: <div><ProtectedRoute element={<Queue />}/></div>
   },
 
   {
     path: '/logbook',
-    element: <div><LogHistory/></div>
+    element: <div><ProtectedRoute element={<LogHistory />}/></div>
   },
 
   {
     path: '/analytics',
-    element: <div><Analytics/></div>
+    element: <div><ProtectedRoute element={<Analytics />}/></div>
   },
 
   {
     path: '/feedback',
-    element: <div><Feedback/></div>
+    element: <div><ProtectedRoute element={<Feedback />}/></div>
   },
 
 ])
 
 
 function App() {
-  const [token, setToken] = useState(false)
-
-  if(token){
-    sessionStorage.setItem('token', JSON.stringify(token))
-  }
-
-  useEffect(()=>{
-    if(sessionStorage.getItem('token')){
-      let data = JSON.parse(sessionStorage.getItem('token'))
-      setToken(data)
-    }
-  })
 
   return (
-      <div>
-        <RouterProvider router={router} />
-        </div>
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
 
   );
 }
