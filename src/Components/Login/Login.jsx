@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import './Login.css'
-import '../../App.css'
+import '../../App.scss'
 import { Link, NavLink, useNavigate} from "react-router-dom"
 import { supabase } from '../Helper/supabaseClient';
 
-import video from '../../LoginAssets/login-vid.mp4'
-import logo from '../../LoginAssets/long-registrar.png'
+import video from '../../Assets/login-vid.mp4'
+import logo from '../../Assets/long-registrar.png'
 import { MdAlternateEmail } from "react-icons/md";
 import { TbPassword } from "react-icons/tb"
 
