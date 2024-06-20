@@ -1,0 +1,164 @@
+:root {
+  --scrollbar-thumb-dark: grey;
+  --scrollbar-track-dark: #383854;
+  --scrollbar-thumb-light: #383854;
+  --scrollbar-track-light: white;
+}
+
+.dark-mode {
+  --scrollbar-thumb: var(--scrollbar-thumb-dark);
+  --scrollbar-track: var(--scrollbar-track-dark);
+}
+
+.light-mode {
+  --scrollbar-thumb: var(--scrollbar-thumb-light);
+  --scrollbar-track: var(--scrollbar-track-light);
+}
+
+.content-area-table {
+  background: var(--secondary-color);
+  border-radius: 5px;
+  box-shadow: var(--light-shadow1);
+  padding: 12px 16px;
+  overflow: auto;
+  height: 300px; /* Adjust as per your design */
+
+  @media (max-width: 768px) {
+    padding: 12px;
+  }
+
+  .data-table-info {
+    margin-bottom: 12px;
+  }
+
+  .data-table-title {
+    font-size: 18px;
+    color: var(--xl-text-color);
+    margin-bottom: 12px;
+  }
+
+  .data-table-diagram {
+    border-radius: 6px;
+    border: 1px solid var(--tbl-border-color);
+    overflow: auto; /* Enable both x and y scrollbars */
+
+    /* Custom scrollbar for WebKit browsers */
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track); /* thumb color and track color */
+
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+      background-color: transparent; /* Hide scrollbar initially */
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: var(--scrollbar-track); /* Track color */
+      border-radius: 1px; /* Border radius of the track */
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--scrollbar-thumb); /* Thumb color */
+      border-radius: 10px; /* Border radius of the thumb */
+      border: 2px solid grey; /* Border around the thumb */
+    }
+
+    /* Show scrollbar on hover */
+    &:hover {
+      &::-webkit-scrollbar {
+        background-color: var(--scrollbar-track); /* Show scrollbar background */
+      }
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: white; /* Thumb color on hover */
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      color: var(--text-color-inverted);
+      font-size: 15px; /* Default font size */
+
+      td,
+      th {
+        padding: 14px 12px;
+        text-align: center; /* Center-align headers and body cells */
+      }
+
+      thead {
+        font-size: 17px;
+        background-color: var(--thead-bg-color);
+      }
+
+      tbody {
+        max-height: 200px; /* Example maximum height; adjust as needed */
+        overflow-y: auto; /* Add vertical scrollbar when content exceeds max-height */
+
+        tr {
+          td {
+            &:last-child {
+              text-align: center;
+            }
+          }
+        }
+      }
+
+      .dt-status {
+        display: flex;
+        align-items: center;
+        justify-content: center; /* Center-align status */
+        column-gap: 6px;
+
+        .dt-status-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 100%;
+        }
+
+        .dt-status-text {
+          text-transform: capitalize;
+        }
+      }
+
+      .dt-cell-action {
+        text-align: center;
+      }
+    }
+  }
+
+  .action-dropdown-btn {
+    color: var(--text-color-inverted);
+    position: relative;
+  }
+
+  .action-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 50%;
+    transform: translateX(50%);
+    height: auto;
+    min-width: 80px;
+    box-shadow: rgba(100, 100, 111, 0.1) 0px 1px 4px 0px;
+    background-color: var(--secondary-color);
+    padding: 6px 10px;
+    z-index: 1;
+    border-radius: 8px;
+    border: 1px solid var(--border-color-inverted);
+    text-align: left;
+  }
+
+  .dropdown-menu-item {
+    margin: 8px 0;
+  }
+
+  .dropdown-menu-link {
+    color: var(--text-color-inverted);
+    font-weight: 600;
+    transition: var(--default-transition);
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+}
