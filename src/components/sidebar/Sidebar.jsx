@@ -39,6 +39,7 @@ const Sidebar = () => {
     localStorage.removeItem('sb-swqywqargpfwcyvpqhkn-auth-token')
     localStorage.removeItem('user');
     localStorage.removeItem('token');
+    localStorage.removeItem('themeMode');
     window.location.href = '/';
   };
 

@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from 'react'; 
 import AreaTableAction from "./AreaTableAction";
 import "./AreaTable.scss";
+import { supabase } from '../../helper/supabaseClient';
+import ReactPaginate from 'react-paginate';
 
 const TABLE_HEADS = [
-  "ID",
   "Date",
   "Name",
   "Purpose",
@@ -12,138 +13,54 @@ const TABLE_HEADS = [
   "Actions",
 ];
 
-const TABLE_DATA = [
-  {
-    id: '1',
-    date: '6-18-24',
-    name: "A",
-    purpose: "Enrollment",
-    status: 'Completed',
-    windowNo: 'W1001'
-  },
-  {
-    id: 2,
-    date: '6-18-24',
-    name: "B",
-    purpose: "Accreditation",
-    status: 'Completed',
-    windowNo: 'W1002'
-  },
-  {
-    id: 3,
-    date: '6-18-24',
-    name: "C",
-    purpose: "Transferee",
-    status: 'Completed',
-    windowNo: 'W1003'
-  },
-  {
-    id: 4,
-    date: '6-18-24',
-    name: "D",
-    purpose: "Graduation",
-    status: 'Completed',
-    windowNo: 'W1004'
-  },
-  {
-    id: 5,
-    date: '6-18-24',
-    name: "E",
-    purpose: "Graduation",
-    status: 'Completed',
-    windowNo: 'W1005'
-  },
-  {
-    id: 6,
-    date: '6-18-24',
-    name: "F",
-    purpose: "Graduation",
-    status: 'Completed',
-    windowNo: 'W1006'
-  },
-  {
-    id: 7,
-    date: '6-18-24',
-    name: "G",
-    purpose: "Graduation",
-    status: 'Completed',
-    windowNo: 'W1006'
-  },
-  {
-    id: 8,
-    date: '6-18-24',
-    name: "H",
-    purpose: "Graduation",
-    status: 'Completed',
-    windowNo: 'W1007'
-  },
-  {
-    id: 9,
-    date: '6-18-24',
-    name: "I",
-    purpose: "Graduation",
-    status: 'Completed',
-    windowNo: 'W1008'
-  },
-  {
-    id: 10,
-    date: '6-18-24',
-    name: "J",
-    purpose: "Graduation",
-    status: 'Completed',
-    windowNo: 'W1009'
-  },
-  {
-    id: 11,
-    date: '6-18-24',
-    name: "K",
-    purpose: "Graduation",
-    status: 'Ongoing',
-    windowNo: 'W10010'
-  },
-  {
-    id: 12,
-    date: '6-18-24',
-    name: "L",
-    purpose: "Graduation",
-    status: 'Ongoing',
-    windowNo: 'W10011'
-  },
-  {
-    id: 13,
-    date: '6-18-24',
-    name: "M",
-    purpose: "Graduation",
-    status: 'Ongoing',
-    windowNo: 'W50010'
-  },
-  {
-    id: 14,
-    date: '6-18-24',
-    name: "N",
-    purpose: "Graduation",
-    status: 'Ongoing',
-    windowNo: 'W60010'
-  },
-  {
-    id: 15,
-    date: '6-18-24',
-    name: "O",
-    purpose: "Graduation",
-    status: 'Ongoing',
-    windowNo: 'W20016'
-  },
-  {
-    id: 16,
-    date: '6-18-24',
-    name: "P",
-    purpose: "Graduation",
-    status: 'Ongoing',
-    windowNo: 'W10022'
-  },
-];
 
 const AreaTable = () => {
+  const [logHistory, setLogHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 20;
+  const pageCount = Math.ceil(logHistory.length / itemsPerPage);
+
+  const handlePageClick = (event) => {
+    setCurrentPage(event.selected);
+  };
+
+  const displayItems = logHistory.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
+
+  useEffect(() => {
+    const fetchRegistrants = async () => {
+      try {
+        let { data, error } = await supabase
+          .from('log_history')
+          .select()
+          .order('transaction_date', { ascending: false }); 
+        if (error) {
+          console.log(error);
+          throw error;
+        }
+        setLogHistory(data);
+        setLoading(false);
+      } catch (error) {
+        setError(error.message);
+        setLoading(false);
+      }
+    };
+
+    fetchRegistrants();
+  }, []); 
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <section className="content-area-table">
       <div className="data-table-info">
@@ -159,10 +76,9 @@ const AreaTable = () => {
             </tr>
           </thead>
           <tbody>
-            {TABLE_DATA.map((dataItem) => (
+            {displayItems.map((dataItem) => (
               <tr key={dataItem.id}>
-                <td>{dataItem.id}</td>
-                <td>{dataItem.date}</td>
+                <td>{dataItem.transaction_date}</td>
                 <td>{dataItem.name}</td>
                 <td>{dataItem.purpose}</td>
                 <td>
@@ -171,7 +87,7 @@ const AreaTable = () => {
                     <span className="dt-status-text">{dataItem.status}</span>
                   </div>
                 </td>
-                <td>{dataItem.windowNo}</td>
+                <td>{dataItem.window_no}</td>
                 <td className="dt-cell-action">
                   <AreaTableAction />
                 </td>
@@ -179,6 +95,17 @@ const AreaTable = () => {
             ))}
           </tbody>
         </table>
+        <ReactPaginate
+          previousLabel={"previous"}
+          nextLabel={"next"}
+          breakLabel={"..."}
+          pageCount={pageCount}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={5}
+          onPageChange={handlePageClick}
+          containerClassName={"pagination"}
+          activeClassName={"active"}
+        />
       </div>
     </section>
   );

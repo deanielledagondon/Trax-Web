@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -12,6 +12,8 @@ import { ThemeContext } from "../../../context/ThemeContext";
 import { FaArrowUpLong } from "react-icons/fa6";
 import { LIGHT_THEME } from "../../../constants/themeConstants";
 import "./AreaCharts.scss";
+import { supabase } from "../../helper/supabaseClient";
+import { format, parseISO } from 'date-fns'; // Ensure date-fns is installed
 
 const data = [
   {
@@ -60,9 +62,65 @@ const data = [
     ongoing: 55,
   },
 ];
+const monthOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const AreaBarChart = () => {
   const { theme } = useContext(ThemeContext);
+  const [logHistory, setLogHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [totalCompleted, setTotalCompleted] = useState(0);
+  const [totalOngoing, setTotalOngoing] = useState(0);
+
+  useEffect(() => {
+    const fetchRegistrants = async () => {
+      try {
+        let { data, error } = await supabase
+          .from('log_history')
+          .select('transaction_date, status'); // Adjust the column names as per your table
+        if (error) {
+          console.log(error);
+          throw error;
+        }
+
+        const aggregatedData = data.reduce((acc, item) => {
+          const month = format(parseISO(item.transaction_date), 'MMM');
+          if (!acc[month]) {
+            acc[month] = { month, completed: 0, ongoing: 0 };
+          }
+          if (item.status === 'Completed') {
+            acc[month].completed++;
+            setTotalCompleted(prevTotal => prevTotal + 1);
+          } else if (item.status === 'ongoing') {
+            acc[month].ongoing++;
+            setTotalOngoing(prevTotal => prevTotal + 1);
+          }
+          return acc;
+        }, {});
+  
+        const transformedData = Object.values(aggregatedData);
+        transformedData.sort((a, b) => monthOrder.indexOf(a.month) - monthOrder.indexOf(b.month));
+        
+        console.log(transformedData);
+        setLogHistory(transformedData);
+        setLoading(false);
+      } catch (error) {
+        setError(error.message);
+        setLoading(false);
+      }
+    };
+
+    fetchRegistrants();
+  }, []); 
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
 
   const formatTooltipValue = (value) => {
     return `${value} Transactions`;
@@ -81,7 +139,7 @@ const AreaBarChart = () => {
       <div className="bar-chart-info">
         <h5 className="bar-chart-title">Total Transactions</h5>
         <div className="chart-info-data">
-          <div className="info-data-value">1000 Registrants</div>
+          <div className="info-data-value">{totalCompleted+totalOngoing} Registrants</div>
           <div className="info-data-text">
             <FaArrowUpLong />
             <p>5% than last month.</p>
@@ -93,7 +151,7 @@ const AreaBarChart = () => {
           <BarChart
             width={500}
             height={200}
-            data={data}
+            data={logHistory}
             margin={{
               top: 5,
               right: 5,
@@ -140,14 +198,14 @@ const AreaBarChart = () => {
               barSize={24}
               radius={[4, 4, 4, 4]}
             />
-            <Bar
+            {/* <Bar
               dataKey="ongoing"
               fill="#e3e7fc"
               activeBar={false}
               isAnimationActive={false}
               barSize={24}
               radius={[4, 4, 4, 4]}
-            />
+            /> */}
           </BarChart>
         </ResponsiveContainer>
       </div>
