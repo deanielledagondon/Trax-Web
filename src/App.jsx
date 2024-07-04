@@ -1,14 +1,14 @@
 import './App.css'
 import React from 'react';
 
-import Dashboard from './Components/Dashboard/Dashboard'
-import Login from './Components/Login/Login'
-import Register from './Components/Register/Register'
+import Dashboard from './Screens/Dashboard/Dashboard'
+import Login from './Screens/Login/Login'
+import Register from './Screens/Register/Register'
 
-import Queue from './Components/Queue/Queue'
-import LogHistory from './Components/Logbook/LogHistory'
-import Analytics from './Components/Analytics/Analytics'
-import Feedback from './Components/Feedback/Feedback'
+import Queue from './Screens/Queue/Queue'
+import LogHistory from './Screens/Logbook/LogHistory'
+import Analytics from './Screens/Analytics/Analytics'
+import Feedback from './Screens/Feedback/Feedback'
 
 
 import {

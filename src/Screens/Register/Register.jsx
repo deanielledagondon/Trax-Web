@@ -1,22 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import './Login.css'
-import '../../App.scss'
-import { Link, NavLink, useNavigate} from "react-router-dom"
-import { supabase } from '../Helper/supabaseClient';
+import './Register.css';
+import '../../App.css'
+import { Link } from "react-router-dom"
+import { supabase } from "../../Components/Helper/supabaseClient";
+import React, { useState } from 'react';
 
-import video from '../../Assets/login-vid.mp4'
+import video from '../../Assets/registrar vid placeholder.mp4'
 import logo from '../../Assets/long-registrar.png'
+import { FaRegUserCircle } from "react-icons/fa";
 import { MdAlternateEmail } from "react-icons/md";
 import { TbPassword } from "react-icons/tb"
-import { useAuth } from '../AuthContext';
 
 
-const Login = () => {
-  const { session } = useAuth();
-  let navigate = useNavigate()
+const Register = () => {
 
   const [formData, setFormData] = useState({
-    fullEmail: '', fullPassword: ''
+    fullName: '', fullEmail: '', fullPassword: ''
   })
 
   console.log(formData)
@@ -29,38 +27,30 @@ const Login = () => {
     })
   }
 
-  useEffect(() => {
-    if (session) {
-      navigate('/dashboard'); // Redirect to dashboard if user is already logged in
-    }
-  }, [session, navigate]);
-
   async function handleSubmit(e){
     e.preventDefault()
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: formData.fullEmail,
-        password: formData.fullPassword,
-      })
-      console.log(data)
-      if (error) {
-        console.error('Error signing in:', error.message);
-        alert(`Login failed: ${error.message}`);
-        return;
-      }
-      console.log('Sign-in successful:', data);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      localStorage.setItem('token', data.session.access_token);
-      navigate('/dashboard')
+      const { data, error } = await supabase.auth.signUp(
+        {
+          email: formData.fullEmail,
+          password: formData.fullPassword,
+          options: {
+            data: {
+              full_name: formData.fullName,
+            }
+          }
+        }
+      )
+      if (error)throw error
+      alert('Check your email for verification link')
+
     } catch (error) {
-      console.error('Unexpected error:', error);
-      alert('An unexpected error occurred. Please try again.');
+      alert(error)
     }
   }
 
-
   return (
-    <div className="loginPage flex">
+    <div className="registerPage flex">
     <div className="container flex">
 
     
@@ -68,15 +58,15 @@ const Login = () => {
         <video src={video} autoPlay muted loop></video>
 
       <div className="textDiv">
-        <h2 className= 'title'> Keeping your transactions on track </h2>
+        <h2 className= 'title'> Where every transaction matters </h2>
         {/* <p> with Trax </p> */}
       </div>
 
 
       <div className="footerDiv flex">
-        <span className="text"> Don't have an account?</span>
-        <Link to = {'/register'}>
-        <button className="btn">Sign Up</button>
+        <span className="text"> Already a user?</span>
+        <Link to = {'/'}>
+        <button className="btn">Login</button>
         </Link>
       </div>
       </div>
@@ -85,11 +75,18 @@ const Login = () => {
       <div className="formDiv flex">
         <div className="headerDiv">
           <img src= {logo} alt="Logo Image"></img>
-          <h3>Welcome Back!</h3>
+          <h3>Sign Up</h3>
         </div>
 
         <form action="" className='form grid' onSubmit={handleSubmit}>
-          {/* <span>Please login to continue</span> */}
+        <div className="inputDiv">
+            <label htmlFor ="name" >Name</label>
+            <div className="input flex">
+              <FaRegUserCircle className='icon'/>
+              <input type="text" id="name" name="fullName" placeholder="Enter Full Name" onChange={handleChange}/>
+            </div>
+          </div>
+
           <div className="inputDiv">
             <label htmlFor ="email" >Email</label>
             <div className="input flex">
@@ -108,12 +105,12 @@ const Login = () => {
 
 
           <button type="submit" className="btn flex">
-            <span>Login</span>
+            <span>Register</span>
           </button>
 
-          <span className="forgotPassword">
+          {/* <span className="forgotPassword">
             Forgot your password? <a href="">Click Here</a>
-          </span>
+          </span> */}
 
         </form>
       </div>
@@ -123,8 +120,8 @@ const Login = () => {
 
     </div>
     </div>
-
   )
+
 }
 
-export default Login
+export default Register

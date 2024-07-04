@@ -1,28 +1,27 @@
-import React, { useState, useEffect, useNavigate } from 'react'; 
+import React, { useState } from 'react'; 
 // import { useNavigate } from "react-router-dom/dist"
 import { tokens } from "../../theme";
 import { Box, Button, IconButton, Typography } from "@mui/material";
-import { mockQueue } from "../Data/mockData";
-import Header from '../Header'
+import { mockQueue } from "../../Components/Global/Data/mockData";
+import Header from '../../Components/Header'
 import { Routes, Route } from "react-router-dom";
 import '../../App'
 
 import { ColorModeContext, useMode } from '../../theme'
 import { CssBaseline, ThemeProvider } from "@mui/material"
-import Topbar from '../Global/topbar'
+import Topbar from '../../Components/Global/Topbar/topbar'
 import Queue from "../Queue/Queue"
 import LogHistory from "../Logbook/LogHistory"
 import Analytics from "../Analytics/Analytics"
 import Feedback from "../Feedback/Feedback"
 
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
-import FolderIcon from '@mui/icons-material/Folder';
-import ReceiptIcon from '@mui/icons-material/Receipt';
-import GroupIcon from '@mui/icons-material/Group';
-import GroupAddIcon from '@mui/icons-material/GroupAdd';
+// import FolderIcon from '@mui/icons-material/Folder';
+// import ReceiptIcon from '@mui/icons-material/Receipt';
+// import GroupIcon from '@mui/icons-material/Group';
+// import GroupAddIcon from '@mui/icons-material/GroupAdd';
 
-import DataTable from '../../Charts/DataTable';
-import StatBox from "../../Charts/StatBox";
+import DataTable from '../../Components/Global/Charts/DataTable';
 
 const Dashboard = () => {  
   const [theme, colorMode] = useMode();
@@ -72,7 +71,7 @@ const Dashboard = () => {
                   justifyContent="center"
                   minHeight="140px"
                 >
-                  <StatBox
+                  {/* <StatBox
                     title="100"
                     subtitle="Daily Visits"
                     progress="0.30"
@@ -80,7 +79,7 @@ const Dashboard = () => {
                     icon={
                       <GroupIcon sx={{ color: colors.greenAccent[600], fontSize: "26px" }} />
                     }
-                  />
+                  /> */}
                 </Box>
                 <Box
                   gridColumn="span 3"
@@ -90,7 +89,7 @@ const Dashboard = () => {
                   justifyContent="center"
                   minHeight="140px"
                 >
-                  <StatBox
+                  {/* <StatBox
                     title="150"
                     subtitle="Documents Requested"
                     progress="0.75"
@@ -98,7 +97,7 @@ const Dashboard = () => {
                     icon={
                       <FolderIcon sx={{ color: colors.greenAccent[600], fontSize: "26px" }} />
                     }
-                  />
+                  /> */}
                 </Box>
                 <Box
                   gridColumn="span 3"
@@ -108,7 +107,7 @@ const Dashboard = () => {
                   justifyContent="center"
                   minHeight="140px"
                 >
-                  <StatBox
+                  {/* <StatBox
                     title="1,225"
                     subtitle="Total Transactions"
                     progress="0.50"
@@ -116,7 +115,7 @@ const Dashboard = () => {
                     icon={
                       <ReceiptIcon sx={{ color: colors.greenAccent[600], fontSize: "26px" }} />
                     }
-                  />
+                  /> */}
                 </Box>
                 <Box
                   gridColumn="span 3"
@@ -126,7 +125,7 @@ const Dashboard = () => {
                   justifyContent="center"
                   minHeight="140px"
                 >
-                  <StatBox
+                  {/* <StatBox
                     title="50"
                     subtitle="Waiting in Queue"
                     progress="0.80"
@@ -134,7 +133,7 @@ const Dashboard = () => {
                     icon={
                       <GroupAddIcon sx={{ color: colors.greenAccent[600], fontSize: "26px" }} />
                     }
-                  />
+                  /> */}
                 </Box>
 
                 {/* ROW 2 */}

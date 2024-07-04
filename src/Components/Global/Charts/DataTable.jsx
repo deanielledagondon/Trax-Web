@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'; 
 import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, Button } from '@mui/material'; // Import Button from @mui/material
-import { supabase } from '../Components/Helper/supabaseClient';
+import { supabase } from '../../Helper/supabaseClient';
 
 const DataTable = () => {
   const [logHistory, setLogHistory] = useState([]);

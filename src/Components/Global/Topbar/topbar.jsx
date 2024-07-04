@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, IconButton, useTheme, Typography, Menu, MenuItem } from '@mui/material';
 import { useContext } from 'react';
-import { ColorModeContext, tokens } from '../../theme';
+import { ColorModeContext, tokens } from '../../../theme';
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
@@ -9,8 +9,8 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import { Link } from 'react-router-dom';
 
-import logoLight from '../../Assets/logo-light.png';
-import logoDark from '../../Assets/logo-dark.png';
+import logoLight from '../../../Assets/logo-light.png';
+import logoDark from '../../../Assets/logo-dark.png';
 
 const Topbar = () => {
   const theme = useTheme();

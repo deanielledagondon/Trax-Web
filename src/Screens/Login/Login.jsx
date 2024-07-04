@@ -1,20 +1,22 @@
-import './Register.css';
-import '../../App.css'
-import { Link, NavLink } from "react-router-dom"
-import { supabase } from "../Helper/supabaseClient";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import './Login.css'
+import '../../App.scss'
+import { Link, useNavigate} from "react-router-dom"
+import { supabase } from "../../Components/Helper/supabaseClient";
 
-import video from '../../Assets/registrar vid placeholder.mp4'
+import video from '../../Assets/login-vid.mp4'
 import logo from '../../Assets/long-registrar.png'
-import { FaRegUserCircle } from "react-icons/fa";
 import { MdAlternateEmail } from "react-icons/md";
 import { TbPassword } from "react-icons/tb"
+import { useAuth } from '../../Components/AuthContext';
 
 
-const Register = () => {
+const Login = () => {
+  const { session } = useAuth();
+  let navigate = useNavigate()
 
   const [formData, setFormData] = useState({
-    fullName: '', fullEmail: '', fullPassword: ''
+    fullEmail: '', fullPassword: ''
   })
 
   console.log(formData)
@@ -27,30 +29,38 @@ const Register = () => {
     })
   }
 
+  useEffect(() => {
+    if (session) {
+      navigate('/dashboard'); // Redirect to dashboard if user is already logged in
+    }
+  }, [session, navigate]);
+
   async function handleSubmit(e){
     e.preventDefault()
     try {
-      const { data, error } = await supabase.auth.signUp(
-        {
-          email: formData.fullEmail,
-          password: formData.fullPassword,
-          options: {
-            data: {
-              full_name: formData.fullName,
-            }
-          }
-        }
-      )
-      if (error)throw error
-      alert('Check your email for verification link')
-
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: formData.fullEmail,
+        password: formData.fullPassword,
+      })
+      console.log(data)
+      if (error) {
+        console.error('Error signing in:', error.message);
+        alert(`Login failed: ${error.message}`);
+        return;
+      }
+      console.log('Sign-in successful:', data);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('token', data.session.access_token);
+      navigate('/dashboard')
     } catch (error) {
-      alert(error)
+      console.error('Unexpected error:', error);
+      alert('An unexpected error occurred. Please try again.');
     }
   }
 
+
   return (
-    <div className="registerPage flex">
+    <div className="loginPage flex">
     <div className="container flex">
 
     
@@ -58,15 +68,15 @@ const Register = () => {
         <video src={video} autoPlay muted loop></video>
 
       <div className="textDiv">
-        <h2 className= 'title'> Where every transaction matters </h2>
+        <h2 className= 'title'> Keeping your transactions on track </h2>
         {/* <p> with Trax </p> */}
       </div>
 
 
       <div className="footerDiv flex">
-        <span className="text"> Already a user?</span>
-        <Link to = {'/'}>
-        <button className="btn">Login</button>
+        <span className="text"> Don't have an account?</span>
+        <Link to = {'/register'}>
+        <button className="btn">Sign Up</button>
         </Link>
       </div>
       </div>
@@ -75,18 +85,11 @@ const Register = () => {
       <div className="formDiv flex">
         <div className="headerDiv">
           <img src= {logo} alt="Logo Image"></img>
-          <h3>Sign Up</h3>
+          <h3>Welcome Back!</h3>
         </div>
 
         <form action="" className='form grid' onSubmit={handleSubmit}>
-        <div className="inputDiv">
-            <label htmlFor ="name" >Name</label>
-            <div className="input flex">
-              <FaRegUserCircle className='icon'/>
-              <input type="text" id="name" name="fullName" placeholder="Enter Full Name" onChange={handleChange}/>
-            </div>
-          </div>
-
+          {/* <span>Please login to continue</span> */}
           <div className="inputDiv">
             <label htmlFor ="email" >Email</label>
             <div className="input flex">
@@ -105,12 +108,12 @@ const Register = () => {
 
 
           <button type="submit" className="btn flex">
-            <span>Register</span>
+            <span>Login</span>
           </button>
 
-          {/* <span className="forgotPassword">
+          <span className="forgotPassword">
             Forgot your password? <a href="">Click Here</a>
-          </span> */}
+          </span>
 
         </form>
       </div>
@@ -120,8 +123,8 @@ const Register = () => {
 
     </div>
     </div>
-  )
 
+  )
 }
 
-export default Register
+export default Login
