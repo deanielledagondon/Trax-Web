@@ -1,0 +1,121 @@
+.log-history-container {
+    margin: 20px;
+    font-family: Arial, sans-serif;
+
+    .log-table-container {
+        overflow-y: scroll;
+        max-height: 400px; // Adjust as necessary
+        scrollbar-width: thin; // For Firefox
+        scrollbar-color: rgba(0, 0, 0, 0.2) transparent; // For Firefox
+
+        /* Webkit-based browsers */
+        &::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+
+        &:hover {
+            /* Make scrollbar more visible on hover */
+            &::-webkit-scrollbar-thumb {
+                background-color: rgba(0, 0, 0, 0.5);
+            }
+        }
+    }
+
+    .log-history-title {
+        font-size: 2em;
+        font-weight: bold;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .filters {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+
+        span {
+            margin-right: 10px;
+        }
+
+        button, select, input {
+            margin-right: 10px;
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+
+            &:hover {
+                border-color: #888;
+            }
+        }
+
+        input {
+            flex-grow: 1;
+            max-width: 200px;
+        }
+    }
+
+    .log-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+
+        .action-btn {
+            border: none;
+            background: none;
+            cursor: pointer;
+            padding: 5px;
+
+            &.notify {
+                color: green;
+            }
+
+            &.delete {
+                color: red;
+            }
+
+            svg {
+                font-size: 1.2em;
+            }
+        }
+    }
+
+    .entries {
+        font-size: 0.9em;
+        color: #555;
+    }
+}
+
+.actions-column {
+    display: flex;
+    justify-content: center;
+}
