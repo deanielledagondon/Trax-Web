@@ -1,0 +1,89 @@
+@import "responsive.scss";
+
+:root {
+  --scrollbar-thumb-dark: grey;
+  --scrollbar-track-dark: #383854;
+  --scrollbar-thumb-light: #383854;
+  --scrollbar-track-light: white;
+}
+
+.dark-mode {
+  --scrollbar-thumb: var(--scrollbar-thumb-dark);
+  --scrollbar-track: var(--scrollbar-track-dark);
+}
+
+.light-mode {
+  --scrollbar-thumb: var(--scrollbar-thumb-light);
+  --scrollbar-track: var(--scrollbar-track-light);
+}
+
+
+.topBox {
+  h1 {
+    margin-bottom: 20px;
+
+    @include xxl{
+      font-size: 24px;
+    }
+  }
+
+  .list {
+    .listItem {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+
+      .registrants {
+        display: flex;
+        gap: 20px;
+
+      
+
+          @include xxl{
+            display: none;
+          }
+          @include lg{
+            display: block;
+          }
+        }
+
+        .list{
+
+
+
+        
+        
+
+
+        .userTexts {
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+        }
+
+
+          .registrants {
+            font-weight: bold;
+            font-size: 14px;
+            font-weight: 500;
+          }
+          .email {
+            font-size: 12px;
+
+            @include xxl{
+              display: none;
+            }
+            @include lg{
+              display: block;
+            }
+          }
+        }
+      }
+
+      .amount {
+        font-weight: 500;
+      }
+    }
+  }
+

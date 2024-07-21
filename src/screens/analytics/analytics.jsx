@@ -1,12 +1,21 @@
+
 import React from "react"
+import { ChartArea } from "../../components";
+import {TopArea} from "../../components";
 
-const Analytics = () => {  
+const Analytics= () => {
+  return (
+    <div className="content-area">
+   
+      <div className="Title">
+       <TopArea/>
 
- return (
-    <div>
-      This is Analytics Page
+      </div>
+      <ChartArea/>
+     
     </div>
-  )
-}
+  );
+};
 
-export default Analytics
+export default Analytics ;
+
