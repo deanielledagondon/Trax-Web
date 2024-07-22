@@ -1,0 +1,35 @@
+.content-area-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 16px;
+
+  .area-top-title {
+    color: var(--text-color-inverted);
+  }
+
+  .area-top-l {
+    display: flex;
+    align-items: center;
+    column-gap: 6px;
+  }
+
+  .sidebar-open-btn {
+    display: inline-flex;
+    align-items: center;
+    display: none;
+    margin-bottom: -1px;
+    color: var(--text-color-inverted);
+
+    @media (max-width: 768px) {
+      display: inline-flex;
+    }
+  }
+
+  .area-top-r {
+    display: flex;
+    align-items: center;
+  }
+}

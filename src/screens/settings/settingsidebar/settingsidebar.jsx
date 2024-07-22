@@ -15,13 +15,13 @@ const SettingsSidebar = () => {
             Profile
           </Link>
         </li>
-        {/* <li className="settings-menu-item">
+        <li className="settings-menu-item">
           <Link 
-            to="/settings/display" 
-            className={`settings-menu-link ${location.pathname === '/settings/display' ? 'active' : ''}`}>
-            General 
+            to="/settings/manageUsers" 
+            className={`settings-menu-link ${location.pathname === '/settings/manageUsers' ? 'active' : ''}`}>
+            Manage Users 
           </Link>
-        </li> */}
+        </li>
       </ul>
     </div>
   );

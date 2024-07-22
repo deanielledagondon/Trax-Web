@@ -1,0 +1,75 @@
+.manage-users {
+  padding: 20px;
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    margin: 0;
+    color: var(--text-color-inverted);
+  }
+
+  .MuiBox-root {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: var(--background-color);
+    border-radius: 10px;
+    border: 3px solid var(--border-color-inverted);
+
+    .MuiInputBase-root {
+      flex: 1;
+      margin-left: 8px;
+      color: var(--base-text-color);
+
+      &.dark-mode {
+        color: var(--xl-text-color);
+      }
+    }
+
+    .MuiIconButton-root {
+      padding: 8px;
+      color: var(--primary-color);
+
+      &.dark-mode {
+        color: var(--base-text-color);
+      }
+    }
+  }
+
+  .MuiTableCell-root {
+    color: var(--base-text-color);
+
+    &.MuiTableCell-head {
+      font-weight: bold;
+      color: var(--xl-text-color);
+    }
+
+    .MuiIconButton-root {
+      &.edit-icon {
+        color: yellow;
+      }
+
+      &.delete-icon {
+        color: red;
+      }
+
+      &.dark-mode.edit-icon {
+        color: yellow;
+      }
+
+      &.dark-mode.delete-icon {
+        color: red;
+      }
+    }
+  }
+
+  .MuiPaper-root {
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color-inverted);
+  }
+}
