@@ -141,7 +141,6 @@
 }
 .sidebar .menu-link:hover {
   background-color: var(--side-link-hover-color);
-  color: var(--light-color); /* Optional: Change text color on hover */
 }
 .sidebar .menu-link.active {
   background-color: var(--primary-color);
