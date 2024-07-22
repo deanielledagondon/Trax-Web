@@ -1,0 +1,79 @@
+.settings-sidebar {
+  width: 200px;
+  background-color: var(--background-color); // Match with main sidebar background color
+  padding: 20px;
+  box-shadow: rgba(100, 100, 111, 0.1) 0px 7px 29px 0px; // Optional: to match the main sidebar's box shadow
+
+  .settings-menu-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .settings-menu-item {
+    margin-bottom: 8px; // Space between menu items
+
+    &:last-child {
+      margin-bottom: 0; // No margin for the last item
+    }
+
+    @media (max-width: 1200px) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .settings-menu-link {
+    width: 100%;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    column-gap: 11px;
+    padding: 12px;
+    border-radius: 12px;
+    color: var(--side-text-color);
+    transition: var(--default-transition);
+
+    @media (max-width: 1200px) {
+      padding: 2px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+
+    @media (max-width: 768px) {
+      padding: 12px;
+      border-bottom: none; // Fix: Should be border-bottom: none;
+      width: 100%;
+      height: 42px;
+      justify-content: flex-start;
+    }
+
+    &:hover {
+      background-color: var(--side-link-hover-color); // Background color on hover
+    }
+
+    &.active {
+      background-color: var(--primary-color); // Background color for active state
+      color: var(--light-color); // Text color for active state
+      box-shadow: 0px 0px 4px rgba(71, 91, 232, 0.04); // Box shadow for active state
+    }
+  }
+
+  .settings-menu-link-text {
+    font-family: var(--font-family-manrope); // Font family
+    font-weight: 500; // Font weight
+    font-size: 16px; // Font size
+
+    @media (max-width: 1200px) {
+      display: none;
+    }
+    @media (max-width: 768px) {
+      display: inline-block;
+    }
+  }
+}

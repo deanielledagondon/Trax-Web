@@ -123,7 +123,7 @@
     border-radius: 12px;
     color: var(--side-text-color);
     transition: var(--default-transition);
-
+  
     @media (max-width: 1200px) {
       padding: 2px;
       width: 36px;
@@ -133,25 +133,27 @@
       justify-content: center;
       border-radius: 8px;
     }
-
+  
     @media (max-width: 768px) {
       padding: 12px;
-      border-bottom: 12px; /* Fix: Should be border-bottom: none; or border-bottom: 0; */
+      border-bottom: none;
       width: 100%;
       height: 42px;
       justify-content: flex-start;
     }
-
+  
     &:hover {
       background-color: var(--side-link-hover-color);
+      color: var(--light-color); /* Optional: Change text color on hover */
     }
-
+  
     &.active {
       background-color: var(--primary-color);
       color: var(--light-color);
       box-shadow: 0px 0px 4px rgba(71, 91, 232, 0.04);
     }
   }
+  
 
   .menu-link-icon {
     display: flex;

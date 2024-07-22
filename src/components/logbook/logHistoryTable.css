@@ -1,0 +1,100 @@
+.log-history-container {
+  margin: 20px;
+  font-family: Arial, sans-serif;
+}
+.log-history-container .log-table-container {
+  overflow-y: scroll;
+  max-height: 400px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  /* Webkit-based browsers */
+}
+.log-history-container .log-table-container::-webkit-scrollbar {
+  width: 8px;
+}
+.log-history-container .log-table-container::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+.log-history-container .log-table-container::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+.log-history-container .log-table-container:hover {
+  /* Make scrollbar more visible on hover */
+}
+.log-history-container .log-table-container:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.log-history-container .log-history-title {
+  font-size: 2em;
+  font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.log-history-container .filters {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.log-history-container .filters span {
+  margin-right: 10px;
+}
+.log-history-container .filters button, .log-history-container .filters select, .log-history-container .filters input {
+  margin-right: 10px;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.log-history-container .filters button:hover, .log-history-container .filters select:hover, .log-history-container .filters input:hover {
+  border-color: #888;
+}
+.log-history-container .filters input {
+  flex-grow: 1;
+  max-width: 200px;
+}
+.log-history-container .log-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+.log-history-container .log-table th, .log-history-container .log-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+.log-history-container .log-table th {
+  background-color: #f2f2f2;
+}
+.log-history-container .log-table a {
+  color: #007bff;
+  text-decoration: none;
+}
+.log-history-container .log-table a:hover {
+  text-decoration: underline;
+}
+.log-history-container .log-table .action-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 5px;
+}
+.log-history-container .log-table .action-btn.notify {
+  color: green;
+}
+.log-history-container .log-table .action-btn.delete {
+  color: red;
+}
+.log-history-container .log-table .action-btn svg {
+  font-size: 1.2em;
+}
+.log-history-container .entries {
+  font-size: 0.9em;
+  color: #555;
+}
+
+.actions-column {
+  display: flex;
+  justify-content: center;
+}/*# sourceMappingURL=logHistoryTable.css.map */

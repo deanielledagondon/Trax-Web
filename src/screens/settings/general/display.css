@@ -1,0 +1,28 @@
+.container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+section {
+  margin-bottom: 20px;
+}
+
+section h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+input[type=checkbox],
+input[type=radio] {
+  margin-right: 10px;
+}/*# sourceMappingURL=general.css.map */

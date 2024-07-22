@@ -14,6 +14,8 @@ import Feedback from './screens/feedback/feedback';
 import { PageNotFound, Dashboard } from "./screens";
 import ForgotPassword from "./screens/forgotPassword/forgotPassword";
 
+import Settings from './screens/settings/settings'
+
 import { AuthProvider } from './components/authContext';
 
 import MoonIcon from "./assets/icons/moon.svg";
@@ -64,6 +66,7 @@ function App() {
             <Route path="/logbook" element={<LogHistory />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/feedback" element={<Feedback />} />
+            <Route path="/settings/*" element={<Settings />} />
             <Route path="*" element={<PageNotFound />} />
           </Route>
         </Routes>

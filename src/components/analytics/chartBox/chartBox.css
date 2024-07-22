@@ -1,0 +1,61 @@
+.chartBox {
+  display: flex;
+  height: 100%;
+}
+@media screen and (max-width: 480px) {
+  .chartBox {
+    flex-direction: column;
+  }
+}
+.chartBox .boxInfo {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+@media screen and (max-width: 480px) {
+  .chartBox .boxInfo {
+    gap: 20px;
+  }
+}
+.chartBox .boxInfo .title {
+  align-items: center;
+  gap: 10px;
+}
+@media screen and (max-width: 1400px) {
+  .chartBox .boxInfo .title {
+    font-size: 14px;
+  }
+}
+@media screen and (max-width: 1400px) {
+  .chartBox .boxInfo h1 {
+    font-size: 20px;
+  }
+}
+.chartBox .chartInfo {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.chartBox .chartInfo .chart {
+  width: 100%;
+  height: 100%;
+}
+.chartBox .chartInfo .texts {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+.chartBox .chartInfo .texts .percentage {
+  font-weight: bold;
+  font-size: 20px;
+}
+@media screen and (max-width: 1400px) {
+  .chartBox .chartInfo .texts .percentage {
+    font-size: 16px;
+  }
+}
+.chartBox .chartInfo .texts .duration {
+  font-size: 14px;
+}/*# sourceMappingURL=chartBox.css.map */

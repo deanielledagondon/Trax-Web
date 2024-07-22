@@ -1,0 +1,53 @@
+.home {
+  display: grid;
+  gap: 20px;
+  grid-auto-rows: minmax(180px, auto);
+  grid-auto-flow: dense;
+}
+@media screen and (max-width: 1200px) {
+  .home {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media screen and (max-width: 1024px) {
+  .home {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media screen and (max-width: 768px) {
+  .home {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+@media screen and (max-width: 480px) {
+  .home {
+    grid-auto-rows: minmax(120px, auto);
+  }
+}
+.home .box {
+  background-color: rgb(255, 255, 255);
+  margin: 5px;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: var(--light-shadow1);
+}
+.home .box1 {
+  grid-column: span 1;
+  grid-row: span3;
+}
+.home .box6 {
+  grid-column: span 1;
+}
+.home .box7 {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+@media screen and (max-width: 768px) {
+  .home .box7 {
+    display: none;
+  }
+}
+.home .Chartbox1 {
+  display: flex;
+  padding: 20px;
+}/*# sourceMappingURL=ChartArea.css.map */

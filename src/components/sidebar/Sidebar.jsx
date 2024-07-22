@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ThemeContext } from "../../context/ThemeContext";
 import { LIGHT_THEME } from "../../constants/themeConstants";
 import { MdOutlineClose, MdOutlineBook, MdOutlineGroups, MdOutlineBarChart, MdOutlineComment, MdOutlineGridView, MdOutlineLogout, MdOutlineSettings, MdPerson } from "react-icons/md";
@@ -14,6 +14,7 @@ const Sidebar = () => {
   const { isSidebarOpen, closeSidebar } = useContext(SidebarContext);
   const sidebarRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation(); // Get current location
 
   // Closing the sidebar when clicked outside
   const handleClickOutside = (event) => {
@@ -43,11 +44,11 @@ const Sidebar = () => {
     window.location.href = '/';
   };
 
+  // Function to check if the link is active
+  const isActive = (path) => location.pathname === path;
+
   return (
-    <nav
-      className={`sidebar ${isSidebarOpen ? "sidebar-show" : ""}`}
-      ref={sidebarRef}
-    >
+    <nav className={`sidebar ${isSidebarOpen ? "sidebar-show" : ""}`} ref={sidebarRef}>
       <div className="sidebar-top">
         <div className="sidebar-brand">
           <img src={theme === LIGHT_THEME ? LogoLight : LogoDark} alt="Logo" />
@@ -61,7 +62,7 @@ const Sidebar = () => {
         <div className="sidebar-menu">
           <ul className="menu-list">
             <li className="menu-item">
-              <Link to="/dashboard" className="menu-link active">
+              <Link to="/dashboard" className={`menu-link ${isActive("/dashboard") ? "active" : ""}`}>
                 <span className="menu-link-icon">
                   <MdOutlineGridView size={18} />
                 </span>
@@ -69,7 +70,7 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className="menu-item">
-              <Link to="/queue" className="menu-link">
+              <Link to="/queue" className={`menu-link ${isActive("/queue") ? "active" : ""}`}>
                 <span className="menu-link-icon">
                   <MdOutlineGroups size={20} />
                 </span>
@@ -77,7 +78,7 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className="menu-item">
-              <Link to="/logbook" className="menu-link">
+              <Link to="/logbook" className={`menu-link ${isActive("/logbook") ? "active" : ""}`}>
                 <span className="menu-link-icon">
                   <MdOutlineBook size={20} />
                 </span>
@@ -85,7 +86,7 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className="menu-item">
-              <Link to="/analytics" className="menu-link">
+              <Link to="/analytics" className={`menu-link ${isActive("/analytics") ? "active" : ""}`}>
                 <span className="menu-link-icon">
                   <MdOutlineBarChart size={18} />
                 </span>
@@ -93,7 +94,7 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className="menu-item">
-              <Link to="/feedback" className="menu-link">
+              <Link to="/feedback" className={`menu-link ${isActive("/feedback") ? "active" : ""}`}>
                 <span className="menu-link-icon">
                   <MdOutlineComment size={20} />
                 </span>
@@ -106,15 +107,7 @@ const Sidebar = () => {
         <div className="sidebar-menu sidebar-menu2">
           <ul className="menu-list">
             <li className="menu-item">
-              <Link to="/profile" className="menu-link">
-                <span className="menu-link-icon">
-                  <MdPerson size={20} />
-                </span>
-                <span className="menu-link-text">Profile</span>
-              </Link>
-            </li>
-            <li className="menu-item">
-              <Link to="/settings" className="menu-link">
+              <Link to="/settings" className={`menu-link ${isActive("/settings") ? "active" : ""}`}>
                 <span className="menu-link-icon">
                   <MdOutlineSettings size={20} />
                 </span>
