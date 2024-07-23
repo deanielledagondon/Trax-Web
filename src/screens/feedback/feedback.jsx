@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import HeaderStats from '../../components/feedback/headerStats/headerStats';
 import RatingChart from '../../components/feedback/ratingChart/ratingChart';
 import ReviewSummary from '../../components/feedback/reviewSummary/reviewSummary';
@@ -18,10 +18,18 @@ const Feedback = () => {
     ]
   };
   const ratingData = [
-    { month: 'August', '5 stars': 25, '4 stars': 15, '3 stars': 5, '2 stars': 2, '1 star': 1 },
-    { month: 'September', '5 stars': 30, '4 stars': 10, '3 stars': 5, '2 stars': 3, '1 star': 2 },
-    { month: 'October', '5 stars': 20, '4 stars': 18, '3 stars': 7, '2 stars': 4, '1 star': 1 },
-    { month: 'November', '5 stars': 28, '4 stars': 14, '3 stars': 8, '2 stars': 3, '1 star': 2 }
+    { month: 'January', '5 stars': 25, '4 stars': 15, '3 stars': 5, '2 stars': 2, '1 star': 1 },
+    { month: 'February', '5 stars': 30, '4 stars': 10, '3 stars': 5, '2 stars': 3, '1 star': 2 },
+    { month: 'March', '5 stars': 20, '4 stars': 18, '3 stars': 7, '2 stars': 4, '1 star': 1 },
+    { month: 'April', '5 stars': 28, '4 stars': 14, '3 stars': 8, '2 stars': 3, '1 star': 2 },
+    { month: 'May', '5 stars': 25, '4 stars': 15, '3 stars': 5, '2 stars': 2, '1 star': 1 },
+    { month: 'June', '5 stars': 30, '4 stars': 10, '3 stars': 5, '2 stars': 3, '1 star': 2 },
+    { month: 'July', '5 stars': 20, '4 stars': 18, '3 stars': 7, '2 stars': 4, '1 star': 1 },
+    { month: 'August', '5 stars': 28, '4 stars': 14, '3 stars': 8, '2 stars': 3, '1 star': 2 },
+    { month: 'September', '5 stars': 25, '4 stars': 15, '3 stars': 5, '2 stars': 2, '1 star': 1 },
+    { month: 'October', '5 stars': 30, '4 stars': 10, '3 stars': 5, '2 stars': 3, '1 star': 2 },
+    { month: 'November', '5 stars': 20, '4 stars': 18, '3 stars': 7, '2 stars': 4, '1 star': 1 },
+    { month: 'December', '5 stars': 28, '4 stars': 14, '3 stars': 8, '2 stars': 3, '1 star': 2 }
   ];
   const reviews = {
     overall: 89.5,
@@ -42,32 +50,37 @@ const Feedback = () => {
   const windowsData = [
     {
       windowName: "Window 1",
-      data: [
-        { month: 'August', '5 stars': 25, '4 stars': 15, '3 stars': 5, '2 stars': 2, '1 star': 1 },
-        { month: 'September', '5 stars': 30, '4 stars': 10, '3 stars': 5, '2 stars': 3, '1 star': 2 },
-        { month: 'October', '5 stars': 20, '4 stars': 18, '3 stars': 7, '2 stars': 4, '1 star': 1 },
-        { month: 'November', '5 stars': 28, '4 stars': 14, '3 stars': 8, '2 stars': 3, '1 star': 2 }
-      ]
+      data: ratingData
     },
     {
       windowName: "Window 2",
-      data: [
-        { month: 'August', '5 stars': 25, '4 stars': 15, '3 stars': 5, '2 stars': 2, '1 star': 1 },
-        { month: 'September', '5 stars': 30, '4 stars': 10, '3 stars': 5, '2 stars': 3, '1 star': 2 },
-        { month: 'October', '5 stars': 20, '4 stars': 18, '3 stars': 7, '2 stars': 4, '1 star': 1 },
-        { month: 'November', '5 stars': 28, '4 stars': 14, '3 stars': 8, '2 stars': 3, '1 star': 2 }
-      ]
+      data: ratingData
     },
-    // Add more window objects as needed
+    {
+      windowName: "Window 3",
+      data: ratingData
+    },
+    {
+      windowName: "Window 4",
+      data: ratingData
+    },
+    {
+      windowName: "Window 5",
+      data: ratingData
+    },
+    {
+      windowName: "Window 6",
+      data: ratingData
+    }
   ];
 
   return (
     <div className="container mt-5">
       <HeaderStats {...monthStats} ratingBreakdown={ratingBreakdown} />
+      <CommentsList comments={comments} />
+      <ReviewSummary reviews={reviews} />
       <RatingChart data={ratingData} />
       <WindowRatingChart windowsData={windowsData} />
-      <ReviewSummary reviews={reviews} />
-      <CommentsList comments={comments} />
     </div>
   );
 };

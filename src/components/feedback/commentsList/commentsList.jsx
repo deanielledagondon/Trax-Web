@@ -21,7 +21,7 @@ const CommentsList = ({ comments }) => {
     return (
         <div className="comments-list-card">
             <div className="comments-list-body">
-                <h2 className="comments-title">Newly Window Comments</h2>
+                <h2 className="comments-title">User Feedback</h2>
                 <div className="comments-grid">
                     {comments.map((comment, index) => (
                         <div className="comment-card" key={index}>

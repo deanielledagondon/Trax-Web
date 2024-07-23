@@ -1,21 +1,33 @@
 .rating-chart-card {
-    background-color: #fff;
+    background: #fff;
     padding: 20px;
-    margin-bottom: 20px;
     border: 1px solid #ccc;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px; /* Added margin-bottom for spacing */
+}
+
+.rating-chart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Distribute space evenly between the elements */
+    margin-bottom: 20px;
+}
+
+.rating-chart-title {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.month-select {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
 }
 
 .rating-chart-body {
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-
-.rating-chart-title {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    align-self: flex-start;
+    gap: 10px;
 }

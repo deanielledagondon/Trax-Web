@@ -3,13 +3,33 @@
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 8px;
+    margin-bottom: 40px; /* Added margin-bottom for spacing */
+}
+
+.window-rating-chart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Distribute space evenly between the elements */
+    margin-bottom: 20px;
 }
 
 .window-rating-chart-title {
     font-size: 24px;
     font-weight: bold;
-    text-align: left;
-    margin-bottom: 20px;
+}
+
+.window-select {
+    transition: all 0.3s ease;
+    padding: 10px; /* Increase padding for a larger appearance */
+    font-size: 16px; /* Increase font size */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+    min-width: 200px; /* Set a minimum width */
+}
+
+.window-select:focus {
+    border-color: #8884d8; /* Matches one of the bar colors */
 }
 
 .rating-window-chart-grid {
