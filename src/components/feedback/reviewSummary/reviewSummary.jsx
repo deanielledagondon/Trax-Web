@@ -11,7 +11,7 @@ const ReviewSummary = ({ reviews }) => {
 
     return (
         <div className="review-summary-container">
-            <h3 className="review-summary-title">Average User Comments Ratings</h3>
+            <h3 className="review-summary-title">Average User Feedback Ratings</h3>
             <div className="review-summary-body">
                 <div className="review-summary-left">
                     <div className="overall-rating">
