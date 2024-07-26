@@ -62,7 +62,7 @@ const Sidebar = () => {
         <div className="sidebar-menu">
           <ul className="menu-list">
             <li className="menu-item">
-              <Link to="/dashboard" className={`menu-link ${isActive("/dashboard") ? "active" : ""}`}>
+              <Link to="/admin-dashboard" className={`menu-link ${isActive("/admin-dashboard") ? "active" : ""}`}>
                 <span className="menu-link-icon">
                   <MdOutlineGridView size={18} />
                 </span>

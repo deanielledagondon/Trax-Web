@@ -40,7 +40,8 @@ const Register = () => {
         alert('Passwords do not match');
         return;
       }
-
+  
+      // Sign up the user
       const { data, error } = await supabase.auth.signUp({
         email: formData.fullEmail,
         password: formData.fullPassword,
@@ -50,8 +51,31 @@ const Register = () => {
           }
         }
       });
+  
       if (error) throw error;
-      alert('Check your email for verification link');
+  
+      // Insert the new user into the "registrants" table
+      const { user } = data;
+      if (user) {
+        const { error: insertError } = await supabase
+          .from('registrants')
+          .insert(
+            { id: user.id, full_name: formData.fullName, email: formData.fullEmail }
+          );
+  
+        if (insertError) throw insertError;
+  
+        alert('Check your email for verification link');
+        
+        // Clear the form fields
+        setFormData({
+          fullName: '',
+          fullEmail: '',
+          fullPassword: '',
+          confirmPassword: ''
+        });
+        setPasswordMatch(false);
+      }
     } catch (error) {
       alert(error.message);
     }
@@ -85,13 +109,13 @@ const Register = () => {
 
             <div className="inputDiv">
               <div className="input flex">
-                <input type="text" id="name" name="fullName" placeholder="Full Name" onChange={handleChange} />
+                <input type="text" id="name" name="fullName" placeholder="Full Name" value={formData.fullName} onChange={handleChange} />
               </div>
             </div>
 
             <div className="inputDiv">
               <div className="input flex">
-                <input type="text" id="email" name="fullEmail" placeholder="Email" onChange={handleChange} />
+                <input type="text" id="email" name="fullEmail" placeholder="Email" value={formData.fullEmail} onChange={handleChange} />
               </div>
             </div>
 
@@ -102,6 +126,7 @@ const Register = () => {
                   id="password"
                   name="fullPassword"
                   placeholder="Password"
+                  value={formData.fullPassword}
                   onChange={handleChange}
                 />
                 {showPassword ?
@@ -119,6 +144,7 @@ const Register = () => {
                   id="confirmPassword"
                   name="confirmPassword"
                   placeholder="Confirm Password"
+                  value={formData.confirmPassword}
                   onChange={handleChange}
                 />
                 {formData.confirmPassword && (

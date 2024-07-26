@@ -10,18 +10,18 @@ const SettingsSidebar = () => {
       <ul className="settings-menu-list">
         <li className="settings-menu-item">
           <Link 
-            to="/settings/profile" 
-            className={`settings-menu-link ${location.pathname === '/settings/profile' ? 'active' : ''}`}>
+            to="/staff-settings/profile" 
+            className={`settings-menu-link ${location.pathname === '/staff-settings/profile' ? 'active' : ''}`}>
             Profile
           </Link>
         </li>
-        {/* <li className="settings-menu-item">
+        <li className="settings-menu-item">
           <Link 
-            to="/settings/display" 
-            className={`settings-menu-link ${location.pathname === '/settings/display' ? 'active' : ''}`}>
+            to="/staff-settings/display" 
+            className={`settings-menu-link ${location.pathname === '/staff-settings/display' ? 'active' : ''}`}>
             General 
           </Link>
-        </li> */}
+        </li>
       </ul>
     </div>
   );

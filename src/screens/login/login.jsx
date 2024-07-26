@@ -37,9 +37,37 @@ const Login = () => {
 
   useEffect(() => {
     if (session) {
-      navigate('/dashboard'); // Redirect to dashboard if user is already logged in
+      navigateBasedOnRole(session.user.id); // Redirect to respective dashboard if user is already logged in
     }
   }, [session, navigate]);
+
+  async function navigateBasedOnRole(userId) {
+    try {
+      const { data, error } = await supabase
+        .from('registrants')
+        .select('role')
+        .eq('id', userId)
+        .single();
+
+      if (error) {
+        console.error('Error fetching user role:', error.message);
+        alert(`Fetching role failed: ${error.message}`);
+        return;
+      }
+
+      if (data.role === 'Admin') {
+        navigate('/admin-dashboard');
+      } else if (data.role === 'Staff') {
+        navigate('/staff-dashboard');
+      } else {
+        console.error('Unknown user role:', data.role);
+        alert('Unknown user role. Please contact support.');
+      }
+    } catch (error) {
+      console.error('Unexpected error:', error);
+      alert('An unexpected error occurred. Please try again.');
+    }
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -48,12 +76,13 @@ const Login = () => {
         email: formData.fullEmail,
         password: formData.fullPassword,
       });
-      console.log(data);
+
       if (error) {
         console.error('Error signing in:', error.message);
         alert(`Login failed: ${error.message}`);
         return;
       }
+
       console.log('Sign-in successful:', data);
       localStorage.setItem('user', JSON.stringify(data.user));
       localStorage.setItem('token', data.session.access_token);
@@ -62,7 +91,7 @@ const Login = () => {
       } else {
         localStorage.removeItem('rememberMe');
       }
-      navigate('/dashboard');
+      navigateBasedOnRole(data.user.id);
     } catch (error) {
       console.error('Unexpected error:', error);
       alert('An unexpected error occurred. Please try again.');

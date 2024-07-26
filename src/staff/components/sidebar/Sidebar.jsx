@@ -62,7 +62,7 @@ const Sidebar = () => {
         <div className="sidebar-menu">
           <ul className="menu-list">
             <li className="menu-item">
-              <Link to="/dashboard" className={`menu-link ${isActive("/dashboard") ? "active" : ""}`}>
+              <Link to="/staff-dashboard" className={`menu-link ${isActive("/staff-dashboard") ? "active" : ""}`}>
                 <span className="menu-link-icon">
                   <MdOutlineGridView size={18} />
                 </span>
@@ -70,7 +70,7 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className="menu-item">
-              <Link to="/queue" className={`menu-link ${isActive("/queue") ? "active" : ""}`}>
+              <Link to="/staff-queue" className={`menu-link ${isActive("/staff-queue") ? "active" : ""}`}>
                 <span className="menu-link-icon">
                   <MdOutlineGroups size={20} />
                 </span>
@@ -78,7 +78,7 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className="menu-item">
-              <Link to="/logbook" className={`menu-link ${isActive("/logbook") ? "active" : ""}`}>
+              <Link to="/staff-logbook" className={`menu-link ${isActive("/staff-logbook") ? "active" : ""}`}>
                 <span className="menu-link-icon">
                   <MdOutlineBook size={20} />
                 </span>
@@ -86,7 +86,7 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className="menu-item">
-              <Link to="/analytics" className={`menu-link ${isActive("/analytics") ? "active" : ""}`}>
+              <Link to="/staff-analytics" className={`menu-link ${isActive("/staff-analytics") ? "active" : ""}`}>
                 <span className="menu-link-icon">
                   <MdOutlineBarChart size={18} />
                 </span>
@@ -94,7 +94,7 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className="menu-item">
-              <Link to="/feedback" className={`menu-link ${isActive("/feedback") ? "active" : ""}`}>
+              <Link to="/staff-feedback" className={`menu-link ${isActive("/staff-feedback") ? "active" : ""}`}>
                 <span className="menu-link-icon">
                   <MdOutlineComment size={20} />
                 </span>
@@ -107,7 +107,7 @@ const Sidebar = () => {
         <div className="sidebar-menu sidebar-menu2">
           <ul className="menu-list">
             <li className="menu-item">
-              <Link to="/settings" className={`menu-link ${isActive("/settings") ? "active" : ""}`}>
+              <Link to="/staff-settings" className={`menu-link ${isActive("/staff-settings") ? "active" : ""}`}>
                 <span className="menu-link-icon">
                   <MdOutlineSettings size={20} />
                 </span>
