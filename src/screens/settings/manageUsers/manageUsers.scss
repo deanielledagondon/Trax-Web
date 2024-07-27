@@ -1,3 +1,4 @@
+/* manageUsers.scss */
 .manage-users {
   padding: 20px;
 
@@ -24,6 +25,7 @@
     .MuiInputBase-root {
       flex: 1;
       margin-left: 8px;
+      font-family: "Montserrat", sans-serif;
       color: var(--base-text-color);
 
       &.dark-mode {
@@ -33,6 +35,7 @@
 
     .MuiIconButton-root {
       padding: 8px;
+      font-family: "Montserrat", sans-serif;
       color: var(--primary-color);
 
       &.dark-mode {
@@ -42,16 +45,18 @@
   }
 
   .MuiTableCell-root {
+    font-family: "Montserrat", sans-serif;
     color: var(--base-text-color);
 
     &.MuiTableCell-head {
+      font-family: "Montserrat", sans-serif;
       font-weight: bold;
       color: var(--xl-text-color);
     }
 
     .MuiIconButton-root {
       &.edit-icon {
-        color: yellow;
+        color: orange;
       }
 
       &.delete-icon {
@@ -59,7 +64,7 @@
       }
 
       &.dark-mode.edit-icon {
-        color: yellow;
+        color: orange;
       }
 
       &.dark-mode.delete-icon {
@@ -69,6 +74,7 @@
   }
 
   .MuiPaper-root {
+    font-family: "Montserrat", sans-serif;
     background-color: var(--background-color);
     border: 1px solid var(--border-color-inverted);
   }
