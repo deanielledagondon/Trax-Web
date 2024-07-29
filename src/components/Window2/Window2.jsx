@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
-import HeaderStats from '../../components/feedback/headerStats/headerStats';
-import RatingChart from '../../components/feedback/ratingChart/ratingChart';
-import ReviewSummary from '../../components/feedback/reviewSummary/reviewSummary';
-import CommentsList from '../../components/feedback/commentsList/commentsList';
-import WindowRatingChart from '../../components/feedback/windowRatingChart/windowRatingChart';
+import HeaderStats2 from '../window22/headerStats2';
+import RatingChart from '../feedback/ratingChart/ratingChart';
+import ReviewSummary from '../feedback/reviewSummary/reviewSummary';
+import CommentsList from '../feedback/commentsList/commentsList';
+import WindowRatingChart from '../feedback/windowRatingChart/windowRatingChart';
 
-const Feedback = () => {
-  const monthStats = { month: 256, overall: 4.2, responses: '1,254' };
+const Window2 = () => {
+  const monthStats = { month: 576, overall: 8.2, responses: '5,294' };
   const ratingBreakdown = {
-    average: 20.41,
+    average: 73.87,
     breakdown: [
-      { stars: 1, percentage: 8.16, color: 'red' },
-      { stars: 2, percentage: 10.20, color: 'orange' },
-      { stars: 3, percentage: 14.3, color: 'yellow' },
-      { stars: 4, percentage: 26.53, color: 'light-green' },
-      { stars: 5, percentage: 40.81, color: 'green' }
+      { stars: 1, percentage: 10.16, color: 'red' },
+      { stars: 2, percentage: 17.20, color: 'orange' },
+      { stars: 3, percentage: 50.3, color: 'yellow' },
+      { stars: 4, percentage: 26.50, color: 'light-green' },
+      { stars: 5, percentage: 35.80, color: 'green' }
     ]
   };
   const ratingData = [
@@ -32,53 +32,34 @@ const Feedback = () => {
     { month: 'December', '5 stars': 28, '4 stars': 14, '3 stars': 8, '2 stars': 3, '1 star': 2 }
   ];
   const reviews = {
-    overall: 89.5,
+    overall: 92.3,
     breakdown: {
-      'Easy Access': 86.48,
-      'Reliable': 84.39,
-      'Responsive': 94.46,
-      'Ease of Use': 78.41,
-      'User-Friendly': 98.42
+      'Easy Access': 88.43,
+      'Reliable': 90.72,
+      'Responsive': 91.65,
+      'Ease of Use': 87.45,
+      'User-Friendly': 99.99
     }
   };
   const comments = [
-    { rating: 5, text: 'This kiosk system is incredibly user-friendly and intuitive!' },
-    { rating: 5, text: 'The touchscreen interface is responsive and easy to navigate.' },
+    { rating: 5, text: 'The interface is simple yet comprehensive.' },
+    { rating: 5, text: 'Its nice that the system can handle a high volume of users without slowing down.' },
     { rating: 4, text: 'I love how the system provides real-time updates on queue status' },
     { rating: 5, text: 'The system is very accessible and user-friendly for people of all ages.' },
-    { rating: 4, text: 'This kiosk has significantly reduced wait times and improved service efficiency.' },
+    { rating: 5, text: 'The user experience is consistently positive each time I use the kiosk.' },
     { rating: 5, text: 'Using the kiosk has made my experience much quicker and hassle-free.' }
   ];
   const windowsData = [
     {
-      windowName: "Window 1",
-      data: ratingData
-    },
-    {
       windowName: "Window 2",
       data: ratingData
     },
-    {
-      windowName: "Window 3",
-      data: ratingData
-    },
-    {
-      windowName: "Window 4",
-      data: ratingData
-    },
-    {
-      windowName: "Window 5",
-      data: ratingData
-    },
-    {
-      windowName: "Window 6",
-      data: ratingData
-    }
+
   ];
 
   return (
     <div className="container mt-5">
-      <HeaderStats {...monthStats} ratingBreakdown={ratingBreakdown} />
+      <HeaderStats2 {...monthStats} ratingBreakdown={ratingBreakdown} />
       <CommentsList comments={comments} />
       <ReviewSummary reviews={reviews} />
       <RatingChart data={ratingData} />
@@ -87,4 +68,5 @@ const Feedback = () => {
   );
 };
 
-export default Feedback;
+export default Window2;
+

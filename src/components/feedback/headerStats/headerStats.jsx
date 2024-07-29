@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import './headerStats.scss';
+import { useNavigate } from 'react-router-dom';
 
-// Custom tooltip component for the pie chart
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="custom-tooltip">
+      <div className="customTooltip">
         {payload.map((entry, index) => (
           <div key={index}>
             {entry.name} stars: {entry.value}%
@@ -19,9 +19,10 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
-const HeaderStats = ({ month, overall, responses, ratingBreakdown }) => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null);
+  const HeaderStats = ({ month, overall, responses, ratingBreakdown }) => {
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const dropdownRef = useRef(null);
+    const navigate = useNavigate();
 
   // Close the dropdown if a click occurs outside of it
   useEffect(() => {
@@ -37,23 +38,22 @@ const HeaderStats = ({ month, overall, responses, ratingBreakdown }) => {
     };
   }, [isDropdownOpen]);
 
+
   const handleWindowSelection = (window) => {
-    console.log(`Window ${window} selected`);
+    navigate(`/window${window}`);
     setIsDropdownOpen(false);
   };
 
-  // Prepare data for PieChart
   const data = useMemo(
     () =>
       ratingBreakdown.breakdown.map((segment) => ({
-        name: `${segment.stars} Stars`,
+        name: `${segment.stars}`,
         value: segment.percentage,
         count: segment.count,
       })),
     [ratingBreakdown]
   );
 
-  // Color mapping for different star ratings
   const starColors = {
     1: '#f8696b',
     2: '#ffa65a',
@@ -65,13 +65,13 @@ const HeaderStats = ({ month, overall, responses, ratingBreakdown }) => {
   return (
     <div>
       <div className="header-top">
-        <h2 className="area-top-title">Feedback</h2>
+        <h2 className="title">Feedback</h2>
         <div className="dropdown-container" ref={dropdownRef}>
-          <button className="dropdown-button" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
-            Select Window
+          <button className="dropdownButton" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+           Select Window
           </button>
           {isDropdownOpen && (
-            <div className="dropdown-menu">
+            <div className="dropdownMenu">
               {[1, 2, 3, 4, 5, 6].map((window) => (
                 <button key={window} onClick={() => handleWindowSelection(window)}>
                   Window {window}
@@ -117,8 +117,10 @@ const HeaderStats = ({ month, overall, responses, ratingBreakdown }) => {
                         nameKey="name"
                         cx="50%"
                         cy="50%"
-                        outerRadius={170}
+                        outerRadius={145}
                         fill="#8884d8"
+                       // labelLine={false}
+                       // label={({ name, value }) => `${value}%`}
                       >
                         {data.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={starColors[entry.name.split(' ')[0]]} />

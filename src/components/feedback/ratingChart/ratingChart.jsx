@@ -34,6 +34,7 @@ const RatingChart = ({ data }) => {
                     ))}
                 </select>
             </div>
+            
             <div className="rating-chart-body">
                 <ResponsiveContainer width="100%" height={500}> {/* Increased height */}
                     <BarChart

@@ -1,33 +1,98 @@
+:root {
+    /* Define light theme variables */
+    --background-color: #f5f7fa;
+    --text-color: #333333;
+    --text-color-inverted: #ffffff; 
+    --border-color: #e1e4e8;
+    --hover-color: #f0f2f5;
+    --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  
+    --red-bg: #ffeaea;
+    --red-text: #d63031;
+    --orange-bg: #fff5e6;
+    --orange-text: #e17055;
+    --blue-bg: #e6f3ff;
+    --blue-text: #0984e3;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    :root {
+      /* Define dark theme variables */
+      --background-color: #1a1a1a;
+      --text-color: #f0f0f0;
+      --text-color-inverted: #333333;
+      --border-color: #4a4a4a;
+      --hover-color: #3a3a3a;
+      --shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  
+      --red-bg: #4d1f1f;
+      --red-text: #ff6b6b;
+      --orange-bg: #4d3319;
+      --orange-text: #ffa502;
+      --blue-bg: #1f3a4d;
+      --blue-text: #70a1ff;
+    }
+  }
+
 .rating-chart-card {
-    background: #fff;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    margin-bottom: 40px; /* Added margin-bottom for spacing */
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
+    transition: all 0.3s ease;
+    color: var(--text-color-inverted);
+    background-color: var(--background-color);
+
 }
 
 .rating-chart-header {
     display: flex;
     align-items: center;
-    justify-content: space-between; /* Distribute space evenly between the elements */
-    margin-bottom: 20px;
+    justify-content: space-between;
+    margin-bottom: 25px;
+    color: var(--text-color-inverted);
+    background-color: var(--background-color);
 }
 
 .rating-chart-title {
-    font-size: 24px;
-    font-weight: bold;
+    font-size: 28px;
+    font-weight: 600;
+    color: #333;
+    letter-spacing: -0.5px;
+    color: var(--text-color-inverted);
 }
 
 .month-select {
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    font-size: 16px;
+  background-color: var(--background-color);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text-color);
+  padding: 12px 2.5px;
+  transition: all 0.3s ease;
+  text-align: center;
+  outline: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: var(--text-color-inverted);
+
+  &:hover {
+    background-color: var(--hover-color);
+    color: black;
+ 
+  }
+   
 }
 
 .rating-chart-body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
+    border-radius: 12px;
+    padding: 20px;
+    background-color: var(--background-color);
+    color: var(--text-color-inverted);
 }
