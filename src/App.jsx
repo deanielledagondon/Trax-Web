@@ -99,9 +99,9 @@ function App() {
             <Route path="/logbook" element={<LogHistory />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/feedback" element={<Feedback />} />
-<<<<<<< HEAD
             <Route path="/settings/*" element={<Settings />} />
-=======
+            <Route path="*" element={<PageNotFound />} />
+
 
             <Route path="/headerStatss" element={<HeaderStatss />} />
             <Route path="/Window1" element={<Window1 />} />
@@ -123,8 +123,6 @@ function App() {
 
             <Route path="headerStats" element={<HeaderStats/>} />
 
->>>>>>> feedback
-            <Route path="*" element={<PageNotFound />} />
           </Route>
           
           <Route element={<StaffLayout />}>

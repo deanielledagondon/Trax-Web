@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react'; 
-import AreaTableAction from "./AreaTableAction";
 import "./AreaTable.scss";
 import { supabase } from '../../helper/supabaseClient';
-import ReactPaginate from 'react-paginate';
 
 const TABLE_HEADS = [
   "Date",
@@ -10,26 +8,12 @@ const TABLE_HEADS = [
   "Purpose",
   "Status",
   "Window No.",
-  "Actions",
 ];
-
 
 const AreaTable = () => {
   const [logHistory, setLogHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 20;
-  const pageCount = Math.ceil(logHistory.length / itemsPerPage);
-
-  const handlePageClick = (event) => {
-    setCurrentPage(event.selected);
-  };
-
-  const displayItems = logHistory.slice(
-    currentPage * itemsPerPage,
-    (currentPage + 1) * itemsPerPage
-  );
 
   useEffect(() => {
     const fetchRegistrants = async () => {
@@ -76,7 +60,7 @@ const AreaTable = () => {
             </tr>
           </thead>
           <tbody>
-            {displayItems.map((dataItem) => (
+            {logHistory.slice(0, 10).map((dataItem) => (
               <tr key={dataItem.id}>
                 <td>{dataItem.transaction_date}</td>
                 <td>{dataItem.name}</td>
@@ -88,24 +72,10 @@ const AreaTable = () => {
                   </div>
                 </td>
                 <td>{dataItem.window_no}</td>
-                <td className="dt-cell-action">
-                  <AreaTableAction />
-                </td>
               </tr>
             ))}
           </tbody>
         </table>
-        <ReactPaginate
-          previousLabel={"previous"}
-          nextLabel={"next"}
-          breakLabel={"..."}
-          pageCount={pageCount}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={5}
-          onPageChange={handlePageClick}
-          containerClassName={"pagination"}
-          activeClassName={"active"}
-        />
       </div>
     </section>
   );

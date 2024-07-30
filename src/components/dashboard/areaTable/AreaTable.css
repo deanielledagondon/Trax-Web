@@ -20,8 +20,8 @@
   border-radius: 5px;
   box-shadow: var(--light-shadow1);
   padding: 12px 16px;
-  overflow: auto;
-  height: 300px; /* Adjust as per your design */
+  height: auto; /* Adjust as per your design */
+  overflow: hidden; /* Remove scrollbar from the outer container */
 }
 @media (max-width: 768px) {
   .content-area-table {
@@ -39,31 +39,7 @@
 .content-area-table .data-table-diagram {
   border-radius: 6px;
   border: 1px solid var(--tbl-border-color);
-  overflow: auto; /* Enable both x and y scrollbars */
-  /* Custom scrollbar for WebKit browsers */
-  scrollbar-width: thin;
-  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track); /* thumb color and track color */
-  /* Show scrollbar on hover */
-}
-.content-area-table .data-table-diagram::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-  background-color: transparent; /* Hide scrollbar initially */
-}
-.content-area-table .data-table-diagram::-webkit-scrollbar-track {
-  background-color: var(--scrollbar-track); /* Track color */
-  border-radius: 1px; /* Border radius of the track */
-}
-.content-area-table .data-table-diagram::-webkit-scrollbar-thumb {
-  background-color: var(--scrollbar-thumb); /* Thumb color */
-  border-radius: 10px; /* Border radius of the thumb */
-  border: 2px solid grey; /* Border around the thumb */
-}
-.content-area-table .data-table-diagram:hover::-webkit-scrollbar {
-  background-color: var(--scrollbar-track); /* Show scrollbar background */
-}
-.content-area-table .data-table-diagram::-webkit-scrollbar-thumb:hover {
-  background-color: white; /* Thumb color on hover */
+  overflow: hidden; /* Remove scrollbar from the inner container */
 }
 .content-area-table .data-table-diagram table {
   width: 100%;
@@ -79,10 +55,6 @@
 .content-area-table .data-table-diagram table thead {
   font-size: 17px;
   background-color: var(--thead-bg-color);
-}
-.content-area-table .data-table-diagram table tbody {
-  max-height: 200px; /* Example maximum height; adjust as needed */
-  overflow-y: auto; /* Add vertical scrollbar when content exceeds max-height */
 }
 .content-area-table .data-table-diagram table tbody tr td:last-child {
   text-align: center;
@@ -101,9 +73,6 @@
 }
 .content-area-table .data-table-diagram table .dt-status .dt-status-text {
   text-transform: capitalize;
-}
-.content-area-table .data-table-diagram table .dt-cell-action {
-  text-align: center;
 }
 .content-area-table .action-dropdown-btn {
   color: var(--text-color-inverted);
@@ -135,28 +104,4 @@
 .content-area-table .dropdown-menu-link:hover {
   opacity: 0.9;
 }
-.content-area-table .pagination {
-  display: flex;
-  justify-content: center;
-  list-style: none;
-  padding: 0;
-}
-.content-area-table .pagination li {
-  margin: 0 5px;
-}
-.content-area-table .pagination li a {
-  cursor: pointer;
-  padding: 8px 16px;
-  border: 1px solid #ddd;
-  color: #007bff;
-  text-decoration: none;
-}
-.content-area-table .pagination li a:hover {
-  background-color: #ddd;
-}
-.content-area-table .pagination li.active a {
-  font-weight: bold;
-  background-color: #007bff;
-  color: white;
-  border: 1px solid #007bff;
-}/*# sourceMappingURL=AreaTable.css.map */
+/*# sourceMappingURL=AreaTable.css.map */
