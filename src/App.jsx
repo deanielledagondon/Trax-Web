@@ -11,6 +11,29 @@ import Queue from './screens/queue/queue';
 import LogHistory from './screens/logbook/logHistory';
 import Analytics from './screens/analytics/analytics';
 import Feedback from './screens/feedback/feedback';
+
+
+import Window1 from './components/Window1/Window1';
+import HeaderStatss from "./components/window11/headerStatss";
+
+import Window2 from "./components/Window2/Window2";
+import HeaderStats2 from "./components/window22/headerStats2";
+
+import Window3 from "./components/Window3/Window3";
+import HeaderStats3 from "./components/window33/headerStats3";
+
+import Window4 from "./components/Window4/Window4";
+import HeaderStats4 from "./components/window44/headerStats4";
+
+import Window5 from "./components/Window5/Window5";
+import HeaderStats5 from "./components/window55/headerStats5";
+
+import Window6 from "./components/Window6/Window6";
+import HeaderStats6 from "./components/window66/headerStats6";
+
+import HeaderStats from './components/feedback/headerStats/headerStats';
+
+
 import { PageNotFound, Dashboard } from "./screens";
 import ForgotPassword from "./screens/forgotPassword/forgotPassword";
 import Settings from './screens/settings/settings'
@@ -76,7 +99,31 @@ function App() {
             <Route path="/logbook" element={<LogHistory />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/feedback" element={<Feedback />} />
+<<<<<<< HEAD
             <Route path="/settings/*" element={<Settings />} />
+=======
+
+            <Route path="/headerStatss" element={<HeaderStatss />} />
+            <Route path="/Window1" element={<Window1 />} />
+
+            <Route path="/headerStats2" element={<HeaderStats2 />} />
+            <Route path="/Window2" element={<Window2 />} />
+
+            <Route path="/headerStats3" element={<HeaderStats3 />} />
+            <Route path="/Window3" element={<Window3 />} />
+
+            <Route path="/headerStats4" element={<HeaderStats4 />} />
+            <Route path="/Window4" element={<Window4 />} />
+
+            <Route path="/headerStats5" element={<HeaderStats5 />} />
+            <Route path="/Window5" element={<Window5 />} />
+
+            <Route path="/headerStats6" element={<HeaderStats6 />} />
+            <Route path="/Window6" element={<Window6 />} />
+
+            <Route path="headerStats" element={<HeaderStats/>} />
+
+>>>>>>> feedback
             <Route path="*" element={<PageNotFound />} />
           </Route>
           
