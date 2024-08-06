@@ -9,8 +9,10 @@ const ProfileSettings = () => {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [position, setPosition] = useState('');
+  const [assignedWindow, setAssignedWindow] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [profileImage, setProfileImage] = useState('https://via.placeholder.com/100');
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -18,7 +20,7 @@ const ProfileSettings = () => {
         try {
           const { data, error } = await supabase
             .from('registrants')
-            .select('full_name, email, role')
+            .select('full_name, email, role, assigned_window, profile_image')
             .eq('id', session.user.id)
             .single();
 
@@ -30,6 +32,8 @@ const ProfileSettings = () => {
             setLastName(nameParts.slice(1).join(' '));
             setEmail(data.email);
             setPosition(data.role);
+            setAssignedWindow(data.assigned_window);
+            setProfileImage(data.profile_image || 'https://via.placeholder.com/100');
           }
         } catch (error) {
           console.error('Unexpected error:', error);
@@ -48,7 +52,7 @@ const ProfileSettings = () => {
         const fullName = `${firstName} ${lastName}`;
         const { data, error } = await supabase
           .from('registrants')
-          .update({ full_name: fullName, email, role: position })
+          .update({ full_name: fullName, email, role: position, assigned_window: assignedWindow })
           .eq('id', session.user.id);
 
         if (error) {
@@ -69,6 +73,44 @@ const ProfileSettings = () => {
     setIsDarkMode(!isDarkMode);
   };
 
+  const handleImageChange = async (event) => {
+    const file = event.target.files[0];
+    if (file && session) {
+      const filePath = `${session.user.id}/${file.name}`;
+      const { data, error } = await supabase.storage
+        .from('profile-images')
+        .upload(filePath, file);
+
+      if (error) {
+        console.error('Error uploading file:', error);
+        alert('Failed to upload image.');
+      } else {
+        const { publicURL, error: publicURLError } = supabase.storage
+          .from('profile-images')
+          .getPublicUrl(filePath);
+
+        if (publicURLError) {
+          console.error('Error getting public URL:', publicURLError);
+          alert('Failed to get image URL.');
+        } else {
+          setProfileImage(publicURL);
+          const { data, error: updateError } = await supabase
+            .from('registrants')
+            .update({ profile_image: publicURL })
+            .eq('id', session.user.id);
+
+          if (updateError) {
+            console.error('Error updating profile image:', updateError);
+            alert('Failed to update profile image.');
+          } else {
+            console.log('Profile image updated', data);
+            alert('Profile image updated successfully.');
+          }
+        }
+      }
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -78,11 +120,23 @@ const ProfileSettings = () => {
       <div className="profile-header">
         <div className="profile-image-container">
           <img
-            src="https://via.placeholder.com/100"
+            src={profileImage}
             alt="Profile"
             className="profile-image"
           />
-          <button className="change-picture-btn">Change Picture</button>
+          <input
+            type="file"
+            accept="image/*"
+            id="profile-image-input"
+            style={{ display: 'none' }}
+            onChange={handleImageChange}
+          />
+          <button
+            className="change-picture-btn"
+            onClick={() => document.getElementById('profile-image-input').click()}
+          >
+            Change Picture
+          </button>
         </div>
         <div className="profile-info">
           <div className="profile-name">{`${firstName} ${lastName}`}</div>
@@ -128,6 +182,24 @@ const ProfileSettings = () => {
               value={position}
               readOnly
             />
+          </div>
+        </div>
+        <div className="profile-field-row">
+          <div className="profile-field">
+            <label htmlFor="assignedWindow">Assigned Window</label>
+            <select
+              id="assignedWindow"
+              value={assignedWindow}
+              onChange={(e) => setAssignedWindow(e.target.value)}
+            >
+              <option value="">Select a window</option>
+              <option value="1">Window 1</option>
+              <option value="2">Window 2</option>
+              <option value="3">Window 3</option>
+              <option value="4">Window 4</option>
+              <option value="5">Window 5</option>
+              <option value="6">Window 6</option>
+            </select>
           </div>
         </div>
         <button className="save-changes-btn" onClick={handleSaveChanges}>

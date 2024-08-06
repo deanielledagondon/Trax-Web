@@ -27,6 +27,8 @@
   --glass: rgba(255, 255, 255, 0.54);
   --boxShadow: 0px 19px 60px rgb(0 0 0 / 8%);
   --smboxShadow: -79px 51px 60px rgba(0, 0, 0, 0.08);
+  --borderColorLight: #000000; // Dark border color for light mode
+  --borderColorDark: #ffffff;  // White border color for dark mode
 
   /* Typography */
   --biggestFontSize: 2.5rem;
@@ -105,11 +107,12 @@ body {
   font-weight: var(--font-weight);
 
   /* By default, light mode is on */
-  @include lightMode();
+  --border-color-inverted: var(--borderColorLight);
+
 
   /* Add dark-mode class on the body if dark mode is set true */
   &.dark-mode {
-    @include darkMode();
+    --border-color-inverted: var(--borderColorDark);
   }
 }
 
@@ -215,7 +218,7 @@ body {
           width: 100%;
           padding: 8px;
           font-size: 14px;
-          border: 1px solid var(--border-color-inverted);
+          border: 1px solid var(--border-color-inverted); // Use the custom property for border color
           border-radius: 4px;
           margin-right: 20px;
           background-color: var(--secondary-color);
@@ -226,6 +229,16 @@ body {
           margin-right: 0;
         }
       }
+    }
+
+    select {
+      width: 100%;
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid var(--border-color-inverted);
+      border-radius: 4px;
+      background-color: var(--secondary-color);
+      color: var(--text-color-inverted); // Use theme text color inverted
     }
 
     .save-changes-btn {

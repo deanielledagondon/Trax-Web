@@ -26,6 +26,8 @@
   --glass: rgba(255, 255, 255, 0.54);
   --boxShadow: 0px 19px 60px rgb(0 0 0 / 8%);
   --smboxShadow: -79px 51px 60px rgba(0, 0, 0, 0.08);
+  --borderColorLight: #000000;
+  --borderColorDark: #ffffff;
   /* Typography */
   --biggestFontSize: 2.5rem;
   --h1FontSize: 1.5rem;
@@ -55,47 +57,11 @@ body {
   font-size: var(--font-size);
   font-weight: var(--font-weight);
   /* By default, light mode is on */
-  --primary-color: #475be8;
-  --secondary-color: #fff;
-  --background-color: #fafafa;
-  --side-link-hover-color: #f6f6f6;
-  --side-text-color: #808191;
-  --logo-color: var(--primary-color);
-  --xl-text-color: #292929;
-  --lg-text-color: #525252;
-  --base-text-color: #676767;
-  --text-color-inverted: #292929;
-  --bg-color-inverted: #ffffff;
-  --border-color-inverted: #f6f6f6;
-  --toggle-btn-border-color: #f3f3f3;
-  --toggle-btn-bg-color: #fff;
-  --toggle-btn-icon-color: var(--primary-color);
-  --thead-bg-color: #f2f4ff;
-  --tbl-border-color: #f2f4ff;
-  --scroll-track-bg-color: #fff;
-  --scroll-thumb-bg-color: #e9e9e9;
+  --border-color-inverted: var(--borderColorLight);
   /* Add dark-mode class on the body if dark mode is set true */
 }
 body.dark-mode {
-  --primary-color: #475be8;
-  --secondary-color: #2e2e48;
-  --background-color: #383854;
-  --side-link-hover-color: #525270;
-  --side-text-color: #e1e1e1;
-  --logo-color: #fff;
-  --xl-text-color: #ffff;
-  --lg-text-color: #f3f3f3;
-  --base-text-color: #e0e0e0;
-  --text-color-inverted: #fff;
-  --bg-color-inverted: #292929;
-  --border-color-inverted: #575777;
-  --toggle-btn-border-color: #525270;
-  --toggle-btn-bg-color: #525270;
-  --toggle-btn-icon-color: #bdbdbd;
-  --thead-bg-color: #383854;
-  --tbl-border-color: #383854;
-  --scroll-track-bg-color: #2e2e48;
-  --scroll-thumb-bg-color: #575777;
+  --border-color-inverted: var(--borderColorDark);
 }
 
 /* Profile Settings Styles */
@@ -199,6 +165,15 @@ body.dark-mode {
 .profile-settings .profile-details .profile-field-row .profile-field:last-child {
   margin-right: 0;
 }
+.profile-settings .profile-details select {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid var(--border-color-inverted);
+  border-radius: 4px;
+  background-color: var(--secondary-color);
+  color: var(--text-color-inverted);
+}
 .profile-settings .profile-details .save-changes-btn {
   display: flex;
   background-color: var(--green-color);
@@ -212,4 +187,5 @@ body.dark-mode {
 }
 .profile-settings .profile-details .save-changes-btn:hover {
   background-color: #38a82e;
-}/*# sourceMappingURL=profile.css.map */
+}
+/*# sourceMappingURL=profile.css.map */
