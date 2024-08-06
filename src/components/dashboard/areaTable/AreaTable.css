@@ -20,7 +20,7 @@
   border-radius: 5px;
   box-shadow: var(--light-shadow1);
   padding: 12px 16px;
-  height: auto; /* Adjust as per your design */
+  height: 400px; /* Adjust as per your design */
   overflow: hidden; /* Remove scrollbar from the outer container */
 }
 @media (max-width: 768px) {
@@ -39,7 +39,8 @@
 .content-area-table .data-table-diagram {
   border-radius: 6px;
   border: 1px solid var(--tbl-border-color);
-  overflow: hidden; /* Remove scrollbar from the inner container */
+  height: calc(100% - 48px); /* Adjust height to fit within the outer container */
+  overflow-y: auto; /* Allow vertical scrolling */
 }
 .content-area-table .data-table-diagram table {
   width: 100%;
@@ -55,6 +56,8 @@
 .content-area-table .data-table-diagram table thead {
   font-size: 17px;
   background-color: var(--thead-bg-color);
+  position: sticky; /* Keep the header sticky */
+  top: 0;
 }
 .content-area-table .data-table-diagram table tbody tr td:last-child {
   text-align: center;
@@ -103,5 +106,4 @@
 }
 .content-area-table .dropdown-menu-link:hover {
   opacity: 0.9;
-}
-/*# sourceMappingURL=AreaTable.css.map */
+}/*# sourceMappingURL=AreaTable.css.map */

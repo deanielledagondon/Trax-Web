@@ -8,6 +8,10 @@
 }
 .content-area-top .area-top-title {
   color: var(--text-color-inverted);
+  font-size: 2em;
+  font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 .content-area-top .area-top-l {
   display: flex;

@@ -45,14 +45,12 @@
   color: white;
 }
 .log-history-container .log-table thead {
-  position: -webkit-sticky;
   position: sticky;
   top: 0;
   z-index: 2;
   background-color: #f2f2f2;
 }
 .log-history-container .log-table thead th {
-  position: -webkit-sticky;
   position: sticky;
   top: 0;
   background-color: #f2f2f2;
@@ -282,5 +280,4 @@
 .dark-mode .modal .modal-content button.cancel-btn:hover {
   background-color: #c62828;
   opacity: 1;
-}
-/*# sourceMappingURL=logHistoryTable.css.map */
+}/*# sourceMappingURL=logHistoryTable.css.map */

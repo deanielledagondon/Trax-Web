@@ -11,6 +11,9 @@ import Queue from './screens/queue/queue';
 import LogHistory from './screens/logbook/logHistory';
 import Analytics from './screens/analytics/analytics';
 import Feedback from './screens/feedback/feedback';
+import Unauthorized from './screens/error/unauthorized/unauthorized';
+import NoWifi from './screens/error/noWifi/noWifi';
+
 
 
 import Window1 from './components/Window1/Window1';
@@ -100,7 +103,7 @@ function App() {
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/feedback" element={<Feedback />} />
             <Route path="/settings/*" element={<Settings />} />
-            <Route path="*" element={<PageNotFound />} />
+            <Route path="*" component={PageNotFound} />
 
 
             <Route path="/headerStatss" element={<HeaderStatss />} />
@@ -133,6 +136,8 @@ function App() {
             <Route path="/staff-feedback" element={<StaffFeedback />} />
             <Route path="/staff-settings/*" element={<StaffSettings />} />
             <Route path="*" element={<StaffPageNotFound />} />
+            {/* <Route path="/unauthorized" component={Unauthorized} /> */}
+
           </Route>
         </Routes>
 
