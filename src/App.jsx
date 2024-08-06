@@ -104,6 +104,8 @@ function App() {
             <Route path="/feedback" element={<Feedback />} />
             <Route path="/settings/*" element={<Settings />} />
             <Route path="*" component={PageNotFound} />
+            <Route path="/noWifi" element={<NoWifi />} />
+            <Route path="/unauthorized" element={<Unauthorized />} />
 
 
             <Route path="/headerStatss" element={<HeaderStatss />} />
@@ -136,7 +138,6 @@ function App() {
             <Route path="/staff-feedback" element={<StaffFeedback />} />
             <Route path="/staff-settings/*" element={<StaffSettings />} />
             <Route path="*" element={<StaffPageNotFound />} />
-            {/* <Route path="/unauthorized" component={Unauthorized} /> */}
 
           </Route>
         </Routes>
