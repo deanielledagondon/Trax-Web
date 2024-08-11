@@ -91,6 +91,10 @@ const Login = () => {
       } else {
         localStorage.removeItem('rememberMe');
       }
+      const { errors } = await supabase
+        .from('registrants')
+        .update({ status: 'available' })
+        .eq('id', data.user.id)
       navigateBasedOnRole(data.user.id);
     } catch (error) {
       console.error('Unexpected error:', error);

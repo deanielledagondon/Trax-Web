@@ -8,6 +8,7 @@ import LogoDark from "../../assets/images/logo-dark-small.png";
 import LogoLight from "../../assets/images/logo-light-small.png";
 import "./Sidebar.scss";
 import { SidebarContext } from "../../context/SidebarContext";
+import { supabase } from "../helper/supabaseClient";
 
 const Sidebar = () => {
   const { theme } = useContext(ThemeContext);
@@ -36,7 +37,13 @@ const Sidebar = () => {
   }, []);
 
   // Function to handle logout
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    const user = localStorage.getItem("user");
+    const parsedUser = JSON.parse(user);
+    const { error } = await supabase
+        .from('registrants')
+        .update({ status: 'away' })
+        .eq('id', parsedUser.id)
     localStorage.removeItem('sb-swqywqargpfwcyvpqhkn-auth-token')
     localStorage.removeItem('user');
     localStorage.removeItem('token');

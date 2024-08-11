@@ -13,14 +13,16 @@ const TABLE_HEADS = [
   "Actions",
 ];
 
-
 const AreaTable = () => {
   const [logHistory, setLogHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
+  const [windowNo, setWindowNo] = useState([]);
   const itemsPerPage = 20;
   const pageCount = Math.ceil(logHistory.length / itemsPerPage);
+  const user = localStorage.getItem("user");
+  const parsedUser = JSON.parse(user);
 
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
@@ -32,16 +34,41 @@ const AreaTable = () => {
   );
 
   useEffect(() => {
-    const fetchRegistrants = async () => {
+    const fetchWindow = async () => {
+      try {
+        let { data, error } = await supabase
+          .from('registrants')
+          .select('window_no')
+          .eq('id', parsedUser.id)
+          .single();
+  
+        if (error) throw error;
+        setWindowNo(data.window_no);
+      } catch (error) {
+        setError(error.message);
+        setLoading(false);
+      }
+    };
+    
+    fetchWindow();
+  }, [parsedUser.id]);
+
+  useEffect(() => {
+    const fetchLogHistory = async () => {
+      if (windowNo.length === 0) return; // Don't fetch if windowNo is not set yet
+      
       try {
         let { data, error } = await supabase
           .from('log_history')
           .select()
-          .order('transaction_date', { ascending: false }); 
+          .in('window_no', windowNo)
+          .order('transaction_date', { ascending: false });
+        
         if (error) {
           console.log(error);
           throw error;
         }
+        
         setLogHistory(data);
         setLoading(false);
       } catch (error) {
@@ -49,9 +76,9 @@ const AreaTable = () => {
         setLoading(false);
       }
     };
-
-    fetchRegistrants();
-  }, []); 
+    
+    fetchLogHistory();
+  }, [windowNo]);
 
   if (loading) {
     return <div>Loading...</div>;

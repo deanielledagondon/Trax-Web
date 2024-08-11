@@ -5,7 +5,7 @@ import { useAuth } from '../../../components/authContext';
 const CurrentQueue = () => {
   const { session } = useAuth(); // Assuming session contains user information
   const [queue, setQueue] = useState([]);
-  const [window_no, setWindowNo] = useState(null);
+  const [window_no, setWindowNo] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -31,15 +31,16 @@ const CurrentQueue = () => {
   }, [session.user.id]); // Depend on session.user.id to ensure it runs when the component mounts
 
   useEffect(() => {
-    if (window_no === null) return; // Don't run if window_no is not set yet
+    if (window_no.length === 0) return; // Don't run if window_no is not set yet
 
     const fetchQueue = async () => {
       try {
         let { data, error } = await supabase
           .from('queue')
-          .select('id, name, queue_no')
-          .eq('window_no', window_no)
-          .order('id', { ascending: true });
+          .select('id, name, queue_no','status')
+          .eq('status', 'Waiting')
+          .in('window_no', window_no) // Use .in to query for both window numbers
+          .order('created_at', { ascending: true });
 
         if (error) throw error;
 
