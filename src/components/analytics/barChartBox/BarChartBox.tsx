@@ -1,6 +1,7 @@
 import { Bar, BarChart, ResponsiveContainer, Tooltip } from "recharts";
-import "./barChartBox.scss";
+import {} from './data'
 import React from "react";
+
 
 type Props = {
   title: string;
@@ -14,7 +15,7 @@ const BarChartBox = (props: Props) => {
     <div className="barChartBox">
       <h1>{props.title}</h1>
       <div className="chart">
-        <ResponsiveContainer width="99%" height={150}>
+        <ResponsiveContainer height={300}>
           <BarChart data={props.chartData}>
             <Tooltip
               contentStyle={{ background: "#2a3447", borderRadius: "5px" }}
@@ -27,6 +28,8 @@ const BarChartBox = (props: Props) => {
       </div>
     </div>
   );
+
+ 
 };
 
 export default BarChartBox;

@@ -3,33 +3,81 @@
 export const topDealUsers = [
   {
     id:  1,
-    window: " Window 1",
+    notification: " Window 6 completed a transaction.",
     queue: "4 registrants",
+    purpose: "Graduation",
+    minutes: "1 minute ago",
+    completed:"Completed"
   },
+
   {
     id:  2,
-    window: " Window 2",
+    window: " Window 2 completed a transaction.",
     queue: "4 registrants",
+    purpose: "Graduation",
+    minutes: "3 minutes ago",
+    completed:"Completed"
   },
   {
     id:  3,
-    window: " Window 3",
-    queue: "4 registrants",
+    notification: " Window 6 completed a transaction.",
+    purpose: "TOR",
+     minutes: "3 minutes ago",
+     completed:"Completed"
   },
   {
     id: 4,
-    window: " Window 4",
+    notification: " Window 3 completed a transaction.",
     queue: "3 registrants",
+     minutes: "3 minutes ago",
+     completed:"Completed"
   },
   {
     id:  5,
-    window: " Window 5",
+    notification: " Window 6 completed a transaction.",
     queue: "7 registrants",
+    purpose: "TOR",
+     minutes: "4 minutes ago",
+     completed:"Completed"
   },
   {
     id: 6,
-    window: " Window 6",
+    notification: " Window 6 completed a transaction.",
     queue: "9 registrants",
+    purpose: "Graduation",
+     minutes: "4 minutes ago",
+     completed:"Completed"
+  },
+  {
+    id: 7,
+    notification: " Window 5 completed a transaction.",
+    queue: "9 registrants",
+    purpose: "TOR",
+    minutes: "4 minutes ago",
+    completed:"Completed"
+  },
+  {
+    id: 8,
+    notification: " Window 2 completed a transaction.",
+    queue: "9 registrants",
+    purpose: "Graduation",
+    minutes: "9 minutes ago",
+    completed:"Completed"
+  },
+  {
+    id: 9,
+    notification: " Window 2 completed a transaction.",
+    queue: "9 registrants",
+    purpose: "TOR",
+    minutes: "10 minutes ago",
+    completed:"Completed"
+  },
+  {
+    id: 10,
+    notification: " Window 6 completed a transaction.",
+    queue: "9 registrants",
+    purpose: "Graduation",
+    completed:"Completed"
   },
 ];
 
@@ -136,7 +184,7 @@ export const barChartBoxRevenue = {
 };
 
 export const barChartBoxVisit = {
-  title: "Total Visit",
+  title: "",
   color: "#FF8042",
   dataKey: "visit",
   chartData: [

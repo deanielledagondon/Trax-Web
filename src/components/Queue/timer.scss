@@ -1,0 +1,90 @@
+:root {
+  /* Define light theme variables */
+   --background-color: #f5f7fa;
+--text-color: #333333;
+--text-color-inverted: #ffffff; 
+--border-color: #e1e4e8;
+--hover-color: #f0f2f5;
+--shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+--text-color-inverted: #000000;
+
+
+  --red-bg: #ffeaea;
+  --red-text: #d63031;
+  --orange-bg: #fff5e6;
+  --orange-text: #e17055;
+  --blue-bg: #e6f3ff;
+  --blue-text: #0984e3;
+  --background-color: var(--secondary-color);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Define dark theme variables */
+    --background-color: #1a1a1a;
+    --text-color: #f0f0f0;
+    --text-color-inverted: #333333; 
+    --border-color: #4a4a4a;
+    --hover-color: #3a3a3a;
+    --shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+
+    --red-bg: #4d1f1f;
+    --red-text: #ff6b6b;
+    --orange-bg: #4d3319;
+    --orange-text: #ffa502;
+    --blue-bg: #1f3a4d;
+    --blue-text: #70a1ff;
+  }
+}
+
+
+.App {
+    text-align: center;
+  }
+  
+  .App-logo {
+    height: 40vmin;
+    pointer-events: none;
+  }
+  
+  @media (prefers-reduced-motion: no-preference) {
+    .App-logo {
+      animation: App-logo-spin infinite 20s linear;
+    }
+  }
+  
+  .App-header {
+    background-color: #ffffff;
+    min-height: 50px;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: rgb(26, 23, 23);
+    margin-bottom: 30px;
+  }
+  
+  .App-link {
+    color: #61dafb;
+  }
+  
+  @keyframes App-logo-spin {
+    from {
+      transform: rotate(0deg);
+    }
+  
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  button{
+  margin: 10px;
+  background-color: #0984e3;
+
+
+  }
+  
+  
