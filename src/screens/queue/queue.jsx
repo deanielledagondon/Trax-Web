@@ -1,9 +1,14 @@
 import React from "react";
+import CurrentQueue from "./CurrentQueue"
+import Timer from "../../components/Queue/timer"
+import Present from "../../components/Queue/present"
 
 const Queue = () => {
   return (
     <div>
-      This is Queue Page
+      <Present/>
+      <Timer/>
+    <CurrentQueue />
     </div>
   )
 }

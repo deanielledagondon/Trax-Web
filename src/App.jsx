@@ -7,13 +7,10 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from "react-route
 import AdminLayout from "./layout/AdminLayout";
 import Login from './screens/login/login';
 import Register from './screens/register/register';
-import Queue from './screens/queue/queue';
+import Queue from './screens/Queue/queue';
 import LogHistory from './screens/logbook/logHistory';
 import Analytics from './screens/analytics/analytics';
 import Feedback from './screens/feedback/feedback';
-import Unauthorized from './screens/error/unauthorized/unauthorized';
-import NoWifi from './screens/error/noWifi/noWifi';
-
 
 
 import Window1 from './components/Window1/Window1';
@@ -55,6 +52,9 @@ import StaffLogHistory from "./staff/screens/logbook/logHistory";
 import StaffQueue from "./staff/screens/queue/queue";
 import StaffSettings from "./staff/screens/settings/settings";
 import StaffPageNotFound from "./staff/screens/error/PageNotFound";
+
+
+
 
 const ThemeToggleButton = () => {
   const location = useLocation();
@@ -103,9 +103,7 @@ function App() {
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/feedback" element={<Feedback />} />
             <Route path="/settings/*" element={<Settings />} />
-            <Route path="*" component={PageNotFound} />
-            <Route path="/noWifi" element={<NoWifi />} />
-            <Route path="/unauthorized" element={<Unauthorized />} />
+            <Route path="*" element={<PageNotFound />} />
 
 
             <Route path="/headerStatss" element={<HeaderStatss />} />
@@ -138,7 +136,6 @@ function App() {
             <Route path="/staff-feedback" element={<StaffFeedback />} />
             <Route path="/staff-settings/*" element={<StaffSettings />} />
             <Route path="*" element={<StaffPageNotFound />} />
-
           </Route>
         </Routes>
 
@@ -147,5 +144,7 @@ function App() {
     </AuthProvider>
   );
 }
+
+
 
 export default App;

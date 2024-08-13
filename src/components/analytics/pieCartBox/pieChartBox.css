@@ -28,12 +28,14 @@
   gap: 10px;
   align-items: center;
 }
-.pieChartBox .options .option .title {
+.pieChartBox .options .option .titlee {
   display: flex;
   gap: 10px;
   align-items: center;
+  font-size: 10px;
+
 }
-.pieChartBox .options .option .title .dot {
+.pieChartBox .options .option .titlee .dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;

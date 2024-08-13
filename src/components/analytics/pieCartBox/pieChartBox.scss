@@ -30,13 +30,14 @@
     .option {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      
       align-items: center;
 
-      .title {
+      .titlee {
         display: flex;
         gap: 10px;
         align-items: center;
+        font-size: 10px;
 
         .dot {
           width: 10px;
