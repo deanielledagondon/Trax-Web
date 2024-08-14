@@ -19,47 +19,39 @@ const data = [
   {
     month: "Jan",
     completed: 70,
-    ongoing: 100,
   },
   {
     month: "Feb",
     completed: 55,
-    ongoing: 85,
   },
   {
     month: "Mar",
     completed: 35,
-    ongoing: 90,
+
   },
   {
     month: "April",
     completed: 90,
-    ongoing: 70,
   },
   {
     month: "May",
     completed: 55,
-    ongoing: 80,
   },
   {
     month: "Jun",
     completed: 30,
-    ongoing: 50,
   },
   {
     month: "Jul",
     completed: 32,
-    ongoing: 75,
   },
   {
     month: "Aug",
     completed: 62,
-    ongoing: 86,
   },
   {
     month: "Sep",
     completed: 78,
-    ongoing: 55,
   },
 ];
 const monthOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -70,7 +62,6 @@ const AreaBarChart = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [totalCompleted, setTotalCompleted] = useState(0);
-  const [totalOngoing, setTotalOngoing] = useState(0);
 
   useEffect(() => {
     const fetchRegistrants = async () => {
@@ -86,14 +77,11 @@ const AreaBarChart = () => {
         const aggregatedData = data.reduce((acc, item) => {
           const month = format(parseISO(item.transaction_date), 'MMM');
           if (!acc[month]) {
-            acc[month] = { month, completed: 0, ongoing: 0 };
+            acc[month] = { month, completed: 0 };
           }
           if (item.status === 'Completed') {
             acc[month].completed++;
             setTotalCompleted(prevTotal => prevTotal + 1);
-          } else if (item.status === 'ongoing') {
-            acc[month].ongoing++;
-            setTotalOngoing(prevTotal => prevTotal + 1);
           }
           return acc;
         }, {});
@@ -139,7 +127,7 @@ const AreaBarChart = () => {
       <div className="bar-chart-info">
         <h5 className="bar-chart-title">Total Transactions</h5>
         <div className="chart-info-data">
-          <div className="info-data-value">{totalCompleted+totalOngoing} Registrants</div>
+          <div className="info-data-value">{totalCompleted} Registrants</div>
           <div className="info-data-text">
             <FaArrowUpLong />
             <p>5% than last month.</p>
@@ -198,14 +186,6 @@ const AreaBarChart = () => {
               barSize={24}
               radius={[4, 4, 4, 4]}
             />
-            {/* <Bar
-              dataKey="ongoing"
-              fill="#e3e7fc"
-              activeBar={false}
-              isAnimationActive={false}
-              barSize={24}
-              radius={[4, 4, 4, 4]}
-            /> */}
           </BarChart>
         </ResponsiveContainer>
       </div>

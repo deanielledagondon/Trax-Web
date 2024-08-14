@@ -26,8 +26,8 @@ const AreaCards = () => {
         colors={["#e4e8ef", "#f29a2e"]}
         percentFillValue={40}
         cardInfo={{
-          title: "Waiting in line",
-          value: "50",
+          title: "Busiest Window",
+          value: "Window 6",
           text: "",
         }}
       />
