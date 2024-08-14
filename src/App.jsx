@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from "react-route
 
 import AdminLayout from "./layout/AdminLayout";
 import Login from './screens/login/login';
-import Register from './screens/register/register';
+// import Register from './screens/register/register';
 import Queue from './screens/Queue/queue';
 import LogHistory from './screens/logbook/logHistory';
 import Analytics from './screens/analytics/analytics';
@@ -93,7 +93,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          {/* <Route path="/register" element={<Register />} /> */}
           <Route path="/forgot-password" element={<ForgotPassword />} />
           
           <Route element={<AdminLayout />}>

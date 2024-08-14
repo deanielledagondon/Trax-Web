@@ -3,7 +3,6 @@ import './login.css';
 import '../../App.scss';
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../../components/helper/supabaseClient";
-import video from '../../assets/videos/login-vid.mp4';
 import logo from '../../assets/images/long-registrar.png';
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { useAuth } from '../../components/authContext';
@@ -105,19 +104,6 @@ const Login = () => {
   return (
     <div className="loginPage flex">
       <div className="container flex">
-        <div className='videoDiv'>
-          <video src={video} autoPlay muted loop></video>
-          <div className="textDiv">
-            <h2 className='title'> Keeping your transactions on track </h2>
-          </div>
-          <div className="footerDiv flex">
-            <span className="text"> Don`&apos`t have an account?</span>
-            <Link to={'/register'}>
-              <button className="btn">Sign up for free</button>
-            </Link>
-          </div>
-        </div>
-
         <div className="formDiv flex">
           <div className="headerDiv">
             <img src={logo} alt="Logo Image" />

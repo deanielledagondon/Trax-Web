@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Box, InputBase, IconButton, useTheme, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Select, MenuItem } from '@mui/material';
 import { MdOutlineSearch, MdEditSquare, MdDeleteForever } from 'react-icons/md';
 import { supabase, supabaseAdmin } from '../../../components/helper/supabaseClient';
+import { MdVisibility, MdVisibilityOff, MdCheckCircle, MdCancel } from "react-icons/md";
+
 import './manageUsers.scss';
 
 const ManageUsers = () => {
@@ -16,7 +18,9 @@ const ManageUsers = () => {
   const [userToDelete, setUserToDelete] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '', role: '', window_no: '' });
-
+  const [passwordMatch, setPasswordMatch] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -41,20 +45,23 @@ const ManageUsers = () => {
   const handleEditClick = (user) => {
     setSelectedUser(user);
     setFormData({
-      name: user.full_name,
-      email: user.email,
-      password: '', // Presume we handle password differently
-      confirmPassword: '',
-      role: user.role,
-      window_no: user.window_no,
+        name: user.full_name,
+        email: user.email,
+        password: '',
+        confirmPassword: '',
+        role: user.role,
+        window_no: user.window_no,
     });
+    setPasswordMatch(false);
     setOpenEdit(true);
-  };
+};
 
   const handleAddClick = () => {
-    setFormData({ name: '', email: '', password: '', confirmPassword: '', role: '', window_no: '' });
-    setOpenAdd(true);
+      setFormData({ name: '', email: '', password: '', confirmPassword: '', role: '', window_no: '' });
+      setPasswordMatch(false);
+      setOpenAdd(true);
   };
+
 
   const handleCloseEdit = () => {
     setOpenEdit(false);
@@ -211,6 +218,21 @@ const ManageUsers = () => {
     handleCloseAdd();
   };
   
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevFormData => ({
+        ...prevFormData,
+        [name]: value
+    }));
+
+    if (name === 'confirmPassword') {
+        setPasswordMatch(formData.password === value);
+    }
+};
+
+const togglePasswordVisibility = () => {
+    setShowPassword(prevShowPassword => !prevShowPassword);
+};
 
 
   const handleDelete = async () => {
@@ -362,23 +384,41 @@ const ManageUsers = () => {
             sx={{ marginBottom: '20px', fontSize: '1rem', fontFamily: 'Arial', fontWeight: 'normal' }}
           />
           <TextField
-            margin="dense"
-            label="Password"
-            type="password"
-            fullWidth
-            value={formData.password}
-            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-            sx={{ marginBottom: '20px', fontSize: '1rem', fontFamily: 'Arial', fontWeight: 'normal' }}
+              margin="dense"
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              fullWidth
+              value={formData.password}
+              name="password"
+              onChange={handleChange}
+              sx={{ marginBottom: '20px', fontSize: '1rem', fontFamily: 'Arial', fontWeight: 'normal' }}
+              InputProps={{
+                  endAdornment: (
+                      <IconButton onClick={togglePasswordVisibility}>
+                          {showPassword ? <MdVisibilityOff /> : <MdVisibility />}
+                      </IconButton>
+                  ),
+              }}
           />
+
           <TextField
-            margin="dense"
-            label="Confirm Password"
-            type="password"
-            fullWidth
-            value={formData.confirmPassword}
-            onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-            sx={{ marginBottom: '20px', fontSize: '1rem', fontFamily: 'Arial', fontWeight: 'normal' }}
+              margin="dense"
+              label="Confirm Password"
+              type={showPassword ? "text" : "password"}
+              fullWidth
+              value={formData.confirmPassword}
+              name="confirmPassword"
+              onChange={handleChange}
+              sx={{ marginBottom: '20px', fontSize: '1rem', fontFamily: 'Arial', fontWeight: 'normal' }}
+              InputProps={{
+                  endAdornment: (
+                      <IconButton>
+                          {passwordMatch ? <MdCheckCircle style={{ color: 'green' }} /> : <MdCancel style={{ color: 'red' }} />}
+                      </IconButton>
+                  ),
+              }}
           />
+
           <Select
             label="Role"
             value={formData.role}
@@ -456,22 +496,39 @@ const ManageUsers = () => {
             sx={{ marginBottom: '20px', fontSize: '1rem', fontFamily: 'Arial', fontWeight: 'normal' }}
           />
           <TextField
-            margin="dense"
-            label="Password"
-            type="password"
-            fullWidth
-            value={formData.password}
-            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-            sx={{ marginBottom: '20px', fontSize: '1rem', fontFamily: 'Arial', fontWeight: 'normal' }}
+              margin="dense"
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              fullWidth
+              value={formData.password}
+              name="password"
+              onChange={handleChange}
+              sx={{ marginBottom: '20px', fontSize: '1rem', fontFamily: 'Arial', fontWeight: 'normal' }}
+              InputProps={{
+                  endAdornment: (
+                      <IconButton onClick={togglePasswordVisibility}>
+                          {showPassword ? <MdVisibilityOff /> : <MdVisibility />}
+                      </IconButton>
+                  ),
+              }}
           />
+
           <TextField
-            margin="dense"
-            label="Confirm Password"
-            type="password"
-            fullWidth
-            value={formData.confirmPassword}
-            onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-            sx={{ marginBottom: '20px', fontSize: '1rem', fontFamily: 'Arial', fontWeight: 'normal' }}
+              margin="dense"
+              label="Confirm Password"
+              type={showPassword ? "text" : "password"}
+              fullWidth
+              value={formData.confirmPassword}
+              name="confirmPassword"
+              onChange={handleChange}
+              sx={{ marginBottom: '20px', fontSize: '1rem', fontFamily: 'Arial', fontWeight: 'normal' }}
+              InputProps={{
+                  endAdornment: (
+                      <IconButton>
+                          {passwordMatch ? <MdCheckCircle style={{ color: 'green' }} /> : <MdCancel style={{ color: 'red' }} />}
+                      </IconButton>
+                  ),
+              }}
           />
           <Select
             margin="dense"
