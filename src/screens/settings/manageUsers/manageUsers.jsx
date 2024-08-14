@@ -289,26 +289,26 @@ const ManageUsers = () => {
         </Box>
       </div>
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Email Address</TableCell>
-              <TableCell>Role</TableCell>
-              <TableCell>Window No.</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
+      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell >Name</TableCell>
+            <TableCell >Email Address</TableCell>
+            <TableCell align="center">Role</TableCell>
+            <TableCell align="center">Window No.</TableCell>
+            <TableCell align="center">Actions</TableCell>
+          </TableRow>
           </TableHead>
           <TableBody>
             {filteredUsers.map((user) => (
               <TableRow key={user.email}>
-                <TableCell component="th" scope="row">
+                <TableCell component="th" scope="row" >
                   {user.full_name}
                 </TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>{user.role}</TableCell>
-                <TableCell>{user.window_no}</TableCell>
-                <TableCell>
+                <TableCell >{user.email}</TableCell>
+                <TableCell align="center">{user.role}</TableCell>
+                <TableCell align="center">{user.window_no}</TableCell>
+                <TableCell align="center">
                   <IconButton aria-label="edit" className="edit-icon" onClick={() => handleEditClick(user)}>
                     <MdEditSquare />
                   </IconButton>

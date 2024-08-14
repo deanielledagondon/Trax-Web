@@ -77,13 +77,6 @@ const LogHistory = () => {
     };
   }, [datePickerRef]);
 
-  useEffect(() => {
-    if (isDarkMode) {
-      document.body.classList.add('dark-mode');
-    } else {
-      document.body.classList.remove('dark-mode');
-    }
-  }, [isDarkMode]);
 
   const data = {
     "Window 1": [

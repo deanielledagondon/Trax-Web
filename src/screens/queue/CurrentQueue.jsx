@@ -123,4 +123,4 @@ const CurrentQueue = () => {
   );
 };
 
-export default CurrentQueue;
+export default CurrentQueue

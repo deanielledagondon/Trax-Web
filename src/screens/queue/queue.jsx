@@ -1,5 +1,5 @@
 import React from "react";
-import CurrentQueue from "./currentQueue"
+import CurrentQueue from "./CurrentQueue"
 import Timer from "../../components/Queue/timer"
 import Present from "../../components/Queue/present"
 

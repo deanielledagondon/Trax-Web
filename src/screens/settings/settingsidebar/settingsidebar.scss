@@ -1,8 +1,21 @@
 .settings-sidebar {
-  width: 200px;
+  width: 10%;
   background-color: var(--background-color); // Match with main sidebar background color
-  padding: 20px;
+  padding: 10px;
   box-shadow: rgba(100, 100, 111, 0.1) 0px 7px 29px 0px; // Optional: to match the main sidebar's box shadow
+
+  @media (max-width: 1200px) {
+    width: 200px; // Adjust width for smaller screens
+  }
+
+  @media (max-width: 768px) {
+    width: 180px; // Adjust width for even smaller screens
+  }
+
+  background-color: var(--background-color);
+  padding: 20px;
+  box-shadow: rgba(100, 100, 111, 0.1) 0px 7px 29px 0px;
+
 
   .settings-menu-list {
     list-style: none;
@@ -24,7 +37,7 @@
   }
 
   .settings-menu-link {
-    width: 100%;
+    width: 50%;
     height: 48px;
     display: flex;
     align-items: center;

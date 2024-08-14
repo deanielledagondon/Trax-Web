@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ThemeContext } from "../../context/ThemeContext";
 import { LIGHT_THEME } from "../../constants/themeConstants";
-import { MdOutlineClose, MdOutlineBook, MdOutlineGroups, MdOutlineBarChart, MdOutlineComment, MdOutlineGridView, MdOutlineLogout, MdOutlineSettings, MdPerson } from "react-icons/md";
+import { MdOutlineClose, MdOutlineBook, MdOutlineGroups, MdOutlineBarChart, MdOutlineComment, MdOutlineGridView, MdOutlineLogout, MdOutlineSettings } from "react-icons/md";
 import { Link } from "react-router-dom";
 import LogoDark from "../../assets/images/logo-dark-small.png";
 import LogoLight from "../../assets/images/logo-light-small.png";
@@ -121,13 +121,13 @@ const Sidebar = () => {
                 <span className="menu-link-text">Settings</span>
               </Link>
             </li>
-            <li className="menu-item">
-              <button className="menu-link" onClick={handleLogout}>
-                <span className="menu-link-icon">
-                  <MdOutlineLogout size={20} />
+            <li className="menu-item" onClick={handleLogout}>
+                <span className="menu-link">
+                  <span className="menu-link-icon">
+                    <MdOutlineLogout size={20} />
+                  </span>
+                  <span className="menu-link-text">Logout</span>
                 </span>
-                <span className="menu-link-text">Logout</span>
-              </button>
             </li>
           </ul>
         </div>

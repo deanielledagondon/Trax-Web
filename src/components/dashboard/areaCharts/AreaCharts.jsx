@@ -1,5 +1,5 @@
 import AreaBarChart from "./AreaBarChart"
-import CurrentQueue from "../../../screens/queue/currentQueue"
+import CurrentQueue from "../../../screens/Queue/CurrentQueue"
 
 const AreaCharts = () => {
   return (
