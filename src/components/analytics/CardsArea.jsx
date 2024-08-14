@@ -3,6 +3,8 @@ import './CardsArea.css'
 import BigChartBox from './bigChartBox/BigChartBox'
 import BarChartBox from './barChartBox/BarChartBox'
 import PieChartBox from './pieCartBox/PieChartBox'
+import { useEffect, useState } from 'react';
+import { supabase } from '../helper/supabaseClient';
 
 import {
   barChartBoxRevenue,
@@ -13,6 +15,36 @@ import TopBox from './topBox/TopBox'
 import Barrchart from './Barrchart'
 
 const Cards = () => {
+    const [logHistory, setLogs] = useState([]);
+    const [monthlyLogCount, setMonthlyLogCount] = useState(0);
+
+    useEffect(() => {
+        async function fetchData() {
+          const { data, error } = await supabase
+            .from('log_history')
+            .select('*') // Adjust the query to match your requirements
+            .order('transaction_date', { ascending: false });
+          if (error) {
+            console.error('Error fetching data:', error);
+          } else {
+            setLogs(data);
+
+                // Filter logs for the current month
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth();
+            const currentYear = currentDate.getFullYear();
+
+            const filteredLogs = data.filter(log => {
+            const logDate = new Date(log.transaction_date);
+            return logDate.getMonth() === currentMonth && logDate.getFullYear() === currentYear;
+            });
+
+            setMonthlyLogCount(filteredLogs.length);
+          }
+        }
+    
+        fetchData();
+      }, []);
 
   return (
     <main className='main-container'>
@@ -26,7 +58,7 @@ const Cards = () => {
                     <h3>Total Registrants</h3>
                 </div>
 
-                <h1>340</h1>
+                <h1>{monthlyLogCount}</h1>
 
                 
                 <h4>this month</h4>
@@ -44,7 +76,7 @@ const Cards = () => {
                     <h3>Window Analysis</h3>
                    
                 </div>
-                <h1>Window 6</h1>
+                <h1>All Windows</h1>
             </div>
             <div className='card'>
                 <div className='card-inner'>

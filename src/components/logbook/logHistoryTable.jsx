@@ -8,11 +8,11 @@ import './logHistoryTable.scss';
 const LogHistoryTable = ({ logData, showWindowColumn }) => {
     const [editIndex, setEditIndex] = useState(null);
     const [editedLog, setEditedLog] = useState({
-        date: '',
+        transaction_date: '',
         name: '',
         purpose: '',
-        priority: '',
-        window: ''
+        queue_no: '',
+        window_no: ''
     });
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [deleteIndex, setDeleteIndex] = useState(null);
@@ -81,7 +81,7 @@ const LogHistoryTable = ({ logData, showWindowColumn }) => {
                             <th>Date</th>
                             <th>Name</th>
                             <th>Purpose</th>
-                            <th>Priority No.</th>
+                            <th>Queue No.</th>
                             {showWindowColumn && <th>Window No.</th>}
                             <th>Actions</th>
                         </tr>
@@ -89,11 +89,11 @@ const LogHistoryTable = ({ logData, showWindowColumn }) => {
                     <tbody>
                         {displayItems.map((log, index) => (
                             <tr key={index}>
-                                <td>{log.date}</td>
+                                <td>{log.transaction_date}</td>
                                 <td>{log.name}</td>
                                 <td>{log.purpose}</td>
-                                <td><a href="#">{log.priority}</a></td>
-                                {showWindowColumn && <td>{log.window}</td>}
+                                <td><a href="#">{log.queue_no}</a></td>
+                                {showWindowColumn && <td>{log.window_no}</td>}
                                 <td className="actions-column">
                                     <button className="action-btn edit" onClick={() => handleEditClick(index, log)} title="Edit">
                                         <FontAwesomeIcon icon={faEdit} />
@@ -130,7 +130,8 @@ const LogHistoryTable = ({ logData, showWindowColumn }) => {
                         <form onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
                             <label>
                                 Date:
-                                <input type="text" name="date" value={editedLog.date} onChange={handleChange} required />
+                                <input type="text" name="transaction_date" value={editedLog.transaction_date} readOnly onChange={handleChange} required />
+                            
                             </label>
                             <label>
                                 Name:
@@ -138,15 +139,15 @@ const LogHistoryTable = ({ logData, showWindowColumn }) => {
                             </label>
                             <label>
                                 Purpose:
-                                <input type="text" name="purpose" value={editedLog.purpose} onChange={handleChange} required />
+                                <input type="text" name="purpose" value={editedLog.purpose} readOnly onChange={handleChange} required />
                             </label>
                             <label>
-                                Priority No:
-                                <input type="text" name="priority" value={editedLog.priority} onChange={handleChange} required />
+                                Queue No:
+                                <input type="text" name="queue_no" value={editedLog.queue_no} readOnly onChange={handleChange} required />
                             </label>
                             <label>
                                 Window No:
-                                <input type="text" name="window" value={editedLog.window} onChange={handleChange} required />
+                                <input type="text" name="window_no" value={editedLog.window_no} readOnly onChange={handleChange} required />
                             </label>
                             <div className="button-group">
                                 <button type="submit" className="save-btn" >Save</button>
@@ -180,7 +181,7 @@ LogHistoryTable.propTypes = {
         date: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
         purpose: PropTypes.string.isRequired,
-        priority: PropTypes.string.isRequired,
+        queue_no: PropTypes.string.isRequired,
         window: PropTypes.string.isRequired,
     }).isRequired).isRequired,
     showWindowColumn: PropTypes.bool.isRequired,

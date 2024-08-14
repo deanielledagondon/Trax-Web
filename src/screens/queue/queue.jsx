@@ -1,5 +1,5 @@
 import React from "react";
-import CurrentQueue from "../../staff/screens/queue/CurrentQueue"
+import CurrentQueue from "./CurrentQueue";
 import Timer from "../../components/Queue/timer"
 import Present from "../../components/Queue/present"
 
@@ -8,7 +8,7 @@ const Queue = () => {
     <div>
       <Present/>
       <Timer/>
-    <CurrentQueue />
+      <CurrentQueue/>
     </div>
   )
 }
