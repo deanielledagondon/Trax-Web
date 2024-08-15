@@ -100,7 +100,7 @@ body {
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--text-color-);
+  color: var(--text-color-inverted);
   font-size: 14px;
   transition: background-color 0.3s ease;
 }

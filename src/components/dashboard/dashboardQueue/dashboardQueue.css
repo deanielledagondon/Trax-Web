@@ -1,0 +1,117 @@
+:root {
+  --scrollbar-thumb-dark: grey;
+  --scrollbar-track-dark: #383854;
+  --scrollbar-thumb-light: #383854;
+  --scrollbar-track-light: white;
+}
+
+.dark-mode {
+  --scrollbar-thumb: var(--scrollbar-thumb-dark);
+  --scrollbar-track: var(--scrollbar-track-dark);
+}
+
+.light-mode {
+  --scrollbar-thumb: var(--scrollbar-thumb-light);
+  --scrollbar-track: var(--scrollbar-track-light);
+}
+
+.progress-bar {
+  padding: 16px;
+  border-radius: 5px;
+  box-shadow: var(--light-shadow1);
+  background: var(--secondary-color);
+}
+@media (max-width: 768px) {
+  .progress-bar {
+    padding: 12px;
+  }
+}
+.progress-bar .progress-bar-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-color-inverted);
+  margin-bottom: 16px;
+}
+.progress-bar .bar-item-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  -moz-column-gap: 12px;
+       column-gap: 12px; /* Increase column gap */
+  margin-bottom: 8px;
+}
+.progress-bar .bar-item-info .bar-item-info-name {
+  text-align: center;
+  flex: 1 1 auto;
+  font-size: 14px;
+  color: var(--text-color-inverted);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.progress-bar .bar-item-info .bar-item-info-value {
+  flex: 0 0 auto;
+  font-size: 14px;
+  color: var(--green-color);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.progress-bar .bar-item-info .bar-item-info-status {
+  flex: 0 0 auto;
+  font-size: 14px;
+  color: orange;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.progress-bar .progress-bar-list {
+  display: grid;
+  row-gap: 20px;
+  overflow-y: auto; /* Add vertical scrollbar */
+  max-height: 300px; /* Example maximum height; adjust as needed */
+  padding-right: 12px; /* Add padding to create space for scrollbar */
+  /* Custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track); /* thumb color and track color */
+  /* Styling for WebKit browsers */
+  /* Show scrollbar on hover */
+}
+.progress-bar .progress-bar-list::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+  background-color: transparent; /* Hide scrollbar initially */
+}
+.progress-bar .progress-bar-list::-webkit-scrollbar-track {
+  background: var(--scrollbar-track); /* Track color */
+  border-radius: 1px; /* Border radius of the track */
+}
+.progress-bar .progress-bar-list::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb); /* Thumb color */
+  border-radius: 10px; /* Border radius of the thumb */
+  border: 2px solid grey; /* Border around the thumb */
+}
+.progress-bar .progress-bar-list:hover::-webkit-scrollbar {
+  background-color: var(--scrollbar-track); /* Show scrollbar background */
+}
+.progress-bar .progress-bar-list::-webkit-scrollbar-thumb:hover {
+  background-color: white; /* Thumb color on hover */
+}
+.progress-bar .bar-item-full {
+  width: 100%;
+  height: 10px;
+  border-radius: 100vh;
+  background-color: var(--chart-secondary-color);
+  position: relative;
+}
+.progress-bar .bar-item-filled {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0;
+  border-radius: 100vh;
+  background-color: var(--chart-primary-color);
+}/*# sourceMappingURL=dashboardQueue.css.map */

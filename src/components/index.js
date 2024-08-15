@@ -7,3 +7,5 @@ export {default as CurrentQueue } from "../screens/queue/CurrentQueue";
 export {default as Timer } from "../components/Queue/timer";
 export {default as Cards} from "../components/analytics/CardsArea";
 export {default as Present} from "../components/Queue/present";
+// export {default as DashboardQueue } from "../components/dashboard/dashboardQueue/dashboardQueue";
+
