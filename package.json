@@ -23,6 +23,8 @@
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.3",
     "date-fns": "^3.6.0",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.2",
     "lottie-react": "^2.4.0",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",

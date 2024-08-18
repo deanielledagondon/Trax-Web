@@ -1,12 +1,13 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faCalendarAlt, faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faCalendarAlt, faPrint } from '@fortawesome/free-solid-svg-icons';
 import LogHistoryTable from '../../components/logbook/logHistoryTable';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import './logHistory.scss';
 import { supabase } from "../../components/helper/supabaseClient";
+import { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
 
 const DateRangePicker = ({ startDate, endDate, onStartDateChange, onEndDateChange }) => {
   return (
@@ -69,8 +70,8 @@ const LogHistory = () => {
     async function fetchData() {
       const { data, error } = await supabase
         .from('log_history')
-        .select('*') // Adjust the query to match your requirements
-        .order('transaction_date', { ascending: false });
+        .select('*')
+        .order('transaction_date', { ascending: true });
       if (error) {
         console.error('Error fetching data:', error);
       } else {
@@ -80,7 +81,6 @@ const LogHistory = () => {
 
     fetchData();
   }, []);
-
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -95,16 +95,15 @@ const LogHistory = () => {
     };
   }, [datePickerRef]);
 
-
   const handleWindowChange = (event) => {
     setSelectedWindow(event.target.value);
   };
 
   const getFilteredData = () => {
     const filteredData = selectedWindow === 'All Windows'
-        ? logHistory // Use the fetched logs directly
-        : logHistory.filter(log => log.window_no === selectedWindow);
-    
+      ? logHistory
+      : logHistory.filter(log => log.window_no === selectedWindow);
+
     return filteredData.filter(log => {
       const purposeMatch = filterPurpose === 'All' || log.purpose === filterPurpose;
       const priorityMatch = log.queue_no.toLowerCase().includes(searchPriority.toLowerCase());
@@ -112,6 +111,50 @@ const LogHistory = () => {
       return purposeMatch && priorityMatch && dateMatch;
     });
   };
+  const handlePrint = () => {
+    const filteredData = getFilteredData();
+
+    const doc = new jsPDF();
+    const columns = ['Date', 'Name', 'Window', 'Purpose', 'Queue No.'];
+    const rows = filteredData.map(log => [
+      log.transaction_date,
+      log.name,
+      log.window_no,
+      log.purpose,
+      log.queue_no
+    ]);
+
+  
+    const header = () => {
+        doc.setFontSize(16);
+        doc.text("Log History", 105, 20, null, null, 'center');
+    };
+
+    doc.autoTable({
+      head: [columns],
+      body: rows,
+      margin: { top: 30 },
+      theme: 'striped',
+      headStyles: {
+        fillColor: [0, 0, 128], 
+        textColor: [255, 255, 255], 
+        halign: 'center', 
+      },
+      bodyStyles: {
+        halign: 'center', 
+      },
+      didDrawPage: (data) => {
+        header(); 
+      },
+      startY: 30, 
+    });
+
+
+    const pdfBlob = doc.output('blob');
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+    window.open(pdfUrl, '_blank');
+  };
+
 
   return (
     <div className="log-history"> 
@@ -160,7 +203,11 @@ const LogHistory = () => {
           />
           <FontAwesomeIcon icon={faSearch} className="search-icon" />
         </div>
+        <button onClick={handlePrint}>
+          <FontAwesomeIcon icon={faPrint} /> Print
+        </button>
       </div>  
+      
       <LogHistoryTable 
         logData={getFilteredData()} 
         showWindowColumn={selectedWindow === 'All Windows'}
