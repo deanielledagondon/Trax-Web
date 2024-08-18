@@ -14,7 +14,8 @@ const DashboardQueue = () => {
         let { data, error } = await supabase
           .from('queue')
           .select('queue_no, name, status')
-          .order('queue_no', { ascending: true });
+          .eq('status', 'Waiting')
+          .order('id', { ascending: true });
         if (error) {
           console.log(error);
           throw error;

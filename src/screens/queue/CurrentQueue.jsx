@@ -7,11 +7,12 @@ const CurrentQueue = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchRegistrants = async () => {
+    const fetchQueues = async () => {
       try {
         let { data, error } = await supabase
           .from('queue')
           .select('id, name, queue_no, status, created_at')
+          .eq('status', 'Waiting')
           .order('id', { ascending: true });
         if (error) {
           console.log(error);
@@ -25,11 +26,11 @@ const CurrentQueue = () => {
       }
     };
 
-    fetchRegistrants();
+    fetchQueues();
 
     // Set up live polling
     const intervalId = setInterval(() => {
-      fetchRegistrants();
+      fetchQueues();
     }, 3000);
 
     // Clean up interval on component unmount
@@ -51,18 +52,25 @@ const CurrentQueue = () => {
 
   const handleDelete = async (id) => {
     try {
-      const { error } = await supabase
-        .from('queue')
-        .delete()
-        .eq('id', id);
-      if (error) {
-        throw error;
+      const confirmed = window.confirm('Are you sure you want to delete this queue?');
+  
+      if (confirmed) {
+        const { error } = await supabase
+          .from('queue')
+          .delete()
+          .eq('id', id);
+        
+        if (error) {
+          throw error;
+        }
+        
+        setQueue(queue.filter(item => item.id !== id));
       }
-      setQueue(queue.filter(item => item.id !== id));
     } catch (error) {
       console.error('Error deleting item:', error.message);
     }
   };
+  
 
   const handleViewDetails = (id) => {
     console.log('View details for item with ID:', id);
