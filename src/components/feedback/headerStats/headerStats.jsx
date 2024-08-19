@@ -7,7 +7,6 @@ import jsPDF from 'jspdf';
 import CommentsList from '../commentsList/commentsList.jsx';
 import ReviewSummary from '../reviewSummary/reviewSummary.jsx';
 
-
 // Custom Tooltip component for the PieChart
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
@@ -57,8 +56,6 @@ const HeaderStats = ({
       document.removeEventListener('click', closeDropdowns);
     };
   }, [isDropdownOpen, isPrintDropdownOpen]);
-
-
 
   const commentsList = useMemo(() => <CommentsList comments={comments} />, [comments]);
   
@@ -138,7 +135,6 @@ const HeaderStats = ({
               addTextToPDF(`Feedback ${index + 1}:`, 14, true);
               addTextToPDF(`Rating: ${comments.rating} Stars`);
               addTextToPDF(`Comment: ${comments.text}`);
-            //  addTextToPDF(`Date: ${comment.date}`);
               if (index < 4) addTextToPDF('---');
             });
           } else {
@@ -239,20 +235,16 @@ const HeaderStats = ({
             )}
           </div>
 
-          {/* Print Button and Dropdown */}
-          <div className="dropdown-container" ref={printDropdownRef}>
-            <button className="dropdownButton" onClick={() => setIsPrintDropdownOpen(!isPrintDropdownOpen)}>
+          {/* Print Button */}
+          <div className="print-container" ref={printDropdownRef}>
+            <button className="print-button" onClick={() => handlePrintSelection('PDF')}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+              </svg>
               Print
             </button>
-            {isPrintDropdownOpen && (
-              <div className="dropdownMenu">
-                {['PDF', 'DOCX', 'CSV', 'XML'].map((format) => (
-                  <button key={format} onClick={() => handlePrintSelection(format)}>
-                    {format}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -355,7 +347,7 @@ HeaderStats.propTypes = {
       date: PropTypes.string.isRequired,
     })
   ),
-  averageRatings: PropTypes.objectOf(PropTypes.number),
+  reviews: PropTypes.objectOf(PropTypes.number),
   ratingsOverTime: PropTypes.arrayOf(
     PropTypes.shape({
       date: PropTypes.string.isRequired,
