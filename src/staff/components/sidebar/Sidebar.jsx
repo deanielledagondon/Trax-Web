@@ -121,13 +121,13 @@ const Sidebar = () => {
                 <span className="menu-link-text">Settings</span>
               </Link>
             </li>
-            <li className="menu-item">
-              <button className="menu-link" onClick={handleLogout}>
-                <span className="menu-link-icon">
-                  <MdOutlineLogout size={20} />
-                </span>
-                <span className="menu-link-text">Logout</span>
-              </button>
+            <li className="menu-item" onClick={handleLogout}>
+                <span className="menu-link">
+                  <span className="menu-link-icon">
+                    <MdOutlineLogout size={20} />
+                  </span>
+                  <span className="menu-link-text">Logout</span>
+                  </span>
             </li>
           </ul>
         </div>

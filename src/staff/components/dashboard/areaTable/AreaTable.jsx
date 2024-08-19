@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'; 
-import AreaTableAction from "./AreaTableAction";
 import "./AreaTable.scss";
 import { supabase } from '../../helper/supabaseClient';
 import ReactPaginate from 'react-paginate';
@@ -10,7 +9,6 @@ const TABLE_HEADS = [
   "Purpose",
   "Status",
   "Window No.",
-  "Actions",
 ];
 
 const AreaTable = () => {
@@ -115,9 +113,6 @@ const AreaTable = () => {
                   </div>
                 </td>
                 <td>{dataItem.window_no}</td>
-                <td className="dt-cell-action">
-                  <AreaTableAction />
-                </td>
               </tr>
             ))}
           </tbody>

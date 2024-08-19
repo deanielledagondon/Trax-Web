@@ -15,13 +15,6 @@ const SettingsSidebar = () => {
             Profile
           </Link>
         </li>
-        <li className="settings-menu-item">
-          <Link 
-            to="/staff-settings/display" 
-            className={`settings-menu-link ${location.pathname === '/staff-settings/display' ? 'active' : ''}`}>
-            General 
-          </Link>
-        </li>
       </ul>
     </div>
   );
