@@ -5,6 +5,7 @@ import ReviewSummary from '../../components/feedback/reviewSummary/reviewSummary
 import CommentsList from '../../components/feedback/commentsList/commentsList';
 import WindowRatingChart from '../../components/feedback/windowRatingChart/windowRatingChart';
 
+
 const Feedback = () => {
   const monthStats = { month: 256, overall: 4.2, responses: '1,254' };
   const ratingBreakdown = {
