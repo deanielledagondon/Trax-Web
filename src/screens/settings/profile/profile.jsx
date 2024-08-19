@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { supabase,supabaseAdmin } from '../../../components/helper/supabaseClient';
+import { supabase, supabaseAdmin } from '../../../components/helper/supabaseClient';
 import { useAuth } from '../../../components/authContext';
 import './profile.scss';
 
@@ -9,7 +9,6 @@ const ProfileSettings = () => {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [position, setPosition] = useState('');
-  const [assignedWindow, setAssignedWindow] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -31,7 +30,6 @@ const ProfileSettings = () => {
             setLastName(nameParts.slice(1).join(' '));
             setEmail(data.email);
             setPosition(data.role);
-            setAssignedWindow(data.window_no);
           }
         } catch (error) {
           console.error('Unexpected error:', error);
@@ -49,12 +47,16 @@ const ProfileSettings = () => {
     if (!emailRegex.test(email)) {
       alert('Invalid email format');
       return;
-    }else{
+    } else {
       console.log("Email format is valid.");
-          const { data: user, error } = await supabaseAdmin.auth.admin.updateUserById(
-            session.user.id,
-            { email: email }
-          )
+      const { data: user, error } = await supabaseAdmin.auth.admin.updateUserById(
+        session.user.id,
+        { email: email }
+      );
+      if (error) {
+        console.error('Error updating email:', error);
+        return;
+      }
     }
 
     if (session) {
@@ -62,7 +64,7 @@ const ProfileSettings = () => {
         const fullName = `${firstName} ${lastName}`;
         const { data, error } = await supabase
           .from('registrants')
-          .update({ full_name: fullName, email: email, role: position, window_no: assignedWindow })
+          .update({ full_name: fullName, email, role: position })
           .eq('id', session.user.id);
 
         if (error) {
@@ -83,7 +85,6 @@ const ProfileSettings = () => {
     setIsDarkMode(!isDarkMode);
   };
 
-
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -97,7 +98,7 @@ const ProfileSettings = () => {
             alt="Profile"
             className="profile-image"
           />
-         </div>
+        </div>
         <div className="profile-info">
           <div className="profile-name">{`${firstName} ${lastName}`}</div>
           <div className="profile-position">{position}</div>
@@ -142,24 +143,6 @@ const ProfileSettings = () => {
               value={position}
               readOnly
             />
-          </div>
-        </div>
-        <div className="profile-field-row">
-          <div className="profile-field">
-            <label htmlFor="assignedWindow">Assigned Window</label>
-            <select
-              id="assignedWindow"
-              value={assignedWindow}
-              onChange={(e) => setAssignedWindow(e.target.value)}
-            >
-              <option value="">Select a window</option>
-              <option value="W1">Window 1</option>
-              <option value="W2">Window 2</option>
-              <option value="W3">Window 3</option>
-              <option value="W4">Window 4</option>
-              <option value="W5">Window 5</option>
-              <option value="W6">Window 6</option>
-            </select>
           </div>
         </div>
         <button className="save-changes-btn" onClick={handleSaveChanges}>
