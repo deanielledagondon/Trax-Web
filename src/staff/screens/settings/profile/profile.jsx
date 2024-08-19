@@ -82,7 +82,6 @@ const ProfileSettings = () => {
             alt="Profile"
             className="profile-image"
           />
-          <button className="change-picture-btn">Change Picture</button>
         </div>
         <div className="profile-info">
           <div className="profile-name">{`${firstName} ${lastName}`}</div>
