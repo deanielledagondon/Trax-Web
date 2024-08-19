@@ -49,22 +49,22 @@
 }
 
 .comments-list-body {
-
     background-color: var(--background-color);
     color: var(--text-color);
     font-family: 'Arial', sans-serif;
     transition: background-color 0.3s ease, color 0.3s ease;
-
+    max-height: 400px; /* Adjust the height as per your preference */
+    overflow-y: auto; /* Enable vertical scrolling when content exceeds max height */
+    padding-right: 10px; /* To ensure smooth scrolling without horizontal overflow */
+    
     .comments-title {
         font-size: 28px;
         font-weight: 600;
         margin-bottom: 30px;
-        color: #333;
+        color: var(--text-color);
         text-align: left;
-        position: relative;
-        color: var(--text-color-inverted);
-       
-        
+        position: sticky; /* Make the title sticky */
+        top: 0; /* Stick to the top when scrolling */
     }
 
     .comments-grid {
@@ -72,6 +72,8 @@
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 25px;
     }
+}
+
 
     .comment-card {
         background-color: #f8f9fa;
@@ -101,4 +103,3 @@
         color: #555;
         color: var(--text-color-inverted);
     }
-}

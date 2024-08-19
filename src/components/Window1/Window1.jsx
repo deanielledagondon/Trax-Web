@@ -42,8 +42,9 @@ const Window1 = () => {
     }
   };
   const comments = [
-    { rating: 4, text: 'TThe kiosk is quick to process transactions, saving me a lot of time.' },
+    { rating: 4, text: 'The kiosk is quick to process transactions, saving me a lot of time.' },
     { rating: 5, text: 'The graphics and animations are visually appealing.' },
+    { rating: 4, text: 'I like how the system handles transactions securely.' },
     { rating: 4, text: 'I like that the kiosk offers a feedback option right after the service.' },
     { rating: 5, text: 'The queue management feature is very efficient and organized.' },
     { rating: 4, text: 'I like how the system handles transactions securely.' },

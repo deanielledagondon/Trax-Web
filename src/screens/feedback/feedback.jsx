@@ -48,6 +48,7 @@ const Feedback = () => {
     { rating: 4, text: 'I love how the system provides real-time updates on queue status' },
     { rating: 5, text: 'The system is very accessible and user-friendly for people of all ages.' },
     { rating: 4, text: 'This kiosk has significantly reduced wait times and improved service efficiency.' },
+    { rating: 5, text: 'Using the kiosk has made my experience much quicker and hassle-free.' },
     { rating: 5, text: 'Using the kiosk has made my experience much quicker and hassle-free.' }
   ];
   const windowsData = [
