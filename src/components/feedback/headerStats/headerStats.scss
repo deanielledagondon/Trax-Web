@@ -61,8 +61,21 @@ body {
   margin-left: 80px;
 }
 
+.button-container {
+  display: flex;
+  gap: 10px; // Adds space between the buttons
+  align-items: center;
+}
 
-.dropdownButton {
+
+.dropdownContainer {
+  position: relative;
+  color: var(--text-color-inverted);
+  text-align: center;
+}
+
+
+.dropdown-button {
   background-color: var(--background-color);
   border: 2px solid var(--border-color);
   border-radius: 12px;
@@ -85,7 +98,7 @@ body {
 
 }
 
-.dropdownMenu {
+.dropdown-menu {
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
@@ -121,6 +134,7 @@ body {
     }
   }
 }
+
 
 .header-stats-wrapper {
   width: 100%;
