@@ -6,7 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import CommentsList from '../commentsList/commentsList.jsx';
 import ReviewSummary from '../reviewSummary/reviewSummary.jsx';
-
+import { ca } from 'date-fns/locale';
+import autoTable from 'jspdf-autotable'
 // Custom Tooltip component for the PieChart
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
@@ -24,10 +25,10 @@ const CustomTooltip = ({ active, payload }) => {
 };
 
 // Main HeaderStats component
-const HeaderStats = ({ 
-  month, 
-  overall, 
-  responses, 
+const HeaderStats = ({
+  month,
+  overall,
+  responses,
   ratingBreakdown,
   comments,
   reviews,
@@ -58,7 +59,7 @@ const HeaderStats = ({
   }, [isDropdownOpen, isPrintDropdownOpen]);
 
   const commentsList = useMemo(() => <CommentsList comments={comments} />, [comments]);
-  
+
   // Handler for window selection
   const handleWindowSelection = (window) => {
     navigate(`/window${window}`);
@@ -73,8 +74,7 @@ const HeaderStats = ({
         const pageWidth = pdf.internal.pageSize.getWidth();
         const pageHeight = pdf.internal.pageSize.getHeight();
         let yPosition = 20;
-  
-        // Helper function to add text to PDF
+
         const addTextToPDF = (text, fontSize = 12, isBold = false, align = 'left') => {
           pdf.setFontSize(fontSize);
           pdf.setFont(undefined, isBold ? 'bold' : 'normal');
@@ -90,109 +90,121 @@ const HeaderStats = ({
           });
           yPosition += 5;
         };
-  
-        // Helper function to add a line to PDF
+
         const addLine = () => {
           pdf.setDrawColor(0);
           pdf.line(20, yPosition, pageWidth - 20, yPosition);
-          yPosition += 10; // Increased spacing after line
+          yPosition += 10;
         };
-  
-        // Helper function to add a section to PDF
+
         const addSection = (title, content) => {
           addTextToPDF(title, 18, true);
           content();
-          addLine(); // Add line after each section
+          addLine();
         };
-  
-        // Title
+
+        const addAutoTableWithSpacing = (tableContent) => {
+          if (yPosition > pageHeight - 20) {
+            pdf.addPage();
+            yPosition = 20;
+          }
+
+          autoTable(pdf, {
+            startY: yPosition,
+            theme: 'striped',
+            head: [Object.keys(tableContent[0] || {})],
+            body: tableContent.map(entry => Object.values(entry)),
+            margin: {
+              left: 20,
+              right: 20
+            }
+          });
+
+          yPosition = pdf.lastAutoTable.finalY + 10;
+        };
         addTextToPDF('Feedback Report', 24, true, 'center');
         addLine();
-  
-        // 1. Feedback Summary
+
         addSection('1. Feedback Summary', () => {
           addTextToPDF(`This Month: ${month || 'N/A'}`);
           addTextToPDF(`Overall Rating: ${overall || 'N/A'}%`);
           addTextToPDF(`Total Feedback Responses: ${responses || 'N/A'}`);
         });
-  
-        // 2. Monthly Rating Breakdown
+
         addSection('2. Monthly Rating Breakdown', () => {
           if (ratingBreakdown && ratingBreakdown.breakdown) {
             addTextToPDF(`Average Rating: ${ratingBreakdown.average || 'N/A'}%`);
             ratingBreakdown.breakdown.forEach(segment => {
-              addTextToPDF(`${segment.stars} Stars: ${segment.percentage}% (${segment.count} responses)`);
+              addTextToPDF(`${segment.stars} Stars: ${segment.percentage}%`);
             });
           } else {
             addTextToPDF('No rating breakdown data available.');
           }
         });
-  
-        // 3. User Feedback
+
         addSection('3. User Feedback', () => {
           if (comments && comments.length > 0) {
-            comments.slice(0, 5).forEach((comments, index) => {
+            comments.slice(0, 5).forEach((comment, index) => {
               addTextToPDF(`Feedback ${index + 1}:`, 14, true);
-              addTextToPDF(`Rating: ${comments.rating} Stars`);
-              addTextToPDF(`Comment: ${comments.text}`);
+              addTextToPDF(`Rating: ${comment.rating} Stars`);
+              addTextToPDF(`Comment: ${comment.text}`);
               if (index < 4) addTextToPDF('---');
             });
           } else {
             addTextToPDF('No user feedback available.');
           }
         });
-  
-        // 4. Average User Feedback Ratings
+
         addSection('4. Average User Feedback Ratings', () => {
           if (reviews) {
             Object.entries(reviews).forEach(([category, rating]) => {
-              addTextToPDF(`${category}: ${rating.toFixed(2)} Stars`);
+              if (typeof rating === 'object') {
+                Object.entries(rating).forEach(([subCategory, subCatRating]) => {
+                  addTextToPDF(`${subCategory}: ${subCatRating}%`);
+                });
+              } else {
+                addTextToPDF(`${category}: ${rating}%`);
+              }
             });
           } else {
             addTextToPDF('No average ratings data available.');
           }
         });
-  
-        // 5. Ratings Over Time
         addSection('5. Ratings Over Time', () => {
           if (ratingsOverTime && ratingsOverTime.length > 0) {
-            ratingsOverTime.slice(-5).forEach(entry => {
-              addTextToPDF(`${entry.date}: ${entry.rating.toFixed(2)} Stars`);
-            });
+            addAutoTableWithSpacing(ratingsOverTime);
           } else {
             addTextToPDF('No ratings trend data available.');
           }
         });
-  
-        // 6. Ratings Per Window
+
         addSection('6. Ratings Per Window', () => {
           if (ratingsPerWindow && Object.keys(ratingsPerWindow).length > 0) {
-            Object.entries(ratingsPerWindow).forEach(([window, rating]) => {
-              addTextToPDF(`Window ${window}: ${rating.toFixed(2)} Stars`);
+            ratingsPerWindow.forEach((entry) => {
+              addTextToPDF(`Window ${entry.windowName}`);
+              addAutoTableWithSpacing(entry.data);
             });
           } else {
             addTextToPDF('No ratings per window data available.');
           }
         });
-  
-        // Footer
+
+
         pdf.setFontSize(10);
         pdf.setTextColor(100);
-        pdf.text(`Generated on: ${new Date().toLocaleDateString()}`,  pageWidth / 2, pageHeight - 10, { align: 'center' });
+        pdf.text(`Generated on: ${new Date().toLocaleDateString()}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
 
-  
         pdf.save('FeedbackReport.pdf');
       } catch (error) {
         console.error('Error generating PDF:', error);
         alert('There was an error generating the PDF. Please check the console for more details.');
       }
+      setIsPrintDropdownOpen(false);
     } else {
       console.log(`Printing in ${format} format is not implemented yet.`);
       alert(`Printing in ${format} format is not implemented yet.`);
     }
-    setIsPrintDropdownOpen(false);
   };
-
   // Prepare data for the pie chart
   const data = useMemo(
     () =>

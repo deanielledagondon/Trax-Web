@@ -6,7 +6,6 @@ import CommentsList from '../feedback/commentsList/commentsList';
 import WindowRatingChart from '../feedback/windowRatingChart/windowRatingChart';
 
 const Window4 = () => {
-  const monthStats = { month: 574, overall: 7.6, responses: '8,746' };
   const ratingBreakdown = {
     average: 56.76,
     breakdown: [
@@ -54,8 +53,9 @@ const Window4 = () => {
       windowName: "Window 4",
       data: ratingData
     },
-   
+
   ];
+  const monthStats = { month: 574, overall: 7.6, responses: '8,746', ratingBreakdown, comments, reviews, ratingsOverTime: ratingData };
 
   return (
     <div className="container mt-5">

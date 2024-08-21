@@ -7,7 +7,7 @@ import WindowRatingChart from '../../components/feedback/windowRatingChart/windo
 
 
 const Feedback = () => {
-  const monthStats = { month: 256, overall: 4.2, responses: '1,254' };
+
   const ratingBreakdown = {
     average: 20.41,
     breakdown: [
@@ -32,6 +32,7 @@ const Feedback = () => {
     { month: 'November', '5 stars': 20, '4 stars': 18, '3 stars': 7, '2 stars': 4, '1 star': 1 },
     { month: 'December', '5 stars': 28, '4 stars': 14, '3 stars': 8, '2 stars': 3, '1 star': 2 }
   ];
+
   const reviews = {
     overall: 89.5,
     breakdown: {
@@ -77,6 +78,7 @@ const Feedback = () => {
       data: ratingData
     }
   ];
+  const monthStats = { month: 256, overall: 4.2, responses: '1,254', ratingBreakdown, comments, reviews, ratingsOverTime: ratingData, ratingsPerWindow: windowsData };
 
   return (
     <div className="container mt-5">
