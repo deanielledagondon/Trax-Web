@@ -3,7 +3,7 @@ import HeaderStats4 from '../window44/headerStats4';
 import RatingChart from '../feedback/ratingChart/ratingChart';
 import ReviewSummary from '../feedback/reviewSummary/reviewSummary';
 import CommentsList from '../feedback/commentsList/commentsList';
-import WindowRatingChart from '../feedback/windowRatingChart/windowRatingChart';
+//import WindowRatingChart from '../feedback/windowRatingChart/windowRatingChart';
 
 const Window4 = () => {
   const ratingBreakdown = {
@@ -63,7 +63,7 @@ const Window4 = () => {
       <CommentsList comments={comments} />
       <ReviewSummary reviews={reviews} />
       <RatingChart data={ratingData} />
-      <WindowRatingChart windowsData={windowsData} />
+      
     </div>
   );
 };

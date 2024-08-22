@@ -11,7 +11,7 @@ export const windowPrintSelection = async (format, data) => {
 
       const addTextToPDF = (
         text,
-        fontSize = 12,
+        fontSize = 10,
         isBold = false,
         align = "left"
       ) => {
@@ -58,85 +58,105 @@ export const windowPrintSelection = async (format, data) => {
       };
 
       const addSection = (title, content) => {
-        addTextToPDF(title, 18, true);
+        addTextToPDF(title, 14, true);
         content();
         addLine();
       };
-
-      addTextToPDF("Feedback Report", 24, true, "center");
+  
+      addTextToPDF(`${data.windowName} | Feedback Report`, 16, true, "center");
       addLine();
 
       // 1. Feedback Summary
-      addSection("1. Feedback Summary", () => {
-        addTextToPDF(`This Month: ${data.month || "N/A"}`);
-        addTextToPDF(`Overall Rating: ${data.overall || "N/A"}%`);
-        addTextToPDF(`Total Feedback Responses: ${data.responses || "N/A"}`);
-      });
+      addSection("• Feedback Summary", () => {
+        const summaryData = [
+            { 'Metric': 'This Month', 'Value': data.month || "N/A" }, // Ensure "Month" is capitalized
+            { 'Metric': 'Overall Rating', 'Value': `${data.overall || "N/A"}%` },
+            { 'Metric': 'Total Feedback Responses', 'Value': data.responses || "N/A" },
+        ];
+    
+        addAutoTableWithSpacing(summaryData);
+    });
+
 
       // 2. Monthly Rating Breakdown
-      addSection("2. Monthly Rating Breakdown", () => {
-        if (data.ratingBreakdown && data.ratingBreakdown.breakdown) {
-          addTextToPDF(
-            `Average Rating: ${data.ratingBreakdown.average || "N/A"}%`
-          );
-          data.ratingBreakdown.breakdown.forEach((segment) => {
-            addTextToPDF(`${segment.stars} Stars: ${segment.percentage}%`);
-          });
-        } else {
-          addTextToPDF("No rating breakdown data available.");
-        }
+addSection("• Monthly Rating Breakdown", () => {
+  if (data.ratingBreakdown && data.ratingBreakdown.breakdown) {
+      const breakdownData = [
+          { 'Metric': 'Average Rating', 'Percentage': `${data.ratingBreakdown.average || "N/A"}%` },
+          ...data.ratingBreakdown.breakdown.map(segment => ({
+              'Metric': `${segment.stars} Stars`,
+              'Percentage': `${segment.percentage}%`,
+          })),
+      ];
+
+      addAutoTableWithSpacing(breakdownData);
+  } else {
+      addTextToPDF("No rating breakdown data available.");
+  }
+});
+
+     
+ // 3. User Feedback
+ addSection("• User Feedback", () => {
+  if (data.comments && data.comments.length > 0) {
+    const tableContent = data.comments.map((comment, index) => ({
+      User: `User ${index + 1}`,
+      Rating: `${comment.rating} stars`,
+      Comment: comment.text,
+    }));
+
+    addAutoTableWithSpacing(tableContent);
+  } else {
+    addTextToPDF("No user feedback available.");
+  }
+});
+
+
+// 4. Average User Feedback Ratings
+addSection("• Average User Feedback Ratings", () => {
+  if (data.reviews) {
+      const reviewsData = Object.entries(data.reviews).flatMap(([category, rating]) => {
+          // Remove the word "breakdown" and capitalize "overall"
+          let formattedCategory = category.replace(/breakdown/i, "").trim();
+          formattedCategory = formattedCategory.replace(/overall/i, "Overall");
+
+          if (typeof rating === "object") {
+              return Object.entries(rating).map(([subCategory, subCatRating]) => ({
+                  'Category': `${formattedCategory}${subCategory}`,
+                  'Rating': `${subCatRating}%`,
+                  
+              }));
+          } else {
+              return [{ 'Category': formattedCategory, 'Rating': `${rating}%` }];
+          }
       });
 
-      // 3. User Feedback
-      addSection("3. User Feedback", () => {
-        if (data.comments && data.comments.length > 0) {
-          data.comments.slice(0, 5).forEach((comments, index) => {
-            addTextToPDF(`Feedback ${index + 1}:`, 14, true);
-            addTextToPDF(`Rating: ${comments.rating} Stars`);
-            addTextToPDF(`Comment: ${comments.text}`);
-            if (index < 4) addTextToPDF("---");
-          });
-        } else {
-          addTextToPDF("No user feedback available.");
-        }
-      });
-
-      // 4. Average User Feedback Ratings
-      addSection("4. Average User Feedback Ratings", () => {
-        if (data.reviews) {
-          Object.entries(data.reviews).forEach(([category, rating]) => {
-            if (typeof rating === "object") {
-              Object.entries(rating).forEach(([subCategory, subCatRating]) => {
-                addTextToPDF(`${subCategory}: ${subCatRating}%`);
-              });
-            } else {
-              addTextToPDF(`${category}: ${rating}%`);
-            }
-          });
-        } else {
-          addTextToPDF("No average ratings data available.");
-        }
-      });
+      addAutoTableWithSpacing(reviewsData);
+  } else {
+      addTextToPDF("No average ratings data available.");
+  }
+});
 
       // 5. Ratings Over Time
-      addSection("5. Ratings Over Time", () => {
+      addSection("• Ratings Over Time", () => {
         if (data.ratingsOverTime && data.ratingsOverTime.length > 0) {
-          addAutoTableWithSpacing(data.ratingsOverTime);
+            addAutoTableWithSpacing(data.ratingsOverTime);
         } else {
-          addTextToPDF("No ratings trend data available.");
+            addTextToPDF("No ratings trend data available.");
         }
-      });
-      // Footer
-      pdf.setFontSize(10);
-      pdf.setTextColor(100);
-      pdf.text(
+    });
+    
+    // Footer
+    pdf.setFontSize(10);
+    pdf.setTextColor(100);
+    pdf.text(
         `Generated on: ${new Date().toLocaleDateString()}`,
         pageWidth / 2,
         pageHeight - 10,
         { align: "center" }
-      );
+    );
 
-      pdf.save(`${data.windowName}FeedbackReport.pdf`);
+      pdf.save(`${data.windowName} FeedbackReport.pdf`);
     } catch (error) {
       console.error("Error generating PDF:", error);
       alert(

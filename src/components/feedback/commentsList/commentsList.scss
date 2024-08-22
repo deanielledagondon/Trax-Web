@@ -53,7 +53,7 @@
     color: var(--text-color);
     font-family: 'Arial', sans-serif;
     transition: background-color 0.3s ease, color 0.3s ease;
-    max-height: 400px; /* Adjust the height as per your preference */
+    max-height: 400px; 
     overflow-y: auto; /* Enable vertical scrolling when content exceeds max height */
     padding-right: 10px; /* To ensure smooth scrolling without horizontal overflow */
     
@@ -61,7 +61,7 @@
         font-size: 28px;
         font-weight: 600;
         margin-bottom: 30px;
-        color: var(--text-color);
+        color: var(--text-color-inverted);
         text-align: left;
         position: sticky; /* Make the title sticky */
         top: 0; /* Stick to the top when scrolling */

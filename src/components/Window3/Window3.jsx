@@ -3,7 +3,7 @@ import HeaderStats3 from '../window33/headerStats3';
 import RatingChart from '../feedback/ratingChart/ratingChart';
 import ReviewSummary from '../feedback/reviewSummary/reviewSummary';
 import CommentsList from '../feedback/commentsList/commentsList';
-import WindowRatingChart from '../feedback/windowRatingChart/windowRatingChart';
+//import WindowRatingChart from '../feedback/windowRatingChart/windowRatingChart';
 
 const Window3 = () => {
 
@@ -63,7 +63,7 @@ const Window3 = () => {
       <CommentsList comments={comments} />
       <ReviewSummary reviews={reviews} />
       <RatingChart data={ratingData} />
-      <WindowRatingChart windowsData={windowsData} />
+   
     </div>
   );
 };

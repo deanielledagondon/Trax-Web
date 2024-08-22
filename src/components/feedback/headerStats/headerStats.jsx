@@ -8,6 +8,7 @@ import CommentsList from '../commentsList/commentsList.jsx';
 import ReviewSummary from '../reviewSummary/reviewSummary.jsx';
 import { ca } from 'date-fns/locale';
 import autoTable from 'jspdf-autotable'
+
 // Custom Tooltip component for the PieChart
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
@@ -98,7 +99,7 @@ const HeaderStats = ({
         };
 
         const addSection = (title, content) => {
-          addTextToPDF(title, 18, true);
+          addTextToPDF(title, 14, true);
           content();
           addLine();
         };
@@ -122,55 +123,82 @@ const HeaderStats = ({
 
           yPosition = pdf.lastAutoTable.finalY + 10;
         };
-        addTextToPDF('Feedback Report', 24, true, 'center');
+        addTextToPDF('Feedback Report', 16, true, 'center');
         addLine();
 
-        addSection('1. Feedback Summary', () => {
-          addTextToPDF(`This Month: ${month || 'N/A'}`);
-          addTextToPDF(`Overall Rating: ${overall || 'N/A'}%`);
-          addTextToPDF(`Total Feedback Responses: ${responses || 'N/A'}`);
-        });
+       // 1. Feedback Summary
+           addTextToPDF('• Feedback Summary', 14, true);
+           const feedbackSummaryTable = [
+               { Metric: 'This Month', Value: month || 'N/A' },
+               { Metric: 'Overall Rating', Value: `${overall || 'N/A'}%` },
+               { Metric: 'Total Feedback Responses', Value: responses || 'N/A' },
+           ];
+           addAutoTableWithSpacing(feedbackSummaryTable);
+           addLine();
 
-        addSection('2. Monthly Rating Breakdown', () => {
-          if (ratingBreakdown && ratingBreakdown.breakdown) {
-            addTextToPDF(`Average Rating: ${ratingBreakdown.average || 'N/A'}%`);
-            ratingBreakdown.breakdown.forEach(segment => {
-              addTextToPDF(`${segment.stars} Stars: ${segment.percentage}%`);
-            });
-          } else {
-            addTextToPDF('No rating breakdown data available.');
-          }
-        });
+       // 2. Monthly Rating Breakdown
+       addTextToPDF('• Monthly Rating Breakdown', 14, true);
+      if (ratingBreakdown && ratingBreakdown.breakdown) {
+          const breakdownData = [
+              { 'Metric': 'Average Rating', 'Percentage': `${ratingBreakdown.average || 'N/A'}%` },
+              ...ratingBreakdown.breakdown.map(segment => ({
+                  'Metric': `${segment.stars} Stars`,
+                  'Percentage': `${segment.percentage}%`,
+              })),
+          ];
 
-        addSection('3. User Feedback', () => {
+          addAutoTableWithSpacing(breakdownData);
+      } else {
+          addTextToPDF('No rating breakdown data available.');
+      }
+      addLine();
+
+       // 3. User Feedback
+        addSection('• User Feedback', () => {
           if (comments && comments.length > 0) {
-            comments.slice(0, 5).forEach((comment, index) => {
-              addTextToPDF(`Feedback ${index + 1}:`, 14, true);
-              addTextToPDF(`Rating: ${comment.rating} Stars`);
-              addTextToPDF(`Comment: ${comment.text}`);
-              if (index < 4) addTextToPDF('---');
-            });
+            const tableContent = comments.map((comment, index) => ({
+              User: `User ${index + 1}`,
+              Rating: `${comment.rating} stars`,
+              Comment: comment.text,
+             
+            }));
+            addAutoTableWithSpacing(tableContent);
           } else {
             addTextToPDF('No user feedback available.');
           }
         });
 
-        addSection('4. Average User Feedback Ratings', () => {
+        // 4. Average User Feedback Ratings    
+        addSection('• Average User Feedback Ratings', () => {
           if (reviews) {
+            const tableContent = [];
             Object.entries(reviews).forEach(([category, rating]) => {
+              // Remove the word "breakdown" and capitalize "overall"
+              let formattedCategory = category.replace(/breakdown/i,"").trim();
+              formattedCategory = formattedCategory.replace(/overall/i, " Overall");
+              
               if (typeof rating === 'object') {
                 Object.entries(rating).forEach(([subCategory, subCatRating]) => {
-                  addTextToPDF(`${subCategory}: ${subCatRating}%`);
+                  tableContent.push({
+                    Category: `${formattedCategory} ${subCategory}`,
+                    Rating: `${subCatRating}%`
+                  });
                 });
               } else {
-                addTextToPDF(`${category}: ${rating}%`);
+                tableContent.push({
+                  Category: formattedCategory,
+                  Rating: `${rating}%`
+                });
               }
             });
+            addAutoTableWithSpacing(tableContent);
           } else {
             addTextToPDF('No average ratings data available.');
           }
         });
-        addSection('5. Ratings Over Time', () => {
+
+       // 5. Ratings Over Time
+        addSection('• Ratings Over Time', () => {
           if (ratingsOverTime && ratingsOverTime.length > 0) {
             addAutoTableWithSpacing(ratingsOverTime);
           } else {
@@ -178,10 +206,11 @@ const HeaderStats = ({
           }
         });
 
-        addSection('6. Ratings Per Window', () => {
+       // 6. Ratings Per Window
+        addSection('• Ratings Per Window', () => {
           if (ratingsPerWindow && Object.keys(ratingsPerWindow).length > 0) {
             ratingsPerWindow.forEach((entry) => {
-              addTextToPDF(`Window ${entry.windowName}`);
+              addTextToPDF(`${entry.windowName}`);
               addAutoTableWithSpacing(entry.data);
             });
           } else {
