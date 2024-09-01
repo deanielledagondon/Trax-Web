@@ -25,7 +25,6 @@
     "date-fns": "^3.6.0",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.2",
-    "lottie-react": "^2.4.0",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.4",
@@ -38,6 +37,7 @@
     "react-paginate": "^8.2.0",
     "react-responsive": "^10.0.0",
     "react-router-dom": "^6.25.1",
+    "react-to-print": "^2.15.1",
     "recharts": "^2.12.7",
     "sass": "^1.77.6",
     "supabase": "^1.190.0"

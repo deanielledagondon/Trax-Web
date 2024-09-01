@@ -10,7 +10,7 @@ const RatingChart = ({ data }) => {
     ];
 
     const formattedData = months.map(month => {
-        const monthData = data.find(item => item.month === month) || { month, '5 stars': 0, '4 stars': 0, '3 stars': 0, '2 stars': 0, '1 star': 0 };
+        const monthData = data.find(item => item.month === month) || { Month, '5 stars': 0, '4 stars': 0, '3 stars': 0, '2 stars': 0, '1 star': 0 };
         return monthData;
     });
 
