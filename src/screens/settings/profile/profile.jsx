@@ -92,13 +92,13 @@ const ProfileSettings = () => {
   return (
     <div className={`profile-settings ${isDarkMode ? 'dark-mode' : ''}`}>
       <div className="profile-header">
-        <div className="profile-image-container">
+        {/* <div className="profile-image-container">
           <img
             src='https://via.placeholder.com/100'
             alt="Profile"
             className="profile-image"
           />
-        </div>
+        </div> */}
         <div className="profile-info">
           <div className="profile-name">{`${firstName} ${lastName}`}</div>
           <div className="profile-position">{position}</div>
