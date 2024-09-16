@@ -9,7 +9,6 @@ import ReviewSummary from '../reviewSummary/reviewSummary.jsx';
 import { ca } from 'date-fns/locale';
 import autoTable from 'jspdf-autotable'
 
-// Custom Tooltip component for the PieChart
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     return (
@@ -25,7 +24,7 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
-// Main HeaderStats component
+
 const HeaderStats = ({
   month,
   overall,
@@ -42,7 +41,7 @@ const HeaderStats = ({
   const printDropdownRef = useRef(null);
   const navigate = useNavigate();
 
-  // Effect to close dropdowns when clicking outside
+  
   useEffect(() => {
     const closeDropdowns = (e) => {
       if (isDropdownOpen && dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -61,13 +60,12 @@ const HeaderStats = ({
 
   const commentsList = useMemo(() => <CommentsList comments={comments} />, [comments]);
 
-  // Handler for window selection
   const handleWindowSelection = (window) => {
     navigate(`/window${window}`);
     setIsDropdownOpen(false);
   };
 
-  // Handler for print selection
+
   const handlePrintSelection = async (format) => {
     if (format === 'PDF') {
       try {
@@ -76,6 +74,7 @@ const HeaderStats = ({
         const pageHeight = pdf.internal.pageSize.getHeight();
         let yPosition = 20;
 
+      
         const addTextToPDF = (text, fontSize = 12, isBold = false, align = 'left') => {
           pdf.setFontSize(fontSize);
           pdf.setFont(undefined, isBold ? 'bold' : 'normal');
@@ -123,44 +122,44 @@ const HeaderStats = ({
 
           yPosition = pdf.lastAutoTable.finalY + 10;
         };
+
+        // Title
         addTextToPDF('Feedback Report', 16, true, 'center');
         addLine();
 
-       // 1. Feedback Summary
-           addTextToPDF('• Feedback Summary', 14, true);
-           const feedbackSummaryTable = [
-               { Metric: 'This Month', Value: month || 'N/A' },
-               { Metric: 'Overall Rating', Value: `${overall || 'N/A'}%` },
-               { Metric: 'Total Feedback Responses', Value: responses || 'N/A' },
-           ];
-           addAutoTableWithSpacing(feedbackSummaryTable);
-           addLine();
+        // 1. Feedback Summary
+        addSection('• Feedback Summary', () => {
+          const feedbackSummaryTable = [
+            { Metric: 'This Month', Value: month || 'N/A' },
+            { Metric: 'Overall Rating', Value: `${overall || 'N/A'}%` },
+            { Metric: 'Total Feedback Responses', Value: responses || 'N/A' },
+          ];
+          addAutoTableWithSpacing(feedbackSummaryTable);
+        });
 
-       // 2. Monthly Rating Breakdown
-       addTextToPDF('• Monthly Rating Breakdown', 14, true);
-      if (ratingBreakdown && ratingBreakdown.breakdown) {
-          const breakdownData = [
+        // 2. Monthly Rating Breakdown
+        addSection('• Monthly Rating Breakdown', () => {
+          if (ratingBreakdown && ratingBreakdown.breakdown) {
+            const breakdownData = [
               { 'Metric': 'Average Rating', 'Percentage': `${ratingBreakdown.average || 'N/A'}%` },
               ...ratingBreakdown.breakdown.map(segment => ({
-                  'Metric': `${segment.stars} Stars`,
-                  'Percentage': `${segment.percentage}%`,
+                'Metric': `${segment.stars} Stars`,
+                'Percentage': `${segment.percentage}%`,
               })),
-          ];
+            ];
+            addAutoTableWithSpacing(breakdownData);
+          } else {
+            addTextToPDF('No rating breakdown data available.');
+          }
+        });
 
-          addAutoTableWithSpacing(breakdownData);
-      } else {
-          addTextToPDF('No rating breakdown data available.');
-      }
-      addLine();
-
-       // 3. User Feedback
+        // 3. User Feedback
         addSection('• User Feedback', () => {
           if (comments && comments.length > 0) {
             const tableContent = comments.map((comment, index) => ({
               User: `User ${index + 1}`,
               Rating: `${comment.rating} stars`,
               Comment: comment.text,
-             
             }));
             addAutoTableWithSpacing(tableContent);
           } else {
@@ -173,8 +172,7 @@ const HeaderStats = ({
           if (reviews) {
             const tableContent = [];
             Object.entries(reviews).forEach(([category, rating]) => {
-              // Remove the word "breakdown" and capitalize "overall"
-              let formattedCategory = category.replace(/breakdown/i,"").trim();
+              let formattedCategory = category.replace(/breakdown/i, "").trim();
               formattedCategory = formattedCategory.replace(/overall/i, " Overall");
               
               if (typeof rating === 'object') {
@@ -197,7 +195,7 @@ const HeaderStats = ({
           }
         });
 
-       // 5. Ratings Over Time
+        // 5. Ratings Over Time
         addSection('• Ratings Over Time', () => {
           if (ratingsOverTime && ratingsOverTime.length > 0) {
             addAutoTableWithSpacing(ratingsOverTime);
@@ -206,7 +204,7 @@ const HeaderStats = ({
           }
         });
 
-       // 6. Ratings Per Window
+        // 6. Ratings Per Window
         addSection('• Ratings Per Window', () => {
           if (ratingsPerWindow && Object.keys(ratingsPerWindow).length > 0) {
             ratingsPerWindow.forEach((entry) => {
@@ -218,7 +216,7 @@ const HeaderStats = ({
           }
         });
 
-
+        // Footer
         pdf.setFontSize(10);
         pdf.setTextColor(100);
         pdf.text(`Generated on: ${new Date().toLocaleDateString()}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
@@ -234,7 +232,7 @@ const HeaderStats = ({
       alert(`Printing in ${format} format is not implemented yet.`);
     }
   };
-  // Prepare data for the pie chart
+
   const data = useMemo(
     () =>
       ratingBreakdown.breakdown.map((segment) => ({
@@ -245,7 +243,6 @@ const HeaderStats = ({
     [ratingBreakdown]
   );
 
-  // Define colors for each star rating
   const starColors = {
     1: '#f8696b',
     2: '#ffa65a',
@@ -366,7 +363,6 @@ const HeaderStats = ({
   );
 };
 
-// PropTypes for type checking
 HeaderStats.propTypes = {
   month: PropTypes.string.isRequired,
   overall: PropTypes.number.isRequired,

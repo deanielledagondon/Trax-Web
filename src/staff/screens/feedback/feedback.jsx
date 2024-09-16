@@ -1,12 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../../components/helper/supabaseClient';
 import HeaderStats from '../../components/feedback/headerStats/headerStats';
 import RatingChart from '../../components/feedback/ratingChart/ratingChart';
 import ReviewSummary from '../../components/feedback/reviewSummary/reviewSummary';
 import CommentsList from '../../components/feedback/commentsList/commentsList';
-//import WindowRatingChart from '../../components/feedback/windowRatingChart/windowRatingChart';
-
 
 const Feedback = () => {
+ 
+    const [staffName, setStaffName] = useState('');
+    const [windowNo, setWindowNo] = useState([]);
+  
+    useEffect(() => {
+      async function fetchStaffData() {
+        const user = localStorage.getItem("user");
+        const parsedUser = JSON.parse(user);
+  
+        const { data: staffData, error: staffError } = await supabase
+          .from('registrants')
+          .select('full_name, window_no')
+          .eq('id', parsedUser.id)
+          .single();
+  
+        if (staffError) {
+          console.error('Error fetching staff information:', staffError);
+        } else {
+          const firstName = staffData.full_name.split(' ')[0];
+          setStaffName(firstName);
+          setWindowNo([staffData.window_no]);
+        }
+      }
+  
+      fetchStaffData();
+    }, []);
 
   const ratingBreakdown = {
     average: 20.41,
@@ -82,11 +107,15 @@ const Feedback = () => {
 
   return (
     <div className="container mt-5">
-      <HeaderStats {...monthStats} ratingBreakdown={ratingBreakdown} />
+      <HeaderStats 
+        {...monthStats} 
+        ratingBreakdown={ratingBreakdown} 
+        staffName={staffName}
+        windowNo={windowNo}
+      />
       <CommentsList comments={comments} />
       <ReviewSummary reviews={reviews} />
       <RatingChart data={ratingData} />
-     
     </div>
   );
 };

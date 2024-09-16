@@ -8,7 +8,6 @@ import CommentsList from '../commentsList/commentsList.jsx';
 import ReviewSummary from '../reviewSummary/reviewSummary.jsx';
 import { ca } from 'date-fns/locale';
 import autoTable from 'jspdf-autotable'
-import { supabase } from "../../helper/supabaseClient";
 
 
 const CustomTooltip = ({ active, payload }) => {
@@ -35,43 +34,15 @@ const HeaderStats = ({
   comments,
   reviews,
   ratingsOverTime,
-  ratingsPerWindow
+  ratingsPerWindow,
+  staffName,
+  windowNo
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isPrintDropdownOpen, setIsPrintDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const printDropdownRef = useRef(null);
   const navigate = useNavigate();
-
-
- 
-   const [staffName, setStaffName] = useState('');
-   const [windowNo, setWindowNo] = useState([]);
-
-
-  // fetch staff information
-  useEffect(() => {
-    async function fetchStaffData() {
-      const user = localStorage.getItem("user");
-      const parsedUser = JSON.parse(user);
-
-      const { data: staffData, error: staffError } = await supabase
-        .from('registrants')
-        .select('full_name, window_no')
-        .eq('id', parsedUser.id)
-        .single();
-
-      if (staffError) {
-        console.error('Error fetching staff information:', staffError);
-      } else {
-        const firstName = staffData.full_name.split(' ')[0];
-        setStaffName(firstName);
-        setWindowNo([staffData.window_no]);
-      }
-    }
-
-    fetchStaffData();
-  }, []);
 
 
   useEffect(() => {
@@ -257,7 +228,7 @@ const HeaderStats = ({
       alert(`Printing in ${format} format is not implemented yet.`);
     }
   };
-  // Prepare data for the pie chart
+
   const data = useMemo(
     () =>
       ratingBreakdown.breakdown.map((segment) => ({
@@ -283,19 +254,17 @@ const HeaderStats = ({
   return (
     <div>
       <div className="header-top">
-
-      {staffName && (
-  <div className="staff-info">
-    <p className="greeting-text">Hello Ma'am {staffName}!</p>
-    <p className="small-font">
-      This is your <span className="bold-text">Feedback</span> for 
-      {windowNo.length > 1 
-        ? ` ${windowNo.map(formatWindowNumber).join(', ')}`
-        : ` ${formatWindowNumber(windowNo[0])}` || ' N/A'}.
-    </p>
+        {staffName && (
+          <div className="staff-info">
+            <p className="greeting-text">Hello Ma'am {staffName}!</p>
+            <p className="small-font">
+              This is your <span className="bold-text">Feedback</span> for 
+              {windowNo.length > 1 
+                ? ` ${windowNo.map(formatWindowNumber).join(', ')}`
+                : ` ${formatWindowNumber(windowNo[0])}` || ' N/A'}.
+            </p>
           </div>
         )}
-
         <div className="button-container">
           {/* Dropdown for Window Selection */}
           <div className="dropdownContainer" ref={dropdownRef}>
@@ -403,6 +372,8 @@ const HeaderStats = ({
 
 
 HeaderStats.propTypes = {
+  staffName: PropTypes.string,
+  windowNo: PropTypes.arrayOf(PropTypes.number),
   month: PropTypes.string.isRequired,
   overall: PropTypes.number.isRequired,
   responses: PropTypes.number.isRequired,
