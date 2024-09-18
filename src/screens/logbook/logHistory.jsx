@@ -21,6 +21,7 @@ const DateRangePicker = ({ startDate, endDate, onStartDateChange, onEndDateChang
           endDate={endDate}
           placeholderText="Start Date"
           dateFormat="dd MMM yyyy"
+          
         />
         <DatePicker
           selected={endDate}

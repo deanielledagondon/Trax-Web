@@ -3,10 +3,10 @@ import HeaderStats3 from '../window33/headerStats3';
 import RatingChart from '../feedback/ratingChart/ratingChart';
 import ReviewSummary from '../feedback/reviewSummary/reviewSummary';
 import CommentsList from '../feedback/commentsList/commentsList';
-import WindowRatingChart from '../feedback/windowRatingChart/windowRatingChart';
+//import WindowRatingChart from '../feedback/windowRatingChart/windowRatingChart';
 
 const Window3 = () => {
-  const monthStats = { month: 756, overall: 2.2, responses: '6,473' };
+
   const ratingBreakdown = {
     average: 76.87,
     breakdown: [
@@ -54,16 +54,16 @@ const Window3 = () => {
       windowName: "Window 3",
       data: ratingData
     },
-  
-  ];
 
+  ];
+  const monthStats = { month: 756, overall: 2.2, responses: '6,473', ratingBreakdown, comments, reviews, ratingsOverTime: ratingData };
   return (
     <div className="container mt-5">
       <HeaderStats3 {...monthStats} ratingBreakdown={ratingBreakdown} />
       <CommentsList comments={comments} />
       <ReviewSummary reviews={reviews} />
       <RatingChart data={ratingData} />
-      <WindowRatingChart windowsData={windowsData} />
+   
     </div>
   );
 };

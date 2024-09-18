@@ -3,10 +3,9 @@ import HeaderStats5 from '../window55/headerStats5';
 import RatingChart from '../feedback/ratingChart/ratingChart';
 import ReviewSummary from '../feedback/reviewSummary/reviewSummary';
 import CommentsList from '../feedback/commentsList/commentsList';
-import WindowRatingChart from '../feedback/windowRatingChart/windowRatingChart';
+//import WindowRatingChart from '../feedback/windowRatingChart/windowRatingChart';
 
 const Window5 = () => {
-  const monthStats = { month: 675, overall: 9.7, responses: '6,675' };
   const ratingBreakdown = {
     average: 45.41,
     breakdown: [
@@ -54,8 +53,9 @@ const Window5 = () => {
       windowName: "Window 5",
       data: ratingData
     },
-  
+
   ];
+  const monthStats = { month: 675, overall: 9.7, responses: '6,675', ratingBreakdown, comments, reviews, ratingsOverTime: ratingData };
 
   return (
     <div className="container mt-5">
@@ -63,7 +63,7 @@ const Window5 = () => {
       <CommentsList comments={comments} />
       <ReviewSummary reviews={reviews} />
       <RatingChart data={ratingData} />
-      <WindowRatingChart windowsData={windowsData} />
+      
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import Lottie from 'lottie-react';
+import Lottie from 'react-lottie';
 import animationData from '../../../assets/animations/no-wifi.json';
 import './noWifi.scss';
 

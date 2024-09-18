@@ -3,10 +3,10 @@ import HeaderStatss from '../window11/headerStatss';
 import RatingChart from '../feedback/ratingChart/ratingChart';
 import ReviewSummary from '../feedback/reviewSummary/reviewSummary';
 import CommentsList from '../feedback/commentsList/commentsList';
-import WindowRatingChart from '../feedback/windowRatingChart/windowRatingChart';
+//import WindowRatingChart from '../feedback/windowRatingChart/windowRatingChart';
 
 const Window1 = () => {
-  const monthStats = { month: 346, overall: 6.4, responses: '2,546' };
+
   const ratingBreakdown = {
     average: 63.76,
     breakdown: [
@@ -42,8 +42,9 @@ const Window1 = () => {
     }
   };
   const comments = [
-    { rating: 4, text: 'TThe kiosk is quick to process transactions, saving me a lot of time.' },
+    { rating: 4, text: 'The kiosk is quick to process transactions, saving me a lot of time.' },
     { rating: 5, text: 'The graphics and animations are visually appealing.' },
+    { rating: 4, text: 'I like how the system handles transactions securely.' },
     { rating: 4, text: 'I like that the kiosk offers a feedback option right after the service.' },
     { rating: 5, text: 'The queue management feature is very efficient and organized.' },
     { rating: 4, text: 'I like how the system handles transactions securely.' },
@@ -54,8 +55,9 @@ const Window1 = () => {
       windowName: "Window 1",
       data: ratingData
     },
-   
+
   ];
+  const monthStats = { month: 256, overall: 4.2, responses: '1,254', ratingBreakdown, comments, reviews, ratingsOverTime: ratingData };
 
   return (
     <div className="container mt-5">
@@ -63,7 +65,7 @@ const Window1 = () => {
       <CommentsList comments={comments} />
       <ReviewSummary reviews={reviews} />
       <RatingChart data={ratingData} />
-      <WindowRatingChart windowsData={windowsData} />
+    
     </div>
   );
 };

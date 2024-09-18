@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import './headerStatss.scss';
 import { useNavigate } from 'react-router-dom';
-
+import { windowPrintSelection } from '../helper/pdfPrinter'
+import window1Proptypes from '../helper/headerPropTypes.js'
 
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
@@ -20,12 +21,21 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
-const HeaderStats = ({ month, overall, responses, ratingBreakdown }) => {
+const HeaderStats = ({
+  month,
+  overall,
+  responses,
+  ratingBreakdown,
+  comments,
+  reviews,
+  ratingsOverTime,
+}) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
+  const printDropdownRef = useRef(null);
 
-  
+
   useEffect(() => {
     const closeDropdown = (e) => {
       if (isDropdownOpen && dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -44,7 +54,7 @@ const HeaderStats = ({ month, overall, responses, ratingBreakdown }) => {
     setIsDropdownOpen(false);
   };
 
- 
+
   const data = useMemo(
     () =>
       ratingBreakdown.breakdown.map((segment) => ({
@@ -55,7 +65,7 @@ const HeaderStats = ({ month, overall, responses, ratingBreakdown }) => {
     [ratingBreakdown]
   );
 
- 
+
   const starColors = {
     1: '#f8696b',
     2: '#ffa65a',
@@ -67,9 +77,9 @@ const HeaderStats = ({ month, overall, responses, ratingBreakdown }) => {
   return (
     <div className="header-stats">
       <div className="header-top">
-      <div className="header-stats-content"> </div>
+        <div className="header-stats-content"> </div>
         <h2 className="area-top-title">Window 1 | Feedback</h2>
-        <div className="dropdown-container" ref={dropdownRef}>
+        <div className="button-container"> <div className="dropdown-container" ref={dropdownRef}>
           <button className="dropdownButton" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
             Select Window
           </button>
@@ -82,7 +92,29 @@ const HeaderStats = ({ month, overall, responses, ratingBreakdown }) => {
               ))}
             </div>
           )}
+
+
         </div>
+          <div className="print-container" ref={printDropdownRef}>
+            <button className="print-button" onClick={() => windowPrintSelection('PDF', {
+              month,
+              overall,
+              responses,
+              ratingBreakdown,
+              comments,
+              reviews,
+              ratingsOverTime,
+              windowName: 'Window 1'
+            })}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+              </svg>
+              Print
+            </button>
+          </div></div>
+
       </div>
       <div className="header-stats-content">
         <div className="stats-summary">
@@ -100,11 +132,11 @@ const HeaderStats = ({ month, overall, responses, ratingBreakdown }) => {
           </div>
         </div>
 
-          <div className="headerBreakdownCard ratingBreakdown">
-             
-                <div className="headerTitle">Monthly Rating Breakdown</div>
-                <div className="ratingAverage">{ratingBreakdown.average}% Average Rating</div>
-                <div className="ratingChartDetails">
+        <div className="headerBreakdownCard ratingBreakdown">
+
+          <div className="headerTitle">Monthly Rating Breakdown</div>
+          <div className="ratingAverage">{ratingBreakdown.average}% Average Rating</div>
+          <div className="ratingChartDetails">
 
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
@@ -116,7 +148,7 @@ const HeaderStats = ({ month, overall, responses, ratingBreakdown }) => {
                   cy="50%"
                   outerRadius={150}
                   fill="#8884d8"
-           
+
                 >
                   {data.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={starColors[entry.name]} />
@@ -126,16 +158,16 @@ const HeaderStats = ({ month, overall, responses, ratingBreakdown }) => {
               </PieChart>
             </ResponsiveContainer>
             <div className="ratingDetails">
-                    {ratingBreakdown.breakdown.map((segment, index) => (
-                      <div key={index} className="ratingdetail">
-                        <span className="ratingNumber">{segment.stars}</span>
-                        <div
-                          className="ratingBox"
-                          style={{ backgroundColor: starColors[segment.stars] }}
-                        ></div>
-                        <span className="ratingPercentage">{segment.percentage}%</span>
-                        <span className="ratingCount">{segment.count}</span>
-                      </div>
+              {ratingBreakdown.breakdown.map((segment, index) => (
+                <div key={index} className="ratingdetail">
+                  <span className="ratingNumber">{segment.stars}</span>
+                  <div
+                    className="ratingBox"
+                    style={{ backgroundColor: starColors[segment.stars] }}
+                  ></div>
+                  <span className="ratingPercentage">{segment.percentage}%</span>
+                  <span className="ratingCount">{segment.count}</span>
+                </div>
               ))}
             </div>
           </div>
@@ -145,20 +177,6 @@ const HeaderStats = ({ month, overall, responses, ratingBreakdown }) => {
   );
 };
 
-HeaderStats.propTypes = {
-  month: PropTypes.string.isRequired,
-  overall: PropTypes.number.isRequired,
-  responses: PropTypes.number.isRequired,
-  ratingBreakdown: PropTypes.shape({
-    average: PropTypes.number.isRequired,
-    breakdown: PropTypes.arrayOf(
-      PropTypes.shape({
-        stars: PropTypes.number.isRequired,
-        percentage: PropTypes.number.isRequired,
-        count: PropTypes.number.isRequired,
-      })
-    ).isRequired,
-  }).isRequired,
-};
+HeaderStats.propTypes = window1Proptypes
 
 export default HeaderStats;
