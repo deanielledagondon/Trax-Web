@@ -6,7 +6,6 @@ const Timer = forwardRef(({ onDone }, ref) => {
   const [isRunning, setIsRunning] = useState(false);
   const timerId = useRef(null);
 
-
   useEffect(() => {
     if (isRunning) {
       timerId.current = setInterval(() => {

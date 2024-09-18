@@ -1,5 +1,33 @@
 @import "responsive.scss";
 
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .pieChartBox, .pieChartBox * {
+    visibility: visible;
+  }
+
+  .pieChartBox {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
+    page-break-inside: avoid;
+  }
+
+  .chart {
+    width: 100% !important;
+    height: 300px !important;
+    display: block;
+  }
+
+  .print-button-unique {
+    display: none;
+  }
+}
 
 .pieChartBox {
   height: 100%;

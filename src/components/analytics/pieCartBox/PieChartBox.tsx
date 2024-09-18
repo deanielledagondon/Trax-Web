@@ -1,16 +1,7 @@
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
-import "./pieChartBox.scss";
 import React, { useEffect, useState } from 'react';
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { supabase } from "../../helper/supabaseClient";
-
-// const data = [
-//   { name: "Window 1", value: 45, color: "#0088FE" },
-//   { name: "Window 2", value: 32, color: "#00C49F" },
-//   { name: "Window 3", value: 43, color: "#FFBB28" },
-//   { name: "Window 4", value: 54, color: "#FF8042" },
-//   { name: "Window 5", value: 67, color: "#AD1500" },
-//   { name: "Window 6", value: 98, color: "#E600DD" },
-// ];
+import "./pieChartBox.scss";
 
 const PieChartBox = () => {
   const [data, setData] = useState([
@@ -26,13 +17,13 @@ const PieChartBox = () => {
     async function fetchData() {
       const { data, error } = await supabase
         .from('log_history')
-        .select('*') // Adjust the query to match your requirements
+        .select('*')
         .order('transaction_date', { ascending: false });
       
       if (error) {
         console.error('Error fetching data:', error);
       } else {
-        // Count the occurrences of each window_no
+        
         const windowCounts = data.reduce((counts, log) => {
           const windowNo = log.window_no;
           if (windowNo) {
@@ -41,7 +32,7 @@ const PieChartBox = () => {
           return counts;
         }, {});
   
-        // Map the counts to the data array
+        
         const updatedData = [
           { name: "Window 1", value: windowCounts.W1 || 0, color: "#0088FE" },
           { name: "Window 2", value: windowCounts.W2 || 0, color: "#00C49F" },
@@ -51,7 +42,6 @@ const PieChartBox = () => {
           { name: "Window 6", value: windowCounts.W6 || 0, color: "#E600DD" },
         ];
   
-        // Update the state with the new data
         setData(updatedData);
       }
     }
@@ -59,18 +49,16 @@ const PieChartBox = () => {
     fetchData();
   }, []);
 
-
+ 
 
   return (
     <div className="pieChartBox">
       <h1>Service Windows Crowd</h1>
       <h2>This Month</h2>
       <div className="chart">
-        <ResponsiveContainer width="99%" height={300}>
+        <ResponsiveContainer width="99%" height={400}>
           <PieChart>
-            <Tooltip
-              contentStyle={{ background: "white", borderRadius: "5px" }}
-            />
+            <Tooltip contentStyle={{ background: "white", borderRadius: "5px" }} />
             <Pie
               data={data}
               innerRadius={"70%"}
@@ -96,6 +84,7 @@ const PieChartBox = () => {
           </div>
         ))}
       </div>
+      
     </div>
   );
 };

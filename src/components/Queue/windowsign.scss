@@ -1,8 +1,8 @@
 :root {
     /* Define light theme variables */
      --background-color: #f5f7fa;
-  --text-color: #f4f4f4;
-  --text-color-inverted: #030303; 
+  --text-color: #333333;
+  --text-color-inverted: #ffffff; 
   --border-color: #e1e4e8;
   --hover-color: #f0f2f5;
   --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -110,7 +110,7 @@
   }
   
   .card-inner {
-    font-size: 12px;
+    font-size: 15px;
     margin-bottom: 5px;
     display: flex;
     align-items: center;
@@ -128,12 +128,39 @@
     display: flex;
     max-width: fit-content;
     margin-inline: auto;
-    color: #000000;
+    color: #41cf35;
 
   }
 
-  .current-queue h1{
-    font-size: 20px;
-
-
+  .dropdown-content {
+    display: block;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1;
   }
+
+  /* windowsign.scss */
+.card {
+    position: relative;
+    /* other styles */
+  }
+  
+  .view-details-button {
+    background-color: #007bff; /* Adjust color as needed */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .view-details-button:hover {
+    background-color: #0056b3; /* Adjust color as needed */
+  }
+  
+  

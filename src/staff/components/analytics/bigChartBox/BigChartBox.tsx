@@ -78,6 +78,10 @@ const data = [
  
 ];
 
+
+
+
+
 const BigChartBox = () => {
   return (
     <div className="bigChartBox">

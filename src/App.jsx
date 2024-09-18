@@ -132,6 +132,7 @@ function App() {
             <Route path="/staff-dashboard" element={<StaffDashboard />} />
             <Route path="/staff-queue" element={<StaffQueue />} />
             <Route path="/staff-logbook" element={<StaffLogHistory />} />
+            
             <Route path="/staff-analytics" element={<StaffAnalytics />} />
             <Route path="/staff-feedback" element={<StaffFeedback />} />
             <Route path="/staff-settings/*" element={<StaffSettings />} />

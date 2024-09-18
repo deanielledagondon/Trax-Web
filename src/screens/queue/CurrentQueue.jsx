@@ -1,21 +1,31 @@
-import React, { useState, useEffect } from 'react'; 
+import React, { useState, useEffect } from 'react';
 import { supabase } from '../../components/helper/supabaseClient';
+import './CurrentQueue.scss';
 
 const CurrentQueue = () => {
   const [queue, setQueue] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedWindow, setSelectedWindow] = useState('All Windows');
+  const [expandedQueue, setExpandedQueue] = useState(null); // State for tracking expanded queue
 
   useEffect(() => {
     const fetchQueues = async () => {
       try {
-        let { data, error } = await supabase
+        let query = supabase
           .from('queue')
-          .select('id, name, queue_no, status, created_at')
+          .select('id, name, queue_no, status, window_no, purpose, created_at')
           .eq('status', 'Waiting')
           .order('id', { ascending: true });
+
+        if (selectedWindow !== 'All Windows') {
+          query = query.eq('window_no', selectedWindow);
+        }
+
+        const { data, error } = await query;
+
         if (error) {
-          console.log(error);
+          console.error(error);
           throw error;
         }
         setQueue(data);
@@ -35,20 +45,7 @@ const CurrentQueue = () => {
 
     // Clean up interval on component unmount
     return () => clearInterval(intervalId);
-  }, []); 
-
-  const handleEdit = (id) => {
-    console.log('Edit item with ID:', id);
-    // Add your edit logic here
-  };
-  const handlePending = (id) => {
-    console.log('pending item with ID:', id);
-    // Add your pending logic here
-  };
-  const handleDone = (id) => {
-    console.log('done item with ID:', id);
-    // Add your done logic here
-  };
+  }, [selectedWindow]);
 
   const handleDelete = async (id) => {
     try {
@@ -70,11 +67,13 @@ const CurrentQueue = () => {
       console.error('Error deleting item:', error.message);
     }
   };
-  
 
-  const handleViewDetails = (id) => {
-    console.log('View details for item with ID:', id);
-    // Add your view details logic here
+  const toggleDetails = (id) => {
+    if (expandedQueue === id) {
+      setExpandedQueue(null); // Collapse the details if clicked again
+    } else {
+      setExpandedQueue(id); // Expand the details for the clicked queue
+    }
   };
 
   if (loading) {
@@ -89,6 +88,15 @@ const CurrentQueue = () => {
     <div className="progress-bar">
       <div className="progress-bar-info">
         <h4 className="progress-bar-title">Current Queue</h4>
+        <select onChange={(e) => setSelectedWindow(e.target.value)} value={selectedWindow}>
+          <option value="All Windows">All Windows</option>
+          <option value="W1">Window 1</option>
+          <option value="W2">Window 2</option>
+          <option value="W3">Window 3</option>
+          <option value="W4">Window 4</option>
+          <option value="W5">Window 5</option>
+          <option value="W6">Window 6</option>
+        </select>
       </div>
       <div className="progress-bar-list">
         {queue.map((item) => (
@@ -97,14 +105,24 @@ const CurrentQueue = () => {
               <p className="bar-item-info-value">Queue No: {item.queue_no}</p>
               <p className="bar-item-info-name">Name: {item.name}</p>
               <p className="bar-item-info-status">Status: {item.status}</p>
-              <p className="bar-item-info-timestamp">Timestamp: {new Date(item.created_at).toLocaleString()}</p>
+              <p className="bar-item-info-window">Window: {item.window_no}</p>
             </div>
             <div className="bar-item-actions">
-              <button onClick={() => handleDone(item.id)} className="btn btn-done">Done</button>
-              <button onClick={() => handlePending(item.id)} className="btn btn-pending">Pending</button>
+              <button onClick={() => console.log('Pending')} className="btn btn-pending">Move</button>
               <button onClick={() => handleDelete(item.id)} className="btn btn-delete">Delete</button>
-              <button onClick={() => handleViewDetails(item.id)} className="btn btn-details">View Details</button>
+              <button onClick={() => toggleDetails(item.id)} className="btn btn-details">
+                {expandedQueue === item.id ? 'Hide Details' : 'View Details'}
+              </button>
             </div>
+            {expandedQueue === item.id && (
+              <div className="bar-item-details">
+                <p><strong>Name:</strong> {item.name}</p>
+                <p><strong>Timestamp:</strong> {new Date(item.created_at).toLocaleString()}</p>
+                <p><strong>Window:</strong> {item.window_no || 'No window provided'}</p>
+                <p><strong>Purpose:</strong> {item.purpose || 'No purpose provided'}</p>
+
+              </div>
+            )}
           </div>
         ))}
       </div>
