@@ -121,41 +121,41 @@ const HeaderStats = ({
         addTextToPDF('Feedback Report', 16, true, 'center');
         addLine();
 
-       // 1. Feedback Summary
-           addTextToPDF('• Feedback Summary', 14, true);
-           const feedbackSummaryTable = [
-               { Metric: 'This Month', Value: month || 'N/A' },
-               { Metric: 'Overall Rating', Value: `${overall || 'N/A'}%` },
-               { Metric: 'Total Feedback Responses', Value: responses || 'N/A' },
-           ];
-           addAutoTableWithSpacing(feedbackSummaryTable);
-           addLine();
+        // 1. Feedback Summary
+        addTextToPDF('• Feedback Summary', 14, true);
+        const feedbackSummaryTable = [
+          { Metric: 'This Month', Value: month || 'N/A' },
+          { Metric: 'Overall Rating', Value: `${overall || 'N/A'}%` },
+          { Metric: 'Total Feedback Responses', Value: responses || 'N/A' },
+        ];
+        addAutoTableWithSpacing(feedbackSummaryTable);
+        addLine();
 
-       // 2. Monthly Rating Breakdown
-       addTextToPDF('• Monthly Rating Breakdown', 14, true);
-      if (ratingBreakdown && ratingBreakdown.breakdown) {
+        // 2. Monthly Rating Breakdown
+        addTextToPDF('• Monthly Rating Breakdown', 14, true);
+        if (ratingBreakdown && ratingBreakdown.breakdown) {
           const breakdownData = [
-              { 'Metric': 'Average Rating', 'Percentage': `${ratingBreakdown.average || 'N/A'}%` },
-              ...ratingBreakdown.breakdown.map(segment => ({
-                  'Metric': `${segment.stars} Stars`,
-                  'Percentage': `${segment.percentage}%`,
-              })),
+            { 'Metric': 'Average Rating', 'Percentage': `${ratingBreakdown.average || 'N/A'}%` },
+            ...ratingBreakdown.breakdown.map(segment => ({
+              'Metric': `${segment.stars} Stars`,
+              'Percentage': `${segment.percentage}%`,
+            })),
           ];
 
           addAutoTableWithSpacing(breakdownData);
-      } else {
+        } else {
           addTextToPDF('No rating breakdown data available.');
-      }
-      addLine();
+        }
+        addLine();
 
-       // 3. User Feedback
+        // 3. User Feedback
         addSection('• User Feedback', () => {
           if (comments && comments.length > 0) {
             const tableContent = comments.map((comment, index) => ({
               User: `User ${index + 1}`,
               Rating: `${comment.rating} stars`,
               Comment: comment.text,
-             
+
             }));
             addAutoTableWithSpacing(tableContent);
           } else {
@@ -163,14 +163,14 @@ const HeaderStats = ({
           }
         });
 
-        // 4. Average User Feedback Ratings    
+        // 4. Average User Feedback Ratings
         addSection('• Average User Feedback Ratings', () => {
           if (reviews) {
             const tableContent = [];
             Object.entries(reviews).forEach(([category, rating]) => {
-              let formattedCategory = category.replace(/breakdown/i,"").trim();
+              let formattedCategory = category.replace(/breakdown/i, "").trim();
               formattedCategory = formattedCategory.replace(/overall/i, " Overall");
-              
+
               if (typeof rating === 'object') {
                 Object.entries(rating).forEach(([subCategory, subCatRating]) => {
                   tableContent.push({
@@ -191,7 +191,7 @@ const HeaderStats = ({
           }
         });
 
-       // 5. Ratings Over Time
+        // 5. Ratings Over Time
         addSection('• Ratings Over Time', () => {
           if (ratingsOverTime && ratingsOverTime.length > 0) {
             addAutoTableWithSpacing(ratingsOverTime);
@@ -200,17 +200,6 @@ const HeaderStats = ({
           }
         });
 
-       // 6. Ratings Per Window
-        addSection('• Ratings Per Window', () => {
-          if (ratingsPerWindow && Object.keys(ratingsPerWindow).length > 0) {
-            ratingsPerWindow.forEach((entry) => {
-              addTextToPDF(`${entry.windowName}`);
-              addAutoTableWithSpacing(entry.data);
-            });
-          } else {
-            addTextToPDF('No ratings per window data available.');
-          }
-        });
 
 
         pdf.setFontSize(10);
@@ -258,8 +247,8 @@ const HeaderStats = ({
           <div className="staff-info">
             <p className="greeting-text">Hello Ma'am {staffName}!</p>
             <p className="small-font">
-              This is your <span className="bold-text">Feedback</span> for 
-              {windowNo.length > 1 
+              This is your <span className="bold-text">Feedback</span> for
+              {windowNo.length > 1
                 ? ` ${windowNo.map(formatWindowNumber).join(', ')}`
                 : ` ${formatWindowNumber(windowNo[0])}` || ' N/A'}.
             </p>
@@ -268,7 +257,7 @@ const HeaderStats = ({
         <div className="button-container">
           {/* Dropdown for Window Selection */}
           <div className="dropdownContainer" ref={dropdownRef}>
-          
+
             {isDropdownOpen && (
               <div className="dropdown-menu">
                 {[1, 2, 3, 4, 5, 6].map((window) => (
