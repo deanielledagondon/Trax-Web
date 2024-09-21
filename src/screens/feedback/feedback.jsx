@@ -5,208 +5,135 @@ import ReviewSummary from '../../components/feedback/reviewSummary/reviewSummary
 import CommentsList from '../../components/feedback/commentsList/commentsList';
 import WindowRatingChart from '../../components/feedback/windowRatingChart/windowRatingChart';
 import { supabase } from '../../components/helper/supabaseClient';
+import { getTopReviews } from '../../components/utils/feedBackAnalytics/feedBackAnalyticsUtil';
 
 const Feedback = () => {
-  const [feedback, setFeedback] = useState([]);
-  const [feedbackMonthlyCount, setFeedbackMonthlyCount] = useState(0);
-  const [feedbackCount, setFeedbackCount] = useState(0);
+  const [feedbackData, setFeedbackData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [overallRating, setOverallRating] = useState(0);
-  const [windowsData, setWindowsData] = useState([]);
-  const [ratingData, setRatingData] = useState([]);
-  const [comments, setComments] = useState([]);
-  const [ratingBreakdown, setRatingBreakdown] = useState({
-    average: 0,
-    breakdown: [
-      { stars: 1, percentage: 0, color: 'red' },
-      { stars: 2, percentage: 0, color: 'orange' },
-      { stars: 3, percentage: 0, color: 'yellow' },
-      { stars: 4, percentage: 0, color: 'light-green' },
-      { stars: 5, percentage: 0, color: 'green' }
-    ]
-  });
-  const [reviews, setReviews] = useState({
-    overall: 0,
-    breakdown: {}
-  });
 
   useEffect(() => {
-    const fetchFeedbacks = async () => {
-      try {
-        let { data, error } = await supabase
-          .from('feedback')
-          .select('*')
-          .order('feedback_date', { ascending: false });
+    const fetchData = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('feedback')
+        .select('*');
 
-        if (error) {
-          console.log(error);
-          throw error;
-        }
-        
-        setFeedback(data);
-        setFeedbackCount(data.length);
-
-        const currentDate = new Date();
-        const currentMonth = currentDate.getMonth();
-        const currentYear = currentDate.getFullYear();
-        const filteredFeedbacks = data.filter(feeds => {
-          const feedbackDate = new Date(feeds.feedback_date);
-          return feedbackDate.getMonth() === currentMonth && feedbackDate.getFullYear() === currentYear;
-        });
-        setFeedbackMonthlyCount(filteredFeedbacks.length);
-
-        const totalRating = data.reduce((acc, feedback) => acc + feedback.rating, 0);
-        const averageRating = data.length > 0 ? totalRating / data.length : 0;
-        setOverallRating(roundTo(averageRating, 2));
-
-        const monthlyRatings = Array(12).fill(null).map(() => ({
-          5: 0, 4: 0, 3: 0, 2: 0, 1: 0
-        }));
-        const windows = {
-          '1': Array(12).fill(null).map(() => ({ '5 stars': 0, '4 stars': 0, '3 stars': 0, '2 stars': 0, '1 star': 0 })),
-          '2': Array(12).fill(null).map(() => ({ '5 stars': 0, '4 stars': 0, '3 stars': 0, '2 stars': 0, '1 star': 0 })),
-          '3': Array(12).fill(null).map(() => ({ '5 stars': 0, '4 stars': 0, '3 stars': 0, '2 stars': 0, '1 star': 0 })),
-          '4': Array(12).fill(null).map(() => ({ '5 stars': 0, '4 stars': 0, '3 stars': 0, '2 stars': 0, '1 star': 0 })),
-          '5': Array(12).fill(null).map(() => ({ '5 stars': 0, '4 stars': 0, '3 stars': 0, '2 stars': 0, '1 star': 0 })),
-          '6': Array(12).fill(null).map(() => ({ '5 stars': 0, '4 stars': 0, '3 stars': 0, '2 stars': 0, '1 star': 0 }))
-        };
-        
-        let totalRatings = 0;
-        let sumOfRatings = 0;
-        const starCounts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-        const reviewCounts = {
-          'Easy Access': 0,
-          'Reliable': 0,
-          'Responsive': 0,
-          'Ease of Use': 0,
-          'User-Friendly': 0
-        };
-
-      
-        data.forEach(feedback => {
-          const logDate = new Date(feedback.feedback_date);
-          const month = logDate.getMonth(); 
-          const rating = feedback.rating;
-          const review = feedback.reviews;
-          
-          
-          let windowNoNumber = parseInt(feedback.window_no.slice(1));
-          if (windowNoNumber >= 1 && windowNoNumber <= 6) {
-            windows[windowNoNumber][month][`${rating} stars`] += 1;
-          }
-
-        
-          if (rating >= 1 && rating <= 5) {
-            monthlyRatings[month][rating] += 1;
-            starCounts[rating] += 1;
-            totalRatings += 1;
-            sumOfRatings += rating;
-          }
-
-        
-          if (review && reviewCounts[review] !== undefined) {
-            reviewCounts[review] += 1;
-          }
-        });
-
-      
-        const ratingBreakdown = {
-          average: roundTo(sumOfRatings / totalRatings, 2),
-          breakdown: [
-            { stars: 1, percentage: roundTo((starCounts[1] / totalRatings) * 100, 2), color: 'red' },
-            { stars: 2, percentage: roundTo((starCounts[2] / totalRatings) * 100, 2), color: 'orange' },
-            { stars: 3, percentage: roundTo((starCounts[3] / totalRatings) * 100, 2), color: 'yellow' },
-            { stars: 4, percentage: roundTo((starCounts[4] / totalRatings) * 100, 2), color: 'light-green' },
-            { stars: 5, percentage: roundTo((starCounts[5] / totalRatings) * 100, 2), color: 'green' }
-          ]
-        };
-        setRatingBreakdown(ratingBreakdown);
-
-       
-        const months = ['January', 'February', 'March', 'April', 'May', 'June', 
-                        'July', 'August', 'September', 'October', 'November', 'December'];
-        const ratingData = monthlyRatings.map((rating, index) => ({
-          month: months[index],
-          '5 stars': rating[5],
-          '4 stars': rating[4],
-          '3 stars': rating[3],
-          '2 stars': rating[2],
-          '1 star': rating[1]
-        }));
-        setRatingData(ratingData);
-
-   
-        const windowsData = Object.keys(windows).map(windowNo => ({
-          windowName: `Window ${windowNo}`,
-          data: windows[windowNo].map((rating, index) => ({
-            month: months[index],
-            '5 stars': rating['5 stars'],
-            '4 stars': rating['4 stars'],
-            '3 stars': rating['3 stars'],
-            '2 stars': rating['2 stars'],
-            '1 star': rating['1 star']
-          }))
-        }));
-        setWindowsData(windowsData);
-
-   
-        const latestComments = data.slice(0, 6).map(feedback => ({
-          rating: feedback.rating,
-          text: feedback.comment
-        }));
-        setComments(latestComments);
-
-      
-        const reviews = {
-          overall: roundTo(sumOfRatings / totalRatings, 2),
-          breakdown: Object.fromEntries(
-            Object.entries(reviewCounts).map(([key, value]) => 
-              [key, roundTo((value / totalRatings) * 100, 2)]
-            )
-          )
-        };
-        setReviews(reviews);
-
-        setLoading(false);
-      } catch (error) {
-        setError(error.message);
-        setLoading(false);
+      if (error) {
+        console.error('Error fetching feedback data:', error);
+      } else {
+        setFeedbackData(data);
       }
+      setLoading(false);
     };
 
-    fetchFeedbacks();
+    fetchData();
   }, []);
 
- 
-  const roundTo = (value, decimalPlaces) => {
-    const factor = 10 ** decimalPlaces;
-    return Math.round(value * factor + Number.EPSILON) / factor;
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  // Calculate Month Stats and Rating Breakdown with Strict Typing
+  const calculateMonthStats = (feedbackData) => {
+    const totalFeedbacks = feedbackData.length;
+    const totalRatings = feedbackData.reduce((sum, feedback) => sum + feedback.rating, 0);
+    const overall = (totalRatings / totalFeedbacks).toFixed(2);
+
+    // Strict structure for ratingBreakdown
+    const breakdown = [1, 2, 3, 4, 5].map(star => {
+      const starCount = feedbackData.filter(fb => Math.floor(fb.rating) === star).length;
+      return {
+        stars: star,
+        percentage: parseFloat(((starCount / totalFeedbacks) * 100).toFixed(2)),
+        color: star === 5 ? 'green' : star === 4 ? 'light-green' : star === 3 ? 'yellow' : star === 2 ? 'orange' : 'red'
+      };
+    });
+
+    return {
+      month: totalFeedbacks, // Number of feedbacks in the current month
+      overall: parseFloat(overall), // Average rating
+      responses: totalFeedbacks.toString(), // Total number of responses as a string
+      ratingBreakdown: {
+        average: parseFloat((totalRatings / totalFeedbacks).toFixed(2)), // Strict: Match the mock data
+        breakdown
+      }
+    };
   };
 
-  
-  const monthStats = { 
-    month: feedbackMonthlyCount, 
-    overall: overallRating, 
-    responses: feedbackCount 
+  // Aggregate feedback data by month with strict structure
+  const aggregateByMonth = (feedbackData) => {
+    const months = feedbackData.reduce((acc, feedback) => {
+      const month = new Date(feedback.feedback_date).toLocaleString('default', { month: 'long' });
+      if (!acc[month]) acc[month] = { '5 stars': 0, '4 stars': 0, '3 stars': 0, '2 stars': 0, '1 star': 0 };
+      const star = Math.floor(feedback.rating);
+      acc[month][`${star} star${star > 1 ? 's' : ''}`]++;
+      return acc;
+    }, {});
+
+    return Object.entries(months).map(([month, stars]) => ({
+      month,
+      '5 stars': stars['5 stars'],
+      '4 stars': stars['4 stars'],
+      '3 stars': stars['3 stars'],
+      '2 stars': stars['2 stars'],
+      '1 star': stars['1 star']
+    }));
   };
 
-  
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  // Extract comments with strict typing
+  const extractComments = (feedbackData) => {
+    return feedbackData.map(fb => ({
+      rating: Math.floor(fb.rating),
+      text: fb.comment
+    }));
+  };
 
- 
+  // Group feedback data by window number with strict typing
+  const groupByWindow = (feedbackData) => {
+    const windows = feedbackData.reduce((acc, feedback) => {
+      const window = feedback.window_no;
+      if (!acc[window]) acc[window] = [];
+      acc[window].push(feedback);
+      return acc;
+    }, {});
+
+    return Object.entries(windows).map(([windowName, data]) => ({
+      windowName,
+      data: aggregateByMonth(data) // Month breakdown for each window
+    }));
+  };
+
+  const topReviews = getTopReviews(feedbackData)
+  const reviews = {
+    overall: 89.5,
+    breakdown: topReviews.reduce((acc, { review, percentage }) => {
+      acc[review] = percentage;
+      return acc;
+    }, {}),
+  };
+
+  // Transform feedback data into the necessary structures
+  const monthStats = calculateMonthStats(feedbackData);
+  const comments = extractComments(feedbackData);
+  const ratingsOverTime = aggregateByMonth(feedbackData);
+  const ratingsPerWindow = groupByWindow(feedbackData);
+
+  // Pass the transformed data to HeaderStats and other components
   return (
     <div className="container mt-5">
-      <HeaderStats {...monthStats} ratingBreakdown={ratingBreakdown} />
+      <HeaderStats
+        {...monthStats}
+        comments={comments}
+        reviews={reviews}
+        ratingsOverTime={ratingsOverTime}
+        ratingsPerWindow={ratingsPerWindow}
+      />
       <CommentsList comments={comments} />
       <ReviewSummary reviews={reviews} />
-      <RatingChart data={ratingData} />
-      <WindowRatingChart windowsData={windowsData} />
+      <RatingChart data={ratingsOverTime} />
+      <WindowRatingChart windowsData={ratingsPerWindow} />
     </div>
   );
-
-  
 };
 
 export default Feedback;

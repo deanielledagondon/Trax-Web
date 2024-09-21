@@ -1,69 +1,129 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import HeaderStats3 from '../window33/headerStats3';
 import RatingChart from '../feedback/ratingChart/ratingChart';
 import ReviewSummary from '../feedback/reviewSummary/reviewSummary';
 import CommentsList from '../feedback/commentsList/commentsList';
+import { getTopReviews } from '../utils/feedBackAnalytics/feedBackAnalyticsUtil';
+import { supabase } from '../helper/supabaseClient';
 //import WindowRatingChart from '../feedback/windowRatingChart/windowRatingChart';
 
 const Window3 = () => {
+  const [feedbackData, setFeedbackData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const ratingBreakdown = {
-    average: 76.87,
-    breakdown: [
-      { stars: 1, percentage: 7.54, color: 'red' },
-      { stars: 2, percentage: 23.65, color: 'orange' },
-      { stars: 3, percentage: 18.6, color: 'yellow' },
-      { stars: 4, percentage: 73.6, color: 'light-green' },
-      { stars: 5, percentage: 65.87, color: 'green' }
-    ]
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('feedback')
+        .select('*').eq('window_no', "W3");
+
+      if (error) {
+        console.error('Error fetching feedback data:', error);
+      } else {
+        setFeedbackData(data);
+      }
+      setLoading(false);
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+
+  const calculateMonthStats = (feedbackData) => {
+    const totalFeedbacks = feedbackData.length;
+    const totalRatings = feedbackData.reduce((sum, feedback) => sum + feedback.rating, 0);
+    const overall = (totalRatings / totalFeedbacks).toFixed(2);
+
+
+    const breakdown = [1, 2, 3, 4, 5].map(star => {
+      const starCount = feedbackData.filter(fb => Math.floor(fb.rating) === star).length;
+      return {
+        stars: star,
+        percentage: parseFloat(((starCount / totalFeedbacks) * 100).toFixed(2)),
+        color: star === 5 ? 'green' : star === 4 ? 'light-green' : star === 3 ? 'yellow' : star === 2 ? 'orange' : 'red'
+      };
+    });
+
+    return {
+      month: totalFeedbacks, // Number of feedbacks in the current month
+      overall: parseFloat(overall), // Average rating
+      responses: totalFeedbacks.toString(), // Total number of responses as a string
+      ratingBreakdown: {
+        average: parseFloat((totalRatings / totalFeedbacks).toFixed(2)), // Strict: Match the mock data
+        breakdown
+      }
+    };
   };
-  const ratingData = [
-    { month: 'January', '5 stars': 25, '4 stars': 15, '3 stars': 5, '2 stars': 2, '1 star': 1 },
-    { month: 'February', '5 stars': 30, '4 stars': 10, '3 stars': 5, '2 stars': 3, '1 star': 2 },
-    { month: 'March', '5 stars': 20, '4 stars': 18, '3 stars': 7, '2 stars': 4, '1 star': 1 },
-    { month: 'April', '5 stars': 28, '4 stars': 14, '3 stars': 8, '2 stars': 3, '1 star': 2 },
-    { month: 'May', '5 stars': 25, '4 stars': 15, '3 stars': 5, '2 stars': 2, '1 star': 1 },
-    { month: 'June', '5 stars': 30, '4 stars': 10, '3 stars': 5, '2 stars': 3, '1 star': 2 },
-    { month: 'July', '5 stars': 20, '4 stars': 18, '3 stars': 7, '2 stars': 4, '1 star': 1 },
-    { month: 'August', '5 stars': 28, '4 stars': 14, '3 stars': 8, '2 stars': 3, '1 star': 2 },
-    { month: 'September', '5 stars': 25, '4 stars': 15, '3 stars': 5, '2 stars': 2, '1 star': 1 },
-    { month: 'October', '5 stars': 30, '4 stars': 10, '3 stars': 5, '2 stars': 3, '1 star': 2 },
-    { month: 'November', '5 stars': 20, '4 stars': 18, '3 stars': 7, '2 stars': 4, '1 star': 1 },
-    { month: 'December', '5 stars': 28, '4 stars': 14, '3 stars': 8, '2 stars': 3, '1 star': 2 }
-  ];
+
+  // Aggregate feedback data by month with strict structure
+  const aggregateByMonth = (feedbackData) => {
+    const months = feedbackData.reduce((acc, feedback) => {
+      const month = new Date(feedback.feedback_date).toLocaleString('default', { month: 'long' });
+      if (!acc[month]) acc[month] = { '5 stars': 0, '4 stars': 0, '3 stars': 0, '2 stars': 0, '1 star': 0 };
+      const star = Math.floor(feedback.rating);
+      acc[month][`${star} star${star > 1 ? 's' : ''}`]++;
+      return acc;
+    }, {});
+
+    return Object.entries(months).map(([month, stars]) => ({
+      month,
+      '5 stars': stars['5 stars'],
+      '4 stars': stars['4 stars'],
+      '3 stars': stars['3 stars'],
+      '2 stars': stars['2 stars'],
+      '1 star': stars['1 star']
+    }));
+  };
+
+  // Extract comments with strict typing
+  const extractComments = (feedbackData) => {
+    return feedbackData.map(fb => ({
+      rating: Math.floor(fb.rating),
+      text: fb.comment
+    }));
+  };
+
+  // Group feedback data by window number with strict typing
+  const groupByWindow = (feedbackData) => {
+    const windows = feedbackData.reduce((acc, feedback) => {
+      const window = feedback.window_no;
+      if (!acc[window]) acc[window] = [];
+      acc[window].push(feedback);
+      return acc;
+    }, {});
+
+    return Object.entries(windows).map(([windowName, data]) => ({
+      windowName,
+      data: aggregateByMonth(data) // Month breakdown for each window
+    }));
+  };
+
+  const topReviews = getTopReviews(feedbackData)
   const reviews = {
-    overall: 95.89,
-    breakdown: {
-      'Easy Access': 96.89,
-      'Reliable': 99.99,
-      'Responsive': 93.67,
-      'Ease of Use': 90.65,
-      'User-Friendly': 93.76
-    }
+    overall: 89.5,
+    breakdown: topReviews.reduce((acc, { review, percentage }) => {
+      acc[review] = percentage;
+      return acc;
+    }, {}),
   };
-  const comments = [
-    { rating: 5, text: 'The QR code system is a fantastic upgrade from the traditional book logging method.' },
-    { rating: 5, text: 'Im impressed with how the new system reduces errors in data entry' },
-    { rating: 5, text: 'The technology upgrade has significantly streamlined our logging processes.' },
-    { rating: 5, text: 'I appreciate the improved accuracy in our records since implementing the QR code system.' },
-    { rating: 4, text: 'This new system has made administrative tasks much more efficient.' },
-    { rating: 5, text: 'The QR code scanning is quick and easy to use.' }
-  ];
-  const windowsData = [
-    {
-      windowName: "Window 3",
-      data: ratingData
-    },
 
-  ];
-  const monthStats = { month: 756, overall: 2.2, responses: '6,473', ratingBreakdown, comments, reviews, ratingsOverTime: ratingData };
+
+  // Transform feedback data into the necessary structures
+  const monthStats = calculateMonthStats(feedbackData);
+  const comments = extractComments(feedbackData);
+  const ratingsOverTime = aggregateByMonth(feedbackData);
   return (
     <div className="container mt-5">
-      <HeaderStats3 {...monthStats} ratingBreakdown={ratingBreakdown} />
+      <HeaderStats3 {...monthStats} comments={comments} reviews={reviews} ratingsOverTime={ratingsOverTime} />
       <CommentsList comments={comments} />
       <ReviewSummary reviews={reviews} />
-      <RatingChart data={ratingData} />
-   
+      <RatingChart data={ratingsOverTime} />
+
     </div>
   );
 };

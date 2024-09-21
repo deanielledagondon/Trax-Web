@@ -96,6 +96,7 @@ const HeaderStats = ({
 
 
         </div>
+          { }
           <WindowPrintButton {...{ month, overall, responses, ratingBreakdown, comments, reviews, ratingsOverTime }} />
         </div>
 

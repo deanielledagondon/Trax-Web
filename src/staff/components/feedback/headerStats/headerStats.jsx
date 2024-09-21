@@ -192,14 +192,6 @@ const HeaderStats = ({
         });
 
         // 5. Ratings Over Time
-        addSection('• Ratings Over Time', () => {
-          if (ratingsOverTime && ratingsOverTime.length > 0) {
-            addAutoTableWithSpacing(ratingsOverTime);
-          } else {
-            addTextToPDF('No ratings trend data available.');
-          }
-        });
-
 
 
         pdf.setFontSize(10);

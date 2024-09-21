@@ -213,10 +213,11 @@ export class PDFReportGenerator {
     this.yPosition += 10; // Spacing after the section
   }
 
-  addTable(data) {
+  addTable(data, headers = []) {
     autoTable(this.pdf, {
       startY: this.yPosition,
-      body: data,
+      head: [headers],
+      body: data.map((item) => Object.values(item)),
     });
     this.yPosition = this.pdf.lastAutoTable.finalY + 10;
   }
