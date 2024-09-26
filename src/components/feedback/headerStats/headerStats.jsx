@@ -8,6 +8,7 @@ import CommentsList from '../commentsList/commentsList.jsx';
 import ReviewSummary from '../reviewSummary/reviewSummary.jsx';
 import { ca } from 'date-fns/locale';
 import autoTable from 'jspdf-autotable'
+import FeedbackPrintButton from '../../reportPrinters/FeedbackPrintButton.jsx';
 
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
@@ -41,7 +42,7 @@ const HeaderStats = ({
   const printDropdownRef = useRef(null);
   const navigate = useNavigate();
 
-  
+
   useEffect(() => {
     const closeDropdowns = (e) => {
       if (isDropdownOpen && dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -74,7 +75,7 @@ const HeaderStats = ({
         const pageHeight = pdf.internal.pageSize.getHeight();
         let yPosition = 20;
 
-      
+
         const addTextToPDF = (text, fontSize = 12, isBold = false, align = 'left') => {
           pdf.setFontSize(fontSize);
           pdf.setFont(undefined, isBold ? 'bold' : 'normal');
@@ -167,14 +168,14 @@ const HeaderStats = ({
           }
         });
 
-        // 4. Average User Feedback Ratings    
+        // 4. Average User Feedback Ratings
         addSection('• Average User Feedback Ratings', () => {
           if (reviews) {
             const tableContent = [];
             Object.entries(reviews).forEach(([category, rating]) => {
               let formattedCategory = category.replace(/breakdown/i, "").trim();
               formattedCategory = formattedCategory.replace(/overall/i, " Overall");
-              
+
               if (typeof rating === 'object') {
                 Object.entries(rating).forEach(([subCategory, subCatRating]) => {
                   tableContent.push({
@@ -272,18 +273,9 @@ const HeaderStats = ({
               </div>
             )}
           </div>
-
+          <FeedbackPrintButton {...{ month, overall, responses, ratingBreakdown, comments, reviews, ratingsOverTime, ratingsPerWindow }} />
           {/* Print Button */}
-          <div className="print-container" ref={printDropdownRef}>
-            <button className="print-button" onClick={() => handlePrintSelection('PDF')}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="6 9 6 2 18 2 18 9"></polyline>
-                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
-                <rect x="6" y="14" width="12" height="8"></rect>
-              </svg>
-              Print
-            </button>
-          </div>
+
         </div>
       </div>
 
