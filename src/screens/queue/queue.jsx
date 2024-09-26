@@ -1,14 +1,13 @@
 import React from "react";
 import CurrentQueue from "./CurrentQueue";
 import WindowSign from "../../components/Queue/windowsign"
-import Present from "../../components/Queue/present"
+
+import PatientDashboard from "../../components/Queue/try";
 
 const Queue = () => {
   return (
     <div>
-      <WindowSign/>
-      <Present/>
-      
+    
       <CurrentQueue/>
     </div>
   )

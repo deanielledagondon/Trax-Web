@@ -1,3 +1,423 @@
-.bar-item-info p {
-    font-size: 15px;
+:root {
+    --background-light: #ffffff;
+    --background-dark: #323250;
+    --text-light: #000000;
+    --text-dark: #ffffff;
+    --border-light: #e0e0e0;
+    --border-dark: #444444;
+    --item-background-light: #f9f9f9;
+    --item-background-dark: #2e2e48;
+    --hover-background-light: #ffffff;
+    --hover-background-dark: #151515;
+    --button-delete: #f44336; /* Red for delete */
+    --button-pending: #2196F3; /* Blue for pending */
+    --button-details: #4CAF50; /* Green for details */
+    --text-details: #62ff43;
+    --text-detaills: #fca32f;
 }
+
+
+body.light-mode {
+    background-color: var(--background-light);
+    color: var(--text-light);
+}
+
+body.dark-mode {
+    background-color: var(--background-dark);
+    color: var(--text-dark);
+}
+
+.current-queuee {
+    padding: 16px;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-color: var(--background-light);
+}
+
+body.dark-mode .current-queuee {
+    background-color: var(--background-dark);
+}
+
+.current-queue-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.queue-no {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--text-details); 
+    margin-bottom: 5px;
+}
+
+.status-no {
+    font-size: 13px;
+    color: var(--text-detaills); 
+    margin-bottom: 5px;
+}
+
+.current-queue-list {
+    max-height: 60vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.current-queue-item,
+.window-status-card {
+    border-radius: 5px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    text-align: center;
+}
+
+.current-queue-item {
+    background: var(--item-background-light);
+    border: 1px solid var(--border-light);
+    transition: background-color 0.3s;
+}
+
+body.dark-mode .current-queue-item {
+    background: var(--item-background-dark);
+    border: 1px solid var(--border-dark);
+}
+
+.current-queue-item:hover {
+    background-color: var(--hover-background-light);
+}
+
+body.dark-mode .current-queue-item:hover {
+    background-color: var(--hover-background-dark);
+}
+
+.item-info {
+    margin-bottom: 10px;
+}
+
+.item-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text-dark);
+}
+
+.btn-delete {
+    background-color: var(--button-delete);
+}
+
+.btn-pending {
+    background-color: var(--button-pending);
+}
+
+.btn-details {
+    background-color: var(--button-details);
+}
+
+.item-details {
+    margin-top: 10px;
+    border-top: 1px solid var(--border-light);
+    padding-top: 10px;
+    background-color: var(--item-background-light);
+}
+
+body.dark-mode .item-details {
+    border-top: 1px solid var(--border-dark);
+    background-color: var(--item-background-dark);
+}
+
+.window-status-list {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.window-status-card {
+    border: 1px solid var(--border-light);
+    border-radius: 5px;
+    padding: 15px;
+    height: 200px;
+    background-color: var(--item-background-light);
+    flex: 1;
+    margin: 10px;
+}
+
+body.dark-mode .window-status-card {
+    background-color: var(--item-background-dark);
+    border: 1px solid var(--border-dark);
+}
+
+.window-status-card h5 {
+    margin: 0;
+}
+
+.window-status-card p {
+    margin: 5px 0;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-light);
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+body.dark-mode .search-input {
+    border: 1px solid var(--border-dark);
+}
+
+.current-queue-card {
+    display: flex;
+}
+
+.item-info {
+    flex: 1;
+}
+
+.item-details {
+    flex: 1;
+}
+
+.current-queuee-container {
+    display: flex;
+    gap: 20px;
+    padding: 16px;
+}
+
+.current-queuee, .queue-details {
+    padding: 16px;
+    background-color: var(--item-background-light);
+    border: 1px solid var(--border-light);
+    border-radius: 5px;
+    overflow-y: auto;
+}
+
+body.dark-mode .current-queuee, body.dark-mode .queue-details {
+    background-color: var(--item-background-dark);
+    border: 1px solid var(--border-dark);
+}
+
+/* Ensure that the current-queue-list items and queue-details content can scroll if they get too long */
+.current-queue-list, .details-card {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.current-queue-card {
+    margin-bottom: 15px;
+    padding: 15px;
+    border: 1px solid var(--border-light);
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+body.dark-mode .current-queue-card {
+    border: 1px solid var(--border-dark);
+}
+
+.item-info {
+    margin-bottom: 10px;
+}
+
+.item-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Table for queue-details */
+.details-card table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--item-background-light);
+}
+
+.details-card th, .details-card td {
+    padding: 8px;
+    border: 1px solid var(--border-light);
+    text-align: left;
+    color: var(--text-light);
+    background-color: var(--item-background-light);
+}
+
+body.dark-mode .details-card th, body.dark-mode .details-card td {
+    border: 1px solid var(--border-dark);
+    color: var(--text-dark);
+    background-color: var(--item-background-dark);
+}
+
+.no-queue {
+    margin: 30px;
+}
+
+.current-queuee p {
+    text-align: center;
+}
+.window-status h2 {
+    margin-top: 45px;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: var(--text-light); /* Light mode color */
+}
+
+body.dark-mode .window-status h2 {
+    color: var(--text-dark);
+}
+.window-status h3 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: var(--text-light); 
+}
+
+body.dark-mode .window-status h3 {
+    color: var(--text-dark); 
+}
+
+.item-info p {
+    font-size: 15px;
+    margin-bottom: 20px;
+    color: var(--text-light); 
+}
+
+body.dark-mode .item-info p {
+    color: var(--text-dark);
+}
+
+
+.current-queue-card p {
+    margin: 0;
+    padding: 5px 0;
+}
+
+
+.status-waiting {
+    color: #e79600;
+    font-weight: bold;
+}
+
+.queue-details h2 {
+    margin: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: var(--text-light); 
+}
+
+body.dark-mode .queue-details h2 {
+    color: var(--text-dark); /* Dark mode color */
+}
+
+.queue-details {
+    width: 700px;
+    background-color: var(--background-color);
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: var(--shadow);
+  }
+  .grid-layout {
+   
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+  }
+  
+  .left-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .profile-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+  }
+  
+  .right-column {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .appointment-schedule, .insurance-details, .dental-history, .documents {
+    margin-bottom: 20px;
+  }
+  
+  .social-icons i {
+    margin: 0 5px;
+    font-size: 24px;
+  }
+
+  .profile-icon {
+    font-size: 120px;
+    color: gray;
+  }
+
+  .queue-details h3 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: var(--text-light); 
+}
+
+body.dark-mode .queue-details h3 {
+    color: var(--text-dark); 
+}
+
+.queue-details p {
+    font-size: 15px;
+    margin-bottom: 20px;
+    color: var(--text-light); 
+}
+
+body.dark-mode .queue-details p {
+    color: var(--text-dark); 
+}
+
+.DetailsQueue{
+    margin: 20px;
+}
+
+.DetailsQueue p {
+    font-size: 15px;
+    margin-bottom: 20px;
+    color: var(--text-light); 
+}
+
+body.dark-mode .DetailsQueue p {
+    color: var(--text-dark); 
+}
+
+.no-queue-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  
+  .no-queue {
+    font-size: 1.2rem;
+    color: #888;
+  }
+  
+
+
+
+
+  
+
+  
+
+
+
+  

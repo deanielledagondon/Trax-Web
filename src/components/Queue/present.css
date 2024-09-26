@@ -72,7 +72,7 @@
   .card {
     display: flex;
     flex-direction: column;
-    padding: 50px 30px;
+    padding: 30px 30px;
     border-radius: 5px;
   
     

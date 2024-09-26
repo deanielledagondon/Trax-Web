@@ -1,48 +1,20 @@
 
 
-.topBox {
-  h1 {
+
+
+.queuePieChart {
+  text-align: center;
+  margin: 20px auto;
+  
+
+  h2 {
     margin-bottom: 20px;
-
+    font-size: 24px;
+    color: #333;
   }
-  .list {
-    .listItem {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 30px;
 
-      .user {
-        display: flex;
-        gap: 20px;
-
-        .userTexts {
-          display: flex;
-          flex-direction: column;
-          gap: 5px;
-
-          .notification{
-            font-size: 14px;
-            font-weight: 500;
-          }
-          .minutes {
-            font-size: 12px;
-            color: #9f9f9f9e;
-
-          }
-          .purpose {
-            font-size: 14px;
-            font-weight: 500;
-            color: #56bbfe;
-
-          }
-        }
-      }
-
-      .completed {
-        font-weight: 500;
-        color: #1fa308;
-      }
-    }
+  .recharts-surface {
+    margin: 0 auto;
   }
 }
+

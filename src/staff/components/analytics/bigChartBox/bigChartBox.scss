@@ -1,20 +1,20 @@
-@import "responsive.scss";
-
-
-.bigChartBox{
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  h1{
-    @include xxl{
-      font-size: 24px;
-    }
-  }
-  .chart{
-    width: 100%;
-    height: 300px;
-  }
+.rating-analytics-container {
+  padding: 20px;
+  background-color: var(--item-background-light);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  color: var(--text-light);
 }
+
+body.dark-mode .rating-analytics-container {
+  background-color: var(--item-background-dark);
+  border-color: var(--border-dark);
+  color: var(--text-dark);
+}
+
+.average-rating h3 {
+  color: #4caf50; /* Green color for the average percentage */
+  font-weight: bold;
+  text-align: center;
+}
+
