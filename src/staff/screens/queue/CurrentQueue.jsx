@@ -222,7 +222,7 @@ const CurrentQueue = () => {
         ) : selectedWindowQueue.length > 0 ? (
           <p><center>No more items in the queue.</center></p>
         ) : (
-          <p><center>The Registrants are waiting for you!</center></p>
+          <p><center>There's a queue are waiting for you!</center></p>
         )}
 
       </div>
