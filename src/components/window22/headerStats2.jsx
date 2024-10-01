@@ -80,12 +80,12 @@ const HeaderStats = ({
       <div className="header-top">
         <div className="header-stats-content"> </div>
         <h2 className="area-top-title">Window 2 | Feedback</h2>
-        <div className="button-container"> <div className="dropdown-container" ref={dropdownRef}>
-          <button className="dropdownButton" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+        <div className="button-container"> <div className="dropdownContainer" ref={dropdownRef}>
+          <button className="dropdown-button" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
             Select Window
           </button>
           {isDropdownOpen && (
-            <div className="dropdownMenu">
+            <div className="dropdown-menu">
               {[1, 2, 3, 4, 5, 6].map((window) => (
                 <button key={window} onClick={() => handleWindowSelection(window)}>
                   Window {window}

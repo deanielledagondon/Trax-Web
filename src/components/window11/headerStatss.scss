@@ -65,12 +65,22 @@ body {
 }
 
 
-.dropdown-container {
-  position: relative;
+.button-container {
+  display: flex;
+  gap: 10px; // Adds space between the buttons
+  align-items: center;
 }
 
-.dropdownButton {
-  background-color: var(--background-color);
+
+.dropdownContainer {
+  position: relative;
+  color: var(--text-color-inverted);
+  text-align: center;
+}
+
+
+.dropdown-button {
+  background-color: var(--background-color-inverted);
   border: 2px solid var(--border-color);
   border-radius: 12px;
   font-size: 16px;
@@ -83,16 +93,11 @@ body {
   outline: none;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   color: var(--text-color-inverted);
-
-  &:hover {
-    background-color: var(--hover-color);
-    color: black;
- 
-  }
+  
 
 }
 
-.dropdownMenu {
+.dropdown-menu {
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
@@ -118,14 +123,6 @@ body {
     font-size: 14px;
     transition: background-color 0.3s ease;
 
-    &:hover {
-      background-color: var(--hover-color);
-      color: black;
-    }
-
-    &:not(:last-child) {
-      border-bottom: 1px solid var(--border-color);
-    }
   }
 }
 
