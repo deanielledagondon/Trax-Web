@@ -91,7 +91,6 @@ body {
   outline: none;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   color: var(--text-color-inverted);
-  
 
 }
 
@@ -328,14 +327,13 @@ body {
   }
 }
 
-
 .print-container {
   display: flex;
   gap: 10px; // Adds space between the buttons
   align-items: center;
 }
 
-.print-button {
+.printButton {
   background-color: var(--background-color-inverted);
   border: 2px solid var(--border-color);
   border-radius: 12px;
@@ -356,4 +354,5 @@ body {
   width: 16px;
   height: 16px;
 }
+
 

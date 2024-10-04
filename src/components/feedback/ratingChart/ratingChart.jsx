@@ -26,7 +26,7 @@ const RatingChart = ({ data }) => {
         <div className="rating-chart-card">
             <div className="rating-chart-header">
                 <div className="rating-chart-title">Ratings Over Time</div>
-                <select onChange={handleMonthChange} className="month-select">
+                <select onChange={handleMonthChange} className="monthSelect">
                     {months.map((month, index) => (
                         <option key={index} value={month}>
                             {month}
