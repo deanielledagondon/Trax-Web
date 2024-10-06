@@ -1,5 +1,6 @@
 import { PDFReportGenerator } from "../helper/pdfPrinter";
-import '../feedback/headerStats/headerStats.css';
+import '../feedback/headerStats/headerStats.scss';
+
 
 const monthOrder = {
   January: 1, February: 2, March: 3, April: 4, May: 5, June: 6,
@@ -13,7 +14,7 @@ const FeedbackPrintButton = ({ month, overall, responses, ratingBreakdown, comme
         const pdfGenerator = new PDFReportGenerator();
 
         // Add sections to the PDF
-        pdfGenerator.addSection('1. Feedback Summary', () => {
+        pdfGenerator.addSection('• Feedback Summary', () => {
           const summaryTable = [
             { Metric: 'This Month', Value: month || 'N/A' },
             { Metric: 'Overall Rating', Value: `${overall || 'N/A'}%` },
@@ -22,7 +23,7 @@ const FeedbackPrintButton = ({ month, overall, responses, ratingBreakdown, comme
           pdfGenerator.addTable(summaryTable, ['Metric', 'Value']);
         });
 
-        pdfGenerator.addSection('2. Monthly Rating Breakdown', () => {
+        pdfGenerator.addSection('• Monthly Rating Breakdown', () => {
           if (ratingBreakdown && ratingBreakdown.breakdown) {
             const breakdownTable = [
               { Metric: 'Average Rating', Percentage: `${ratingBreakdown.average || 'N/A'}%` },
@@ -37,7 +38,7 @@ const FeedbackPrintButton = ({ month, overall, responses, ratingBreakdown, comme
           }
         });
 
-        pdfGenerator.addSection('3. User Feedback', () => {
+        pdfGenerator.addSection('• User Feedback', () => {
           if (comments && comments.length > 0) {
             const feedbackTable = comments.slice(0, 5).map((comment, index) => ({
               User: `User ${index + 1}`,
@@ -50,7 +51,7 @@ const FeedbackPrintButton = ({ month, overall, responses, ratingBreakdown, comme
           }
         });
 
-        pdfGenerator.addSection('4. Average User Feedback Ratings', () => {
+        pdfGenerator.addSection('• Average User Feedback Ratings', () => {
           if (reviews) {
             const averageRatingsTable = [];
             Object.entries(reviews).forEach(([category, rating]) => {
@@ -77,7 +78,7 @@ const FeedbackPrintButton = ({ month, overall, responses, ratingBreakdown, comme
         });
 
         // Ratings Over Time
-        pdfGenerator.addSection('5. Ratings Over Time', () => {
+        pdfGenerator.addSection('• Ratings Over Time', () => {
           if (ratingsOverTime && ratingsOverTime.length > 0) {
             // Sort by month only
             const sortedRatings = ratingsOverTime.sort((a, b) => {
@@ -94,7 +95,7 @@ const FeedbackPrintButton = ({ month, overall, responses, ratingBreakdown, comme
         });
 
         // Ratings Per Window
-        pdfGenerator.addSection('6. Ratings Per Window', () => {
+        pdfGenerator.addSection('• Ratings Per Window', () => {
           if (ratingsPerWindow && Object.keys(ratingsPerWindow).length > 0) {
             const sortedEntries = ratingsPerWindow.sort((a, b) => {
               const monthA = monthOrder[a.windowName.split(' ')[1]]; // Assuming format "Window Month"
@@ -119,6 +120,7 @@ const FeedbackPrintButton = ({ month, overall, responses, ratingBreakdown, comme
 
         // Footer
         pdfGenerator.addText(`Generated on: ${new Date().toLocaleDateString()}`, 10, false, 'center');
+        
 
         // Save the PDF
         pdfGenerator.savePDF('FeedbackReport.pdf');
@@ -133,7 +135,7 @@ const FeedbackPrintButton = ({ month, overall, responses, ratingBreakdown, comme
 
   return (
     <div className="print-container">
-      <button className="print-button" onClick={() => handlePrintSelection('PDF')}>
+      <button className="printButton" onClick={() => handlePrintSelection('PDF')}>
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <polyline points="6 9 6 2 18 2 18 9"></polyline>
           <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>

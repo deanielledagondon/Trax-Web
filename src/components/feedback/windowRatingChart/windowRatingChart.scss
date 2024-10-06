@@ -38,11 +38,6 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     color: var(--text-color-inverted);
   
-    &:hover {
-      background-color: var(--hover-color);
-      color: black;
-   
-    }
 }
 
 .chart-container {
@@ -58,16 +53,17 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    color: var(--text-color-inverted);
+    background-color: var(--background-color-inverted);
  
 }
 
 .month-modal {
-    background-color: white;
+    background-color: #f5f5f5;
     padding: 20px;
     border-radius: 8px;
     max-width: 80%;
@@ -77,21 +73,22 @@
     background: var(--background-color);
 }
 
+
 .month-options {
     display: flex;
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 10px;
+    gap: 7px;
     margin-top: 20px;
 }
 
 .month-options button {
-    padding: 10px;
+    padding: 7px;
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: #f0f0f0;
     cursor: pointer;
     color: var(--text-color-inverted);
-    background: var(--background-color);
+    background-color: var(--background-color-inverted);
 }
 
 .month-options button:hover {

@@ -63,7 +63,7 @@
   color: var(--text-color-inverted);
 }
 
-.month-select {
+.monthSelect {
 background-color: var(--background-color);
 border: 2px solid var(--border-color);
 border-radius: 12px;
@@ -77,12 +77,6 @@ text-align: center;
 outline: none;
 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 color: var(--text-color-inverted);
-
-&:hover {
-  background-color: var(--hover-color);
-  color: black;
-
-}
  
 }
 

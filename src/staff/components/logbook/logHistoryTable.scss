@@ -6,7 +6,7 @@ $dark-mode-scrollbar-color: #555;
 
   .log-table-container {
     overflow-y: auto;
-    max-height: 400px; 
+    max-height: 450px; 
     scrollbar-width: thin; 
     scrollbar-color: rgba(0, 0, 0, 0.2) transparent; 
     position: relative;
@@ -173,40 +173,25 @@ $dark-mode-scrollbar-color: #555;
         }
       }
     }
+    
 
     .entries {
       font-size: 16px;
-      color: #555;
-      
-
-
+      color: #888;
+    
       .dark-mode & {
         font-size: 16px;
         color: white;
       }
     }
-  }
 
+  } 
   .actions-column {
     display: flex;
     justify-content: center;
   }
 }
 
-.success-message {
-  background-color: #4CAF50;
-  color: white;
-  padding: 10px;
-  border-radius: 5px;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  svg {
-    margin-right: 10px;
-  }
-}
 
 .modal {
   position: fixed;
