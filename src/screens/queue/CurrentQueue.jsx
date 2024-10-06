@@ -19,7 +19,7 @@ const CurrentQueue = () => {
       try {
         let query = supabase
           .from('queue')
-          .select('id, name, queue_no, status, window_no, purpose, created_at')
+          .select('id, name, queue_no, status, window_no, purpose, created_at, type, email')
           .eq('status', 'Waiting')
           .order('id', { ascending: true });
 
@@ -117,14 +117,14 @@ const CurrentQueue = () => {
 
     await supabase
       .from('queue')
-      .update({ status: 'Done', time_taken: `${time.hr}:${time.min}:${time.sec}` })
+      .update({ status: 'Done', updated_at : `${time.hr}:${time.min}:${time.sec}` })
       .eq('id', currentQueueItem.id);
 
     handleNext();
   };
 
   const getStatusColor = (status) => {
-    return status === 'away' ? 'red' : (status === 'available' ? 'green' : 'black');
+    return status === 'Away' ? 'red' : (status === 'Available' ? 'green' : 'black');
   };
 
   const filteredQueue = queue.filter(item => 
@@ -201,7 +201,6 @@ const CurrentQueue = () => {
                 <div className="status-no"> {item.status}</div>
                 </p>
                 <div className="item-actions">
-                  <button onClick={() => console.log('Pending')} className="btn btn-pending">Move</button>
                   <button onClick={() => handleDelete(item.id)} className="btn btn-delete">Delete</button>
                   <button onClick={() => setExpandedQueue(item)} className="btn btn-details">
                     View Details
@@ -245,6 +244,8 @@ const CurrentQueue = () => {
         <h3>Appointment: </h3><p>{expandedQueue.created_at}</p>
         <h3>Status: </h3><p>{expandedQueue.status}</p>
         <h3>Details</h3>
+          <p>E-mail: {expandedQueue.email}</p>
+          <p>Type: {expandedQueue.type}</p>
           <p>Purpose: {expandedQueue.purpose}</p>
         </div>
       </div>
