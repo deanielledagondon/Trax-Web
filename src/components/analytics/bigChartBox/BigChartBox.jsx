@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from "../../helper/supabaseClient";
-import './BigchartBox.scss';
+import './BigChartBox.scss';
 import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto'; 
 import dayjs from 'dayjs'; 
