@@ -2,7 +2,17 @@ import { useContext, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ThemeContext } from "../../context/ThemeContext";
 import { LIGHT_THEME } from "../../constants/themeConstants";
-import { MdOutlineClose, MdOutlineBook, MdOutlineGroups, MdOutlineBarChart, MdOutlineComment, MdOutlineGridView, MdOutlineLogout, MdOutlineSettings, MdPerson } from "react-icons/md";
+import {
+  MdOutlineClose,
+  MdOutlineBook,
+  MdOutlineGroups,
+  MdOutlineBarChart,
+  MdOutlineComment,
+  MdOutlineGridView,
+  MdOutlineLogout,
+  MdOutlineSettings,
+  MdPerson,
+} from "react-icons/md";
 import { Link } from "react-router-dom";
 import LogoDark from "../../assets/images/logo-dark-small.png";
 import LogoLight from "../../assets/images/logo-light-small.png";
@@ -41,21 +51,24 @@ const Sidebar = () => {
     const user = localStorage.getItem("user");
     const parsedUser = JSON.parse(user);
     const { error } = await supabase
-        .from('registrants')
-        .update({ status: 'away' })
-        .eq('id', parsedUser.id)
-    localStorage.removeItem('sb-swqywqargpfwcyvpqhkn-auth-token')
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    localStorage.removeItem('themeMode');
-    window.location.href = '/';
+      .from("registrants")
+      .update({ status: "Away" })
+      .eq("id", parsedUser.id);
+    localStorage.removeItem("sb-swqywqargpfwcyvpqhkn-auth-token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    localStorage.removeItem("themeMode");
+    window.location.href = "/";
   };
 
   // Function to check if the link is active
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className={`sidebar ${isSidebarOpen ? "sidebar-show" : ""}`} ref={sidebarRef}>
+    <nav
+      className={`sidebar ${isSidebarOpen ? "sidebar-show" : ""}`}
+      ref={sidebarRef}
+    >
       <div className="sidebar-top">
         <div className="sidebar-brand">
           <img src={theme === LIGHT_THEME ? LogoLight : LogoDark} alt="Logo" />
@@ -69,7 +82,12 @@ const Sidebar = () => {
         <div className="sidebar-menu">
           <ul className="menu-list">
             <li className="menu-item">
-              <Link to="/staff-dashboard" className={`menu-link ${isActive("/staff-dashboard") ? "active" : ""}`}>
+              <Link
+                to="/staff-dashboard"
+                className={`menu-link ${
+                  isActive("/staff-dashboard") ? "active" : ""
+                }`}
+              >
                 <span className="menu-link-icon">
                   <MdOutlineGridView size={18} />
                 </span>
@@ -77,7 +95,12 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className="menu-item">
-              <Link to="/staff-queue" className={`menu-link ${isActive("/staff-queue") ? "active" : ""}`}>
+              <Link
+                to="/staff-queue"
+                className={`menu-link ${
+                  isActive("/staff-queue") ? "active" : ""
+                }`}
+              >
                 <span className="menu-link-icon">
                   <MdOutlineGroups size={20} />
                 </span>
@@ -85,7 +108,12 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className="menu-item">
-              <Link to="/staff-logbook" className={`menu-link ${isActive("/staff-logbook") ? "active" : ""}`}>
+              <Link
+                to="/staff-logbook"
+                className={`menu-link ${
+                  isActive("/staff-logbook") ? "active" : ""
+                }`}
+              >
                 <span className="menu-link-icon">
                   <MdOutlineBook size={20} />
                 </span>
@@ -93,7 +121,12 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className="menu-item">
-              <Link to="/staff-analytics" className={`menu-link ${isActive("/staff-analytics") ? "active" : ""}`}>
+              <Link
+                to="/staff-analytics"
+                className={`menu-link ${
+                  isActive("/staff-analytics") ? "active" : ""
+                }`}
+              >
                 <span className="menu-link-icon">
                   <MdOutlineBarChart size={18} />
                 </span>
@@ -101,7 +134,12 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className="menu-item">
-              <Link to="/staff-feedback" className={`menu-link ${isActive("/staff-feedback") ? "active" : ""}`}>
+              <Link
+                to="/staff-feedback"
+                className={`menu-link ${
+                  isActive("/staff-feedback") ? "active" : ""
+                }`}
+              >
                 <span className="menu-link-icon">
                   <MdOutlineComment size={20} />
                 </span>
@@ -114,7 +152,12 @@ const Sidebar = () => {
         <div className="sidebar-menu sidebar-menu2">
           <ul className="menu-list">
             <li className="menu-item">
-              <Link to="/staff-settings" className={`menu-link ${isActive("/staff-settings") ? "active" : ""}`}>
+              <Link
+                to="/staff-settings"
+                className={`menu-link ${
+                  isActive("/staff-settings") ? "active" : ""
+                }`}
+              >
                 <span className="menu-link-icon">
                   <MdOutlineSettings size={20} />
                 </span>
@@ -122,12 +165,12 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className="menu-item" onClick={handleLogout}>
-                <span className="menu-link">
-                  <span className="menu-link-icon">
-                    <MdOutlineLogout size={20} />
-                  </span>
-                  <span className="menu-link-text">Logout</span>
-                  </span>
+              <span className="menu-link">
+                <span className="menu-link-icon">
+                  <MdOutlineLogout size={20} />
+                </span>
+                <span className="menu-link-text">Logout</span>
+              </span>
             </li>
           </ul>
         </div>

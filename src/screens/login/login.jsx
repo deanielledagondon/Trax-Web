@@ -1,36 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import './login.css';
-import '../../App.scss';
+import React, { useState, useEffect } from "react";
+import "./login.css";
+import "../../App.scss";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../../components/helper/supabaseClient";
-import logo from '../../assets/images/long-registrar.png';
+import logo from "../../assets/images/long-registrar.png";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
-import { useAuth } from '../../components/authContext';
+import { useAuth } from "../../components/authContext";
 
 const Login = () => {
   const { session } = useAuth();
   let navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    fullEmail: '',
-    fullPassword: '',
+    fullEmail: "",
+    fullPassword: "",
     rememberMe: false,
-    showPassword: false  // state to manage password visibility, default is false (masked)
+    showPassword: false, // state to manage password visibility, default is false (masked)
   });
 
   function handleChange(event) {
     const { name, value, type, checked } = event.target;
-    setFormData(prevFormData => ({
+    setFormData((prevFormData) => ({
       ...prevFormData,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
   }
 
   // Toggle password visibility
   function togglePasswordVisibility() {
-    setFormData(prevFormData => ({
+    setFormData((prevFormData) => ({
       ...prevFormData,
-      showPassword: !prevFormData.showPassword
+      showPassword: !prevFormData.showPassword,
     }));
   }
 
@@ -43,28 +43,28 @@ const Login = () => {
   async function navigateBasedOnRole(userId) {
     try {
       const { data, error } = await supabase
-        .from('registrants')
-        .select('role')
-        .eq('id', userId)
+        .from("registrants")
+        .select("role")
+        .eq("id", userId)
         .single();
 
       if (error) {
-        console.error('Error fetching user role:', error.message);
+        console.error("Error fetching user role:", error.message);
         alert(`Fetching role failed: ${error.message}`);
         return;
       }
 
-      if (data.role === 'Admin') {
-        navigate('/admin-dashboard');
-      } else if (data.role === 'Staff') {
-        navigate('/staff-dashboard');
+      if (data.role === "Admin") {
+        navigate("/admin-dashboard");
+      } else if (data.role === "Staff") {
+        navigate("/staff-dashboard");
       } else {
-        console.error('Unknown user role:', data.role);
-        alert('Unknown user role. Please contact support.');
+        console.error("Unknown user role:", data.role);
+        alert("Unknown user role. Please contact support.");
       }
     } catch (error) {
-      console.error('Unexpected error:', error);
-      alert('An unexpected error occurred. Please try again.');
+      console.error("Unexpected error:", error);
+      alert("An unexpected error occurred. Please try again.");
     }
   }
 
@@ -77,27 +77,27 @@ const Login = () => {
       });
 
       if (error) {
-        console.error('Error signing in:', error.message);
+        console.error("Error signing in:", error.message);
         alert(`Login failed: ${error.message}`);
         return;
       }
 
-      console.log('Sign-in successful:', data);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      localStorage.setItem('token', data.session.access_token);
+      console.log("Sign-in successful:", data);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("token", data.session.access_token);
       if (formData.rememberMe) {
-        localStorage.setItem('rememberMe', true);
+        localStorage.setItem("rememberMe", true);
       } else {
-        localStorage.removeItem('rememberMe');
+        localStorage.removeItem("rememberMe");
       }
       const { errors } = await supabase
-        .from('registrants')
-        .update({ status: 'available' })
-        .eq('id', data.user.id)
+        .from("registrants")
+        .update({ status: "Available" })
+        .eq("id", data.user.id);
       navigateBasedOnRole(data.user.id);
     } catch (error) {
-      console.error('Unexpected error:', error);
-      alert('An unexpected error occurred. Please try again.');
+      console.error("Unexpected error:", error);
+      alert("An unexpected error occurred. Please try again.");
     }
   }
 
@@ -110,11 +110,16 @@ const Login = () => {
             <h3>Welcome Back!</h3>
           </div>
 
-          <form action="" className='form grid' onSubmit={handleSubmit}>
-
+          <form action="" className="form grid" onSubmit={handleSubmit}>
             <div className="inputDiv">
               <div className="input flex">
-                <input type="text" id="email" name="fullEmail" placeholder="Email" onChange={handleChange} />
+                <input
+                  type="text"
+                  id="email"
+                  name="fullEmail"
+                  placeholder="Email"
+                  onChange={handleChange}
+                />
               </div>
             </div>
 
@@ -127,20 +132,33 @@ const Login = () => {
                   placeholder="Password"
                   onChange={handleChange}
                 />
-                {formData.showPassword ?
-                  <MdVisibility className="input-icon right-icon" onClick={togglePasswordVisibility} />
-                  :
-                  <MdVisibilityOff className="input-icon right-icon" onClick={togglePasswordVisibility} />
-                }
+                {formData.showPassword ? (
+                  <MdVisibility
+                    className="input-icon right-icon"
+                    onClick={togglePasswordVisibility}
+                  />
+                ) : (
+                  <MdVisibilityOff
+                    className="input-icon right-icon"
+                    onClick={togglePasswordVisibility}
+                  />
+                )}
               </div>
             </div>
 
             <div className="options flex">
               <div className="rememberMe flex">
-                <input type="checkbox" id="rememberMe" name="rememberMe" onChange={handleChange} />
+                <input
+                  type="checkbox"
+                  id="rememberMe"
+                  name="rememberMe"
+                  onChange={handleChange}
+                />
                 <label htmlFor="rememberMe">Remember Me</label>
               </div>
-              <Link to="/forgot-password" className="forgotPassword">Forgot Password?</Link>
+              <Link to="/forgot-password" className="forgotPassword">
+                Forgot Password?
+              </Link>
             </div>
 
             <button type="submit" className="btn">
@@ -151,6 +169,6 @@ const Login = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Login;
