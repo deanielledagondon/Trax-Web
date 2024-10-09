@@ -2,11 +2,10 @@
   /* Define light theme variables */
   --background-color: #f5f7fa;
   --text-color: #333333;
-  --text-color-inverted: #ffffff; 
+  --text-color-inverted: #ffffff; /* Use only one inverted color for the light theme */
   --border-color: #e1e4e8;
   --hover-color: #f0f2f5;
   --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  --text-color-inverted: #000000;
 
   --red-bg: #ffeaea;
   --red-text: #d63031;
@@ -14,6 +13,8 @@
   --orange-text: #e17055;
   --blue-bg: #e6f3ff;
   --blue-text: #0984e3;
+
+  
 }
 
 @media (prefers-color-scheme: dark) {
@@ -33,6 +34,7 @@
     --blue-bg: #1f3a4d;
     --blue-text: #70a1ff;
     --text-color-inverted: #ffffff;
+    
   }
 }
 
@@ -76,7 +78,7 @@ body {
 
 
 .dropdown-button {
-  background-color: var(--background-color);
+  background-color: var(--background-color-inverted);
   border: 2px solid var(--border-color);
   border-radius: 12px;
   font-size: 16px;
@@ -89,12 +91,6 @@ body {
   outline: none;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   color: var(--text-color-inverted);
-
-  &:hover {
-    background-color: var(--hover-color);
-    color: black;
- 
-  }
 
 }
 
@@ -124,14 +120,6 @@ body {
     font-size: 14px;
     transition: background-color 0.3s ease;
 
-    &:hover {
-      background-color: var(--hover-color);
-      color: black;
-    }
-
-    &:not(:last-child) {
-      border-bottom: 1px solid var(--border-color);
-    }
   }
 }
 
@@ -339,15 +327,14 @@ body {
   }
 }
 
-
 .print-container {
   display: flex;
   gap: 10px; // Adds space between the buttons
   align-items: center;
 }
 
-.print-button {
-  background-color: var(--background-color);
+.printButton {
+  background-color: var(--background-color-inverted);
   border: 2px solid var(--border-color);
   border-radius: 12px;
   font-size: 16px;
@@ -361,15 +348,11 @@ body {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   color: var(--text-color-inverted);
 
-  &:hover {
-    background-color: var(--hover-color);
-    color: black;
- 
-  }
 }
 
 .print-button svg {
   width: 16px;
   height: 16px;
 }
+
 

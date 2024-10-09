@@ -1,3 +1,87 @@
-.bar-item-info p {
-    font-size: 15px;
-}
+:root {
+    /* Light mode colors */
+    --background-color: #ffffff;
+    --text-color: #000000;
+    --card-background-color: #f5f5f5;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --button-bg-color: #007bff;
+    --button-hover-bg-color: #0056b3;
+    --btn-text-color: white;
+  }
+  
+  [data-theme="dark"] {
+    /* Dark mode colors */
+    --background-color: #121212;
+    --text-color: #f5f5f5;
+    --card-background-color: #1e1e1e;
+    --shadow-color: rgba(3, 3, 3, 0.1);
+    --button-bg-color: #1e90ff;
+    --button-hover-bg-color: #1c7ed6;
+    --btn-text-color: white;
+  }
+  
+  /* Base styles */
+  body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .window-status-list {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Gap between the cards */
+    margin: 20px 0;
+    width: 100%;
+  }
+  
+  .window-status-cardd {
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px var(--shadow-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s, background-color 0.3s ease;
+  
+    &:hover {
+      transform: translateY(-5px);
+    }
+  
+    .window-info {
+      flex: 1;
+    }
+  
+    h3 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+  
+    p {
+      font-size: 1rem;
+      color: var(--text-color);
+    }
+  
+    .btn-view-queue {
+      padding: 10px 20px;
+      background-color: var(--button-bg-color);
+      color: var(--btn-text-color);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      text-transform: uppercase;
+      margin-left: 20px;
+      transition: background-color 0.3s ease;
+    }
+  
+    .btn-view-queue:hover {
+      background-color: var(--button-hover-bg-color);
+    }
+  }
+  
+  @media screen and (max-width: 768px) {
+    .window-status-list {
+      grid-template-columns: 1fr; /* One column on smaller screens */
+    }
+  }
+  

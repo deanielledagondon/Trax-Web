@@ -70,6 +70,7 @@ const Present = () => {
       
       {currentQueueItem ? (
         <div>
+          
           <h1>Queue No: {currentQueueItem.queue_no}</h1>
           <p>Name: {currentQueueItem.name}</p>
           <Timer onDone={handleDone} />

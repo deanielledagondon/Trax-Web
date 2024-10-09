@@ -1,3 +1,4 @@
+
 .log-history {
   position: static;
   padding: 20px;
@@ -39,6 +40,7 @@
     margin-bottom: 20px;
     margin-left: 20px;
     flex-wrap: wrap;
+    
 
     .dark-mode & {
       background-color: #2b2d3e;
@@ -58,6 +60,9 @@
       background-color: #ffffff;
       color: #333333;
       cursor: pointer;
+      font-weight: normal;
+      font-size: 14px;
+   
 
       .dark-mode & {
         background-color: #3a3d52;
@@ -74,30 +79,66 @@
     &:hover {
       border-color: #888;
     }
-
     .search-container {
       position: relative;
       flex-grow: 0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+
 
       input {
-        width: 100%;
+        width: 100% ;
         padding: 8px 12px;
         padding-right: 30px;
         border: 1px solid #ccc;
         border-radius: 1px;
+        text-align: left;
       }
 
-      .search-icon {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #888;
+      .search-queue-wrapper {
+        position: relative;
+        
+        input {
+          padding-right: 50px; // Increase right padding to accommodate both icons
+        }
+    
+        .search-icon {
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #888;
+        }
+    
+        .clear-search-btn {
+          position: absolute;
+          right: 40px;
+          top: 25%;
+          transform: translateY(-50%);
+          background: none;
+          border: none;
+          cursor: pointer;
+          color: #888;
+          padding: 0;
+          font-size: 14px;
+    
+          &:hover {
+            color: #333;
+          }
+    
+          .dark-mode & {
+            color: #aaa;
+            &:hover {
+              color: #fff;
+            }
+          }
+        }
       }
     }
-
     .print-btn {
       margin-left: 165px; 
+      font-weight: normal;
+      
     }
 
     .date-container {
@@ -106,6 +147,8 @@
       border: 1px solid #ccc;
       padding: 8px 12px;
       border-radius: 5px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+     
 
       .dark-mode & {
         background-color: #3a3d52;
@@ -161,76 +204,129 @@
       gap: 10px;
       margin-bottom: 10px;
 
-    
+      input[type="text"] {
+        flex-grow: 1;
+        width: 280px; // Set the same width as the calendar component
+        padding: 8px 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: #fff;
+        color: #333;
+        text-align: center;
 
+        .dark-mode & {
+          background-color: #3a3d52;
+          color: #fff;
+          border-color: #4a4d62;
+        }
+      }
+
+      .date-input-wrapper {
+        position: relative;
+        display: inline-block;
+      }
+      
+      .clear-date-btn {
+        position: absolute;
+        right: 10px;
+        top: 25%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #888;
+      }
+      
+     
+      .clear-date-btn:hover {
+        color: #000;
+      
+        .dark-mode & {
+          color: #ffffff;
+          
+        }
+
+      }
+      
+      .react-datepicker__input-container input {
+        padding-right: 30px; /* Make room for the clear button */
+      }
      
     }
+
 
     .calendars {
       display: flex;
       gap: 10px;
 
-      .react-datepicker {
-        border: none;
-        background-color: #ffffff;
-        color: #333333;
-        width: 280px; 
+
+     .react-datepicker {
+      border: none;
+      background-color: #ffffff;
+      color: #333333;
+      width: 280px;
+      display: flex;
+      flex-grow: 1;
+      
+
+
+      // Dark mode styles
+      .dark-mode & {
+        background-color: #2b2d3e;
+        color: #ffffff;
+      }
+
+      .react-datepicker__header {
+        background-color: #f2f2f2;
+        border-bottom: none;
 
         .dark-mode & {
-          background-color: #2b2d3e;
+          background-color: #3a3d52;
+        }
+      }
+
+      .react-datepicker__current-month,
+      .react-datepicker__day-name {
+        color: #333333;
+
+        .dark-mode & {
           color: #ffffff;
         }
+      }
 
-        .react-datepicker__header {
-          background-color: #f2f2f2;
-          border-bottom: none;
+      .react-datepicker__day {
+        color: #333333;
+
+        .dark-mode & {
+          color: #ffffff;
+          background-color: #2b2d3e;
+        }
+
+        &:hover {
+          background-color: #f0f0f0;
+          color: black;
 
           .dark-mode & {
-            background-color: #3a3d52;
+            background-color: #4a4d62;
+            color: black;
           }
         }
 
-        .react-datepicker__current-month,
-        .react-datepicker__day-name {
-          color: #333333;
+        &--selected,
+        &--in-selecting-range,
+        &--in-range {
+          background-color: #007bff;
+          color: #ffffff;
 
-          .dark-mode & {
-            color: #ffffff;
-          }
+        .dark-mode &{
+          background-color:#3a3d52;
+          color: white;
         }
 
-        .react-datepicker__day {
-          color: #333333;
 
-          .dark-mode & {
-            color: #ffffff;
-            background-color: #2b2d3e;
-          }
-
-          &:hover {
-            background-color: #f0f0f0;
-            color: #3a3d52;
-
-            .dark-mode & {
-              background-color: #4a4d62;
-              color: black;
-            }
-          }
-
-          &--selected,
-          &--in-selecting-range,
-          &--in-range {
-            background-color: #007bff;
-            color: #ffffff;
-    
-          .dark-mode &{
-            background-color:#3a3d52;
-            color: white;
-          }
-    
-            
-          }
         }
+
+      }
 
         .react-datepicker__navigation {
           position: absolute; /* Ensure positioning relative to the parent */
@@ -262,106 +358,324 @@
     }
   }
 
-  // Styles specifically for the calendar popup
-.react-datepicker-popper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000; // Ensure it appears above other elements
- 
-
-  .react-datepicker {
-    border: none;
-    background-color: #ffffff;
-    color: #333333;
-    width: 280px;
+    // Styles specifically for the calendar popup
+  .react-datepicker-popper {
     display: flex;
-    flex-direction: column;
-    
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; // Ensure it appears above other elements
+  
 
-    // Dark mode styles
-    .dark-mode & {
-      background-color: #2b2d3e;
-      color: #ffffff;
-    }
-
-    .react-datepicker__header {
-      background-color: #f2f2f2;
-      border-bottom: none;
-
-      .dark-mode & {
-        background-color: #3a3d52;
-      }
-    }
-
-    .react-datepicker__current-month,
-    .react-datepicker__day-name {
+    .react-datepicker {
+      border: none;
+      background-color: #ffffff;
       color: #333333;
+      width: 280px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
 
+
+      // Dark mode styles
       .dark-mode & {
-        color: #ffffff;
-      }
-    }
-
-    .react-datepicker__day {
-      color: #333333;
-
-      .dark-mode & {
-        color: #ffffff;
         background-color: #2b2d3e;
+        color: #ffffff;
       }
 
-      &:hover {
-        background-color: #f0f0f0;
-        color: black;
+      .react-datepicker__header {
+        background-color: #f2f2f2;
+        border-bottom: none;
 
         .dark-mode & {
-          background-color: #4a4d62;
-          color: black;
+          background-color: #3a3d52;
         }
       }
 
-      &--selected,
-      &--in-selecting-range,
-      &--in-range {
-        background-color: #007bff;
-        color: #ffffff;
+      .react-datepicker__current-month,
+      .react-datepicker__day-name {
+        color: #333333;
 
-      .dark-mode &{
-        background-color:#3a3d52;
-        color: white;
+        .dark-mode & {
+          color: #ffffff;
+        }
       }
 
-        
+      .react-datepicker__day {
+        color: #333333;
+
+        .dark-mode & {
+          color: #ffffff;
+          background-color: #2b2d3e;
+        }
+
+        &:hover {
+          background-color: #f0f0f0;
+          color: black;
+
+          .dark-mode & {
+            background-color: #4a4d62;
+            color: black;
+          }
+        }
+
+        &--selected,
+        &--in-selecting-range,
+        &--in-range {
+          background-color: #007bff;
+          color: #ffffff;
+
+        .dark-mode &{
+          background-color:#3a3d52;
+          color: white;
+        }
+
+
+        }
+
+    
       }
 
-    }
+      .react-datepicker__navigation {
+        position: absolute; /* Ensure positioning relative to the parent */
+        top: 0; /* Align with the top of the header */
+        background-color: transparent;
+        border: none;
+        line-height: 1.7rem;
+        text-align: center;
+        width: 2rem; /* Set a fixed width for the navigation buttons */
+        height: 2rem; /* Set a fixed height for the navigation buttons */
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-    .react-datepicker__navigation {
-      position: absolute; /* Ensure positioning relative to the parent */
-      top: 0; /* Align with the top of the header */
-      background-color: transparent;
-      border: none;
-      line-height: 1.7rem;
-      text-align: center;
-      width: 2rem; /* Set a fixed width for the navigation buttons */
-      height: 2rem; /* Set a fixed height for the navigation buttons */
-      display: flex;
-      align-items: center;
-      justify-content: center;
+        &--previous {
+          left: 0; /* Align to the left edge of the header */
+        }
       
-      &--previous {
-        left: 0; /* Align to the left edge of the header */
+        &--next {
+          right: 0; /* Align to the right edge of the header */
+        }
       }
-    
-      &--next {
-        right: 0; /* Align to the right edge of the header */
+
+    }
+  }
+
+
+    .dropdown-button {
+      border: 1px solid #ccc;
+      background-color: #fff;
+      display: flex; // Aligns the text and icon side by side
+      align-items: center;
+      white-space: nowrap; // Prevents text from wrapping
+      width: auto; // Automatically adjusts the width based on the content
+      padding: 8px 12px; // Optional: adjust padding as needed
+      cursor: pointer;
+      position: relative;
+      
+    }
+  
+    .dropdown-icon {
+      margin-left: 8px; // Adds space between the text and icon
+    }
+  
+    .dropdown-menu {
+      position: absolute;
+      top: 100%; /* Position below the button */
+      left: 0;
+      background-color: #ffffff;
+      color: #333333;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      list-style: none;
+      padding: 6px 10px;
+      margin: 0;
+      min-width: 100%; /* Adjust width as needed */
+      max-width: 200%;
+      z-index: 3;
+      font-size: 13px;
+      cursor: pointer;
+      font-size: 13px;
+
+      .dark-mode & {
+
+        background-color: #3a3d52;
+        color: #fff;
+        border-color: #4a4d62;
+
       }
     }
-    
-  }
-}
 
+    .dropdown-menu li {
+      padding: 10px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dropdown-menu li:hover {
+      background-color: #f0f0f0;
+ 
+      .dark-mode & {
+
+        background-color: #3a3d52;
+        color: #fff;
+        border-color: #4a4d62;
+
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.05);
+        }
   
-}
+
+      }
+
+     
+    }
+
+
+
+  }
+  
+
+  /* Custom dropdown styles */
+  .custom-dropdown {
+    position: relative;
+    display: inline-block;
+    
+    .dropdown-button {
+      padding: 10px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-width: 200px; /* Adjust width as needed */
+      max-width: 350px;
+      position: relative;
+      white-space: nowrap; // Prevent text from wrapping
+      overflow: hidden; // Hide any overflowing text
+      text-overflow: ellipsis; // Add ellipsis if the text overflows
+   
+ 
+    
+    }
+
+    .dropdown-icon {
+      margin-left: 8px;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%; /* Position below the button */
+      left: 0;
+      background-color: #ffffff;
+      color: #333333;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      list-style: none;
+      padding: 6px 10px;
+      margin: 0;
+      min-width: 100%; /* Adjust width as needed */
+      max-width: 200%;
+      z-index: 3;
+      font-size: 13px;
+
+      .dark-mode & {
+
+        background-color: #3a3d52;
+        color: #fff;
+        border-color: #4a4d62;
+      }
+
+     
+
+    }
+
+    .dropdown-menu li {
+      padding: 10px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dropdown-menu li:hover {
+      background-color: #f0f0f0;
+ 
+      .dark-mode & {
+
+        background-color: #3a3d52;
+        color: #fff;
+        border-color: #4a4d62;
+
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.05);
+        }
+  
+
+      }
+
+     
+    }
+
+    .cav-certification {
+      position: relative;
+    }
+
+    .submenu {
+      position: absolute;
+      left: 100%; /* Position submenu to the right of the parent */
+      top: 0;
+      background-color: #fff;
+      color: #333333;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 0;
+      list-style: none;
+      z-index: 2;
+      width: 150px;
+      font-size: 13px;
+      text-align: left;
+
+      .dark-mode & {
+        background-color: #3a3d52;
+        color: #fff;
+        border-color: #4a4d62;
+      }
+    }
+
+    .cav-certification,
+    .certification {
+      position: relative;
+      .submenu-icon {
+        margin-left: 0.5rem;
+      }
+      &:hover .submenu {
+        display: block;
+      }
+    }
+
+    .submenu {
+      display: none;
+    }
+  
+
+    .submenu li {
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .submenu li:hover {
+      background-color: #f0f0f0;
+    }
+
+    .submenu-icon {
+      margin-left: 8px;
+    }
+
+    .table-container{
+      font-size: 14px;
+    }
+  }
 

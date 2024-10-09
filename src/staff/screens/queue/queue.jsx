@@ -6,7 +6,6 @@ import Present from "../../components/Queue/present"
 const Queue = () => {
   return (
     <div>
-      <Present/>
       
       <CurrentQueue/>
     </div>

@@ -1,0 +1,91 @@
+:root {
+    /* Light mode colors */
+    --background-color: #ffffff;
+    --circle-bg-color: #d6d6d6;
+    --circle-fill-color: #4caf50;
+    --text-color: #333333;
+    --cover-bg-color: #ffffff;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    :root {
+      /* Dark mode colors */
+      --background-color: #253258;
+      --circle-bg-color: #0083c5;
+      --circle-fill-color: #2dff03;
+      --text-color: #ffffff;
+      --cover-bg-color: #3d3d3d;
+    }
+  }
+  
+  body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+  }
+  
+  .gauge-charts {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+  }
+  
+  .gauge-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .gauge-label {
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+  
+  .circle {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin-bottom: 10px;
+  }
+  
+  .circle-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: conic-gradient(
+      var(--circle-fill-color) calc(var(--percentage) * 1%), 
+      var(--circle-bg-color) 0
+    );
+    border-radius: 50%;
+  }
+  
+  .circle-cover {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70%;
+    height: 70%;
+    background-color: var(--cover-bg-color);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .progress-value {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--text-color);
+  }
+  
+  .gauge-charts-container {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .queue-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+  
