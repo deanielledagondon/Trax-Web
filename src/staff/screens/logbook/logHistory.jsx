@@ -1,16 +1,27 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faCalendarAlt, faPrint, faCaretRight, faCaretDown, faTimes } from '@fortawesome/free-solid-svg-icons';
-import LogHistoryTable from '../../components/logbook/logHistoryTable';
-import DatePicker from 'react-datepicker';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faSearch,
+  faCalendarAlt,
+  faPrint,
+  faCaretRight,
+  faCaretDown,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
+import LogHistoryTable from "../../components/logbook/logHistoryTable";
+import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import './logHistory.scss';
+import "./logHistory.scss";
 import { supabase } from "../../components/helper/supabaseClient";
-import { jsPDF } from 'jspdf';
-import 'jspdf-autotable';
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
-
-const DateRangePicker = ({ startDate, endDate, onStartDateChange, onEndDateChange }) => {
+const DateRangePicker = ({
+  startDate,
+  endDate,
+  onStartDateChange,
+  onEndDateChange,
+}) => {
   return (
     <div className="date-range-picker">
       <div className="date-inputs">
@@ -79,73 +90,97 @@ const DateRangePicker = ({ startDate, endDate, onStartDateChange, onEndDateChang
   );
 };
 
-
 const LogHistory = () => {
+  const [selectedPurposeType, setSelectedPurposeType] = useState("All");
+  const [selectedSubOption, setSelectedSubOption] = useState("All");
+  const [showPurposeDropdown, setShowPurposeDropdown] = useState(false);
+  const [showCavSubmenu, setShowCavSubmenu] = useState(false);
+  const [showCertificationSubmenu, setShowCertificationSubmenu] =
+    useState(false);
+  const [searchPriority, setSearchPriority] = useState("");
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [logHistory, setLogHistory] = useState([]);
+  const [staffName, setStaffName] = useState("");
+  const [windowNo, setWindowNo] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const datePickerRef = useRef(null);
+  const purposeDropdownRef = useRef(null);
 
-    const [selectedPurposeType, setSelectedPurposeType] = useState('All');
-    const [selectedSubOption, setSelectedSubOption] = useState('All');
-    const [showPurposeDropdown, setShowPurposeDropdown] = useState(false);
-    const [showCavSubmenu, setShowCavSubmenu] = useState(false);
-    const [showCertificationSubmenu, setShowCertificationSubmenu] = useState(false);
-    const [searchPriority, setSearchPriority] = useState('');
-    const [startDate, setStartDate] = useState(null);
-    const [endDate, setEndDate] = useState(null);
-    const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
-    const [logHistory, setLogHistory] = useState([]);
-    const [staffName, setStaffName] = useState('');
-    const [windowNo, setWindowNo] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const datePickerRef = useRef(null);
-    const purposeDropdownRef = useRef(null);
+  const CAV_CERTIFICATION_TYPES = [
+    "DFA",
+    "PNP",
+    "BJMP",
+    "CHED",
+    "POEA",
+    "DEP-ED",
+    "BFP",
+  ];
+  const CERTIFICATION_TYPES = [
+    "CAR",
+    "GPA",
+    "Endorsement",
+    "Officially enrolled",
+    "Subjects enrolled",
+    "USTP Conversion",
+    "English Medium of Instruction",
+    "Authorization Letter",
+    "Letter of No Objection",
+    "Graduated",
+    "Earned Units",
+    "Grading System",
+    "Subjects w/ grades",
+  ];
 
-    const CAV_CERTIFICATION_TYPES = ['DFA', 'PNP', 'BJMP', 'CHED', 'POEA', 'DEP-ED', 'BFP'];
-    const CERTIFICATION_TYPES = ['CAR','GPA','Endorsement','Officially enrolled','Subjects enrolled','USTP Conversion','English Medium of Instruction','Authorization Letter', 'Letter of No Objection','Graduated','Earned Units','Grading System','Subjects w/ grades'];
+  useEffect(() => {
+    async function fetchData() {
+      const user = localStorage.getItem("user");
+      const parsedUser = JSON.parse(user);
 
-  
-    useEffect(() => {
-      async function fetchData() {
-        const user = localStorage.getItem("user");
-        const parsedUser = JSON.parse(user);
-  
-        const { data: staffData, error: staffError } = await supabase
-          .from('registrants')
-          .select('full_name, window_no')
-          .eq('id', parsedUser.id)
-          .single();
-  
-        if (staffError) {
-          console.error('Error fetching staff information:', staffError);
-        } else {
-          const firstName = staffData.full_name.split(' ')[0];
-          setStaffName(firstName);
-          setWindowNo([staffData.window_no]);
-        }
-  
-        const { data, error } = await supabase
-          .from('log_history')
-          .select('*')
-          .in('window_no', [staffData.window_no])
-          .order('transaction_date', { ascending: true });
-  
-        if (error) {
-          console.error('Error fetching data:', error);
-        } else {
-          setLogHistory(data);
-        }
-        setIsLoading(false);
+      const { data: staffData, error: staffError } = await supabase
+        .from("registrants")
+        .select("full_name, window_no")
+        .eq("id", parsedUser.id)
+        .single();
+
+      if (staffError) {
+        console.error("Error fetching staff information:", staffError);
+      } else {
+        const firstName = staffData.full_name.split(" ")[0];
+        setStaffName(firstName);
+        setWindowNo([staffData.window_no]);
       }
-  
-      fetchData();
-    }, []);
 
+      const { data, error } = await supabase
+        .from("log_history")
+        .select("*")
+        .in("window_no", [staffData.window_no])
+        .order("transaction_date", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching data:", error);
+      } else {
+        setLogHistory(data);
+      }
+      setIsLoading(false);
+    }
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      
-      if (purposeDropdownRef.current && !purposeDropdownRef.current.contains(event.target)) {
+      if (
+        purposeDropdownRef.current &&
+        !purposeDropdownRef.current.contains(event.target)
+      ) {
         setShowPurposeDropdown(false);
       }
-      if (datePickerRef.current && !datePickerRef.current.contains(event.target)) {
+      if (
+        datePickerRef.current &&
+        !datePickerRef.current.contains(event.target)
+      ) {
         setIsDatePickerOpen(false);
       }
     };
@@ -156,42 +191,39 @@ const LogHistory = () => {
     };
   }, []);
 
-  const handlePurposeChange = (purpose, subOption = 'All') => {
-    console.log('handlePurposeChange called with:', purpose, subOption);
-    
+  const handlePurposeChange = (purpose, subOption = "All") => {
+    console.log("handlePurposeChange called with:", purpose, subOption);
+
     setSelectedPurposeType(purpose);
     setSelectedSubOption(subOption);
-    
+
     setShowCertificationSubmenu(false);
     setShowCavSubmenu(false);
     setShowPurposeDropdown(false);
   };
-  
-  const handleClearSearch = () => {
-    setSearchPriority('');
-  };
 
+  const handleClearSearch = () => {
+    setSearchPriority("");
+  };
 
   const filteredData = useMemo(() => {
     console.log("Filtering data...");
     console.log("Selected Purpose:", selectedPurposeType);
     console.log("Selected Submenu:", selectedSubOption);
-    
-   
-  
-    return logHistory.filter(log => {
+
+    return logHistory.filter((log) => {
       let purposeMatch = false;
-  
-      if (selectedPurposeType === 'All') {
+
+      if (selectedPurposeType === "All") {
         purposeMatch = true;
-      } else if (selectedPurposeType === 'CAV Certification Thru') {
-        if (selectedSubOption === 'All') {
+      } else if (selectedPurposeType === "CAV Certification Thru") {
+        if (selectedSubOption === "All") {
           purposeMatch = CAV_CERTIFICATION_TYPES.includes(log.purpose);
         } else {
           purposeMatch = log.purpose === selectedSubOption;
         }
-      } else if (selectedPurposeType === 'Certification') {
-        if (selectedSubOption === 'All') {
+      } else if (selectedPurposeType === "Certification") {
+        if (selectedSubOption === "All") {
           purposeMatch = CERTIFICATION_TYPES.includes(log.purpose);
         } else {
           purposeMatch = log.purpose === selectedSubOption;
@@ -199,45 +231,58 @@ const LogHistory = () => {
       } else {
         purposeMatch = log.purpose === selectedPurposeType;
       }
-      
-      const priorityMatch = log.queue_no.toString().toLowerCase().includes(searchPriority.toLowerCase());
-      const dateMatch = (!startDate || !endDate) || 
-        (new Date(log.transaction_date) >= startDate && new Date(log.transaction_date) <= endDate);
-      
-        return purposeMatch && priorityMatch && dateMatch;
+
+      const priorityMatch = log.queue_no
+        .toString()
+        .toLowerCase()
+        .includes(searchPriority.toLowerCase());
+      const dateMatch =
+        !startDate ||
+        !endDate ||
+        (new Date(log.transaction_date) >= startDate &&
+          new Date(log.transaction_date) <= endDate);
+
+      return purposeMatch && priorityMatch && dateMatch;
     });
-  }, [logHistory, selectedPurposeType, selectedSubOption, searchPriority, startDate, endDate]);
+  }, [
+    logHistory,
+    selectedPurposeType,
+    selectedSubOption,
+    searchPriority,
+    startDate,
+    endDate,
+  ]);
 
   console.log("Filtered data length:", filteredData.length);
 
   const handlePrint = () => {
     const doc = new jsPDF();
-    const columns = ['Date', 'Name', 'Window', 'Purpose', 'Queue No.'];
-    const rows = filteredData.map(log => [
+    const columns = ["Date", "Name", "Window", "Purpose", "Queue No."];
+    const rows = filteredData.map((log) => [
       log.transaction_date,
       log.name,
       log.window_no,
       log.purpose,
-      log.queue_no
+      log.queue_no,
     ]);
 
     const header = () => {
       doc.setFontSize(16);
-      doc.text("Log History", 105, 20, null, null, 'center');
+      doc.text("Log History", 105, 20, null, null, "center");
     };
 
     doc.autoTable({
       head: [columns],
       body: rows,
       margin: { top: 30 },
-      theme: 'striped',
+      theme: "striped",
       headStyles: {
         fillColor: [0, 0, 128],
         textColor: [255, 255, 255],
-        halign: 'center',
+        halign: "center",
       },
       bodyStyles: {
-        halign: 'center',
+        halign: "center",
       },
       didDrawPage: (data) => {
         header();
@@ -245,11 +290,9 @@ const LogHistory = () => {
       startY: 30,
     });
 
-    const pdfBlob = doc.output('blob');
+    const pdfBlob = doc.output("blob");
     const pdfUrl = URL.createObjectURL(pdfBlob);
-    window.open(pdfUrl, '_blank');
-
-   
+    window.open(pdfUrl, "_blank");
   };
 
   if (isLoading) {
@@ -258,16 +301,27 @@ const LogHistory = () => {
 
   return (
     <div className="log-history">
-        <div className="greeting">
+      <div className="greeting">
         <h1>Hello Ma'am {staffName}!</h1>
-        <p className="small-font">This is the <span className="bold-text"> Log History </span> for {windowNo.length > 1 ? `${windowNo.join(', ')}` : ` Window ${windowNo[0]}` || 'N/A'}.</p>
+        <p className="small-font">
+          This is the <span className="bold-text"> Log History </span> for{" "}
+          {windowNo.length > 1
+            ? `${windowNo.join(", ")}`
+            : ` Window ${windowNo[0]}` || "N/A"}
+          .
+        </p>
       </div>
       <div className="filters">
         <span>Filter By:</span>
         <div className="date-picker-container" ref={datePickerRef}>
-          <button className="date-container" onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}>
+          <button
+            className="date-container"
+            onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
+          >
             <span className="date-text">Date</span>
-            <span className="date-icon"><FontAwesomeIcon icon={faCalendarAlt} /></span>
+            <span className="date-icon">
+              <FontAwesomeIcon icon={faCalendarAlt} />
+            </span>
           </button>
           {isDatePickerOpen && (
             <DateRangePicker
@@ -288,20 +342,22 @@ const LogHistory = () => {
             }}
             className="dropdown-button"
           >
-            {selectedPurposeType === 'CAV Certification Thru' && selectedSubOption === 'All'
-              ? 'CAV Certification Thru - All'
-              : selectedPurposeType === 'Certification' && selectedSubOption === 'All'
-                ? 'Certification - All'
-                : selectedPurposeType !== 'All'
-                  ? selectedSubOption !== 'All'
-                    ? `${selectedPurposeType} - ${selectedSubOption}`
-                    : selectedPurposeType
-                  : 'Purpose Type'}
+            {selectedPurposeType === "CAV Certification Thru" &&
+            selectedSubOption === "All"
+              ? "CAV Certification Thru - All"
+              : selectedPurposeType === "Certification" &&
+                selectedSubOption === "All"
+              ? "Certification - All"
+              : selectedPurposeType !== "All"
+              ? selectedSubOption !== "All"
+                ? `${selectedPurposeType} - ${selectedSubOption}`
+                : selectedPurposeType
+              : "Purpose Type"}
             <FontAwesomeIcon icon={faCaretDown} className="dropdown-icon" />
           </button>
           {showPurposeDropdown && (
             <ul className="dropdown-menu">
-              <li onClick={() => handlePurposeChange('All')}>All</li>
+              <li onClick={() => handlePurposeChange("All")}>All</li>
               <li
                 className="certification"
                 onMouseEnter={() => setShowCertificationSubmenu(true)}
@@ -311,10 +367,23 @@ const LogHistory = () => {
                 <FontAwesomeIcon icon={faCaretRight} className="submenu-icon" />
                 {showCertificationSubmenu && (
                   <ul className="submenu">
-                    <li onClick={() => handlePurposeChange('Certification', 'All')}>All</li>
-                    
-                    {CERTIFICATION_TYPES.map(type => (
-                      <li key={type} onClick={() => handlePurposeChange('Certification', type)}>{type}</li>
+                    <li
+                      onClick={() =>
+                        handlePurposeChange("Certification", "All")
+                      }
+                    >
+                      All
+                    </li>
+
+                    {CERTIFICATION_TYPES.map((type) => (
+                      <li
+                        key={type}
+                        onClick={() =>
+                          handlePurposeChange("Certification", type)
+                        }
+                      >
+                        {type}
+                      </li>
                     ))}
                   </ul>
                 )}
@@ -328,26 +397,53 @@ const LogHistory = () => {
                 <FontAwesomeIcon icon={faCaretRight} className="submenu-icon" />
                 {showCavSubmenu && (
                   <ul className="submenu">
-                    <li onClick={() => handlePurposeChange('CAV Certification Thru', 'All')}>All</li>
-                    {CAV_CERTIFICATION_TYPES.map(type => (
-                      <li key={type} onClick={() => handlePurposeChange('CAV Certification Thru', type)}>{type}</li>
+                    <li
+                      onClick={() =>
+                        handlePurposeChange("CAV Certification Thru", "All")
+                      }
+                    >
+                      All
+                    </li>
+                    {CAV_CERTIFICATION_TYPES.map((type) => (
+                      <li
+                        key={type}
+                        onClick={() =>
+                          handlePurposeChange("CAV Certification Thru", type)
+                        }
+                      >
+                        {type}
+                      </li>
                     ))}
                   </ul>
                 )}
               </li>
-              <li onClick={() => handlePurposeChange('Authentication')}>Authentication</li>
-              <li onClick={() => handlePurposeChange('Diploma Replacement')}>Diploma Replacement</li>
-              <li onClick={() => handlePurposeChange('Evaluation')}>Evaluation</li>
-              <li onClick={() => handlePurposeChange('Honorable Dismissal')}>Honorable Dismissal</li>
-              <li onClick={() => handlePurposeChange('Correction of Name')}>Correction of Name</li>
-              <li onClick={() => handlePurposeChange('Transcript of Records')}>Transcript of Records</li>
-              <li onClick={() => handlePurposeChange('Permit to Study')}>Permit to Study</li>
-              <li onClick={() => handlePurposeChange('Rush Fee')}>Rush Fee</li>
-              <li onClick={() => handlePurposeChange('Form 137')}>Form 137</li>
+              <li onClick={() => handlePurposeChange("Authentication")}>
+                Authentication
+              </li>
+              <li onClick={() => handlePurposeChange("Diploma Replacement")}>
+                Diploma Replacement
+              </li>
+              <li onClick={() => handlePurposeChange("Evaluation")}>
+                Evaluation
+              </li>
+              <li onClick={() => handlePurposeChange("Honorable Dismissal")}>
+                Honorable Dismissal
+              </li>
+              <li onClick={() => handlePurposeChange("Correction of Name")}>
+                Correction of Name
+              </li>
+              <li onClick={() => handlePurposeChange("Transcript of Records")}>
+                Transcript of Records
+              </li>
+              <li onClick={() => handlePurposeChange("Permit to Study")}>
+                Permit to Study
+              </li>
+              <li onClick={() => handlePurposeChange("Rush Fee")}>Rush Fee</li>
+              <li onClick={() => handlePurposeChange("Form 137")}>Form 137</li>
             </ul>
           )}
         </div>
-        
+
         <div className="search-container">
           <div className="search-queue-wrapper">
             <input
@@ -371,9 +467,9 @@ const LogHistory = () => {
             Print
           </button>
         </div>
-      </div> 
+      </div>
 
-     <div className="table-container">
+      <div className="table-container">
         {filteredData.length > 0 ? (
           <LogHistoryTable logData={filteredData} />
         ) : (
