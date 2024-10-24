@@ -1,5 +1,6 @@
 import { PDFReportGenerator } from "../helper/pdfPrinter";
-import '../feedback/headerStats/headerStats.css';
+import '../feedback/headerStats/headerStats.scss';
+
 
 
 const monthOrder = {

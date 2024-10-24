@@ -42,7 +42,7 @@ const Sidebar = () => {
     const parsedUser = JSON.parse(user);
     const { error } = await supabase
         .from('registrants')
-        .update({ status: 'away' })
+        .update({ status: 'Away' })
         .eq('id', parsedUser.id)
     localStorage.removeItem('sb-swqywqargpfwcyvpqhkn-auth-token')
     localStorage.removeItem('user');

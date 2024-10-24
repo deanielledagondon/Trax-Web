@@ -92,7 +92,7 @@ const Login = () => {
       }
       const { errors } = await supabase
         .from('registrants')
-        .update({ status: 'available' })
+        .update({ status: 'Available' })
         .eq('id', data.user.id)
       navigateBasedOnRole(data.user.id);
     } catch (error) {

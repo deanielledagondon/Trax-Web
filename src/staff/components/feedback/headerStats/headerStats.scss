@@ -295,7 +295,7 @@
   }
   
   .print-button {
-    background-color: var(--background-color);
+    background-color: var(--background-color-inverted);
     border: 2px solid var(--border-color);
     border-radius: 12px;
     font-size: 16px;
@@ -312,6 +312,7 @@
     &:hover {
       background-color: var(--hover-color);
       color: black;
+     
    
     }
   }
