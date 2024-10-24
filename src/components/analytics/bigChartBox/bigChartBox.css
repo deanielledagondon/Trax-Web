@@ -1,16 +1,20 @@
-.bigChartBox {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+.rating-analytics-container {
+  padding: 20px;
+  background-color: var(--item-background-light);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  color: var(--text-light);
 }
-@media screen and (max-width: 1400px) {
-  .bigChartBox h1 {
-    font-size: 24px;
-  }
+
+body.dark-mode .rating-analytics-container {
+  background-color: var(--item-background-dark);
+  border-color: var(--border-dark);
+  color: var(--text-dark);
 }
-.bigChartBox .chart {
-  width: 100%;
-  height: 300px;
-}/*# sourceMappingURL=bigChartBox.css.map */
+
+.average-rating h3 {
+  color: #4caf50;
+  font-weight: bold;
+  text-align: center;
+}
+/*# sourceMappingURL=bigChartBox.css.map */

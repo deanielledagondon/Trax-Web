@@ -1,15 +1,9 @@
-import React, { useState, useEffect } from 'react'; 
+import React, { useState, useEffect } from "react";
 import "./AreaTable.scss";
-import { supabase } from '../../helper/supabaseClient';
-import ReactPaginate from 'react-paginate';
+import { supabase } from "../../helper/supabaseClient";
+import ReactPaginate from "react-paginate";
 
-const TABLE_HEADS = [
-  "Date",
-  "Name",
-  "Purpose",
-  "Status",
-  "Window No.",
-];
+const TABLE_HEADS = ["Date", "Name", "Purpose", "Status", "Window No."];
 
 const AreaTable = () => {
   const [logHistory, setLogHistory] = useState([]);
@@ -35,11 +29,11 @@ const AreaTable = () => {
     const fetchWindow = async () => {
       try {
         let { data, error } = await supabase
-          .from('registrants')
-          .select('window_no')
-          .eq('id', parsedUser.id)
+          .from("registrants")
+          .select("window_no")
+          .eq("id", parsedUser.id)
           .single();
-  
+
         if (error) throw error;
         setWindowNo(data.window_no);
       } catch (error) {
@@ -47,26 +41,26 @@ const AreaTable = () => {
         setLoading(false);
       }
     };
-    
+
     fetchWindow();
   }, [parsedUser.id]);
 
   useEffect(() => {
     const fetchLogHistory = async () => {
       if (windowNo.length === 0) return; // Don't fetch if windowNo is not set yet
-      
+
       try {
         let { data, error } = await supabase
-          .from('log_history')
+          .from("log_history")
           .select()
-          .in('window_no', windowNo)
-          .order('transaction_date', { ascending: false });
-        
+          .in("window_no", windowNo)
+          .order("transaction_date", { ascending: false });
+
         if (error) {
           console.log(error);
           throw error;
         }
-        
+
         setLogHistory(data);
         setLoading(false);
       } catch (error) {
@@ -74,7 +68,7 @@ const AreaTable = () => {
         setLoading(false);
       }
     };
-    
+
     fetchLogHistory();
   }, [windowNo]);
 
@@ -108,7 +102,9 @@ const AreaTable = () => {
                 <td>{dataItem.purpose}</td>
                 <td>
                   <div className="dt-status">
-                    <span className={`dt-status-dot dot-${dataItem.status.toLowerCase()}`}></span>
+                    <span
+                      className={`dt-status-dot dot-${dataItem.status.toLowerCase()}`}
+                    ></span>
                     <span className="dt-status-text">{dataItem.status}</span>
                   </div>
                 </td>
