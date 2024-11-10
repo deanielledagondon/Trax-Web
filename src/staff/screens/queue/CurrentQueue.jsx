@@ -137,6 +137,33 @@ const CurrentQueue = () => {
     );
   };
 
+  const handlePending = async () => {
+    const currentQueueItem = selectedWindowQueue[currentQueueIndex];
+    console.log("Marking as pending:", currentQueueItem);
+
+    try {
+      const { error } = await supabase
+        .from("queue")
+        .update({ status: "Pending" })
+        .eq("id", currentQueueItem.id);
+
+      if (error) {
+        throw new Error(`Error updating status to pending: ${error.message}`);
+      }
+
+      setSelectedWindowQueue((prevQueue) =>
+        prevQueue.map((item) =>
+          item.id === currentQueueItem.id ? { ...item, status: "Pending" } : item
+        )
+      );
+
+      // Move to the next item or do nothing if the queue length is 1
+      handleNext();
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
   const handleDone = async (time) => {
     const currentQueueItem = selectedWindowQueue[currentQueueIndex];
     console.log("Done with:", currentQueueItem);
@@ -249,7 +276,7 @@ const CurrentQueue = () => {
           <div className="current-queue">
             <h1>Queue No: {currentQueueItem.queue_no}</h1>
             <p>Name: {currentQueueItem.name}</p>
-            <Timer onDone={handleDone} />
+            <Timer onDone={handleDone} onPending={handlePending} />
           </div>
         ) : selectedWindowQueue.length > 0 ? (
           <p>
