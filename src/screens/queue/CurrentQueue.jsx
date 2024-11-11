@@ -13,6 +13,7 @@ const CurrentQueue = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentQueueIndex, setCurrentQueueIndex] = useState(0);
   const [selectedWindowQueue, setSelectedWindowQueue] = useState([]);
+  const [statusFilter, setStatusFilter] = useState('All'); 
 
   useEffect(() => {
     const fetchQueues = async () => {
@@ -20,7 +21,7 @@ const CurrentQueue = () => {
         let query = supabase
           .from('queue')
           .select('id, name, queue_no, status, window_no, purpose, created_at, type, email')
-          .eq('status', 'Waiting')
+          .in('status', ['Waiting', 'Pending'])
           .order('id', { ascending: true });
 
         if (selectedWindow) {
@@ -128,8 +129,9 @@ const CurrentQueue = () => {
   };
 
   const filteredQueue = queue.filter(item => 
-    item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.queue_no.toString().includes(searchTerm)
+    (statusFilter === 'All' || item.status === statusFilter) && // Filter by status
+    (item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+     item.queue_no.toString().includes(searchTerm))
   );
 
   if (loading) {
@@ -160,7 +162,6 @@ const CurrentQueue = () => {
           ))}
         </div>
 
-        
         {currentQueueItem ? (
           <div className="current-queue">
             <h1>Queue No: {currentQueueItem.queue_no}</h1>
@@ -189,70 +190,77 @@ const CurrentQueue = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
           />
-          <div className="current-queue-list">
-        {filteredQueue.length > 0 ? (
-          filteredQueue.map((item) => (
-            <div className="current-queue-card" key={item.id}>
-              <div className="item-info">
-              <div className="queue-no"> {item.queue_no}</div>
-                <p> {item.name}  </p>
-                {/* Apply specific class for "Waiting" status */}
-                <p className={item.status === 'Waiting' ? 'status-waiting' : '#e79600'}>
-                <div className="status-no"> {item.status}</div>
-                </p>
-                <div className="item-actions">
-                  <button onClick={() => handleDelete(item.id)} className="btn btn-delete">Delete</button>
-                  <button onClick={() => setExpandedQueue(item)} className="btn btn-details">
-                    View Details
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))
-        ) : (
-          <div className="no-queue">No queue at the moment</div>
-        )}
-</div>
+          
+          
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="status-filter-dropdown"
+          >
+            <option value="All">All</option>
+            <option value="Waiting">Waiting</option>
+            <option value="Pending">Pending</option>
+            <option value="Done">Done</option>
+          </select>
 
+          <div className="current-queue-list">
+            {filteredQueue.length > 0 ? (
+              filteredQueue.map((item) => (
+                <div className="current-queue-card" key={item.id}>
+                  <div className="item-info">
+                    <div className="queue-no"> {item.queue_no}</div>
+                    <p> {item.name}  </p>
+                    <p className={item.status === 'Waiting' ? 'status-waiting' : item.status === 'Pending' ? 'status-pending' : ''}>
+                      <div className="status-no"> {item.status}</div>
+                    </p>
+                    <div className="item-actions">
+                      <button onClick={() => handleDelete(item.id)} className="btn btn-delete">Delete</button>
+                      <button onClick={() => setExpandedQueue(item)} className="btn btn-details">
+                        View Details
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="no-queue">No queue at the moment</div>
+            )}
+          </div>
         </div>
 
         {/* Queue Details Section (Hidden when no queue is selected) */}
         {expandedQueue && (
-  <div className="queue-details">
-    <h2>Queue Details</h2>
-    <div className="details-card grid-layout">
-      <div className="left-column">
-      {expandedQueue.profile_image ? (
-  <img 
-    src={expandedQueue.profile_image} 
-    alt="Profile" 
-    className="profile-image" 
-  />
-) : (
-  <span className="profile-icon">👤</span> // Unicode icon
-)}
-
-        <h3>{expandedQueue.name}</h3>
-        <div className="appointment-schedule">
-          <p>{expandedQueue.queue_no}</p>
-        </div>
-       
-      
-      </div>
-      <div className="right-column">
-      <div className="DetailsQueue">
-        <h3>Appointment: </h3><p>{expandedQueue.created_at}</p>
-        <h3>Status: </h3><p>{expandedQueue.status}</p>
-        <h3>Details</h3>
-          <p>E-mail: {expandedQueue.email}</p>
-          <p>Type: {expandedQueue.type}</p>
-          <p>Purpose: {expandedQueue.purpose}</p>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
-
+          <div className="queue-details">
+            <h2>Queue Details</h2>
+            <div className="details-card grid-layout">
+              <div className="left-column">
+                {expandedQueue.profile_image ? (
+                  <img 
+                    src={expandedQueue.profile_image} 
+                    alt="Profile" 
+                    className="profile-image" 
+                  />
+                ) : (
+                  <span className="profile-icon">👤</span> // Unicode icon
+                )}
+                <h3>{expandedQueue.name}</h3>
+                <div className="appointment-schedule">
+                  <p>{expandedQueue.queue_no}</p>
+                </div>
+              </div>
+              <div className="right-column">
+                <div className="DetailsQueue">
+                  <h3>Appointment: </h3><p>{expandedQueue.created_at}</p>
+                  <h3>Status: </h3><p>{expandedQueue.status}</p>
+                  <h3>Details</h3>
+                  <p>E-mail: {expandedQueue.email}</p>
+                  <p>Type: {expandedQueue.type}</p>
+                  <p>Purpose: {expandedQueue.purpose}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
