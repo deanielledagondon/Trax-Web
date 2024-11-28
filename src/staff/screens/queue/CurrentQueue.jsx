@@ -198,7 +198,7 @@ const CurrentQueue = () => {
           name: currentQueueItem.name,
           window_no: currentQueueItem.window_no,
           purpose: currentQueueItem.purpose,
-          status: "Processing",
+          status: "Completed",
           
           created_at: new Date(), 
         },
