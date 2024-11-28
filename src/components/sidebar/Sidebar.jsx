@@ -122,7 +122,7 @@ const Sidebar = () => {
                   isActive("/analytics") ? "active" : ""
                 }`}
               >
-                <span className="menu-link-icon">
+                {/* <span className="menu-link-icon">
                   <MdOutlineBarChart size={18} />
                 </span>
                 <span className="menu-link-text">Analytics</span>
@@ -132,7 +132,7 @@ const Sidebar = () => {
               <Link
                 to="/feedback"
                 className={`menu-link ${isActive("/feedback") ? "active" : ""}`}
-              >
+              > */}
                 <span className="menu-link-icon">
                   <MdOutlineComment size={20} />
                 </span>
