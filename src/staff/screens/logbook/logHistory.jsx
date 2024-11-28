@@ -1,13 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSearch,
-  faCalendarAlt,
-  faPrint,
-  faCaretRight,
-  faCaretDown,
-  faTimes,
-} from "@fortawesome/free-solid-svg-icons";
+import {faSearch,faCalendarAlt,faPrint,faCaretRight,faCaretDown,faTimes,} from "@fortawesome/free-solid-svg-icons";
 import LogHistoryTable from "../../components/logbook/logHistoryTable";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -95,8 +88,7 @@ const LogHistory = () => {
   const [selectedSubOption, setSelectedSubOption] = useState("All");
   const [showPurposeDropdown, setShowPurposeDropdown] = useState(false);
   const [showCavSubmenu, setShowCavSubmenu] = useState(false);
-  const [showCertificationSubmenu, setShowCertificationSubmenu] =
-    useState(false);
+  const [showCertificationSubmenu, setShowCertificationSubmenu] = useState(false);
   const [searchPriority, setSearchPriority] = useState("");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -257,7 +249,9 @@ const LogHistory = () => {
 
   const handlePrint = () => {
     const doc = new jsPDF();
-    const columns = ["Date", "Name", "Window", "Purpose", "Queue No."];
+    const columns = ["DATE", "NAME", "WINDOW", "PURPOSE", "QUEUEU NO."];
+  
+    // Map your filtered data to rows
     const rows = filteredData.map((log) => [
       log.transaction_date,
       log.name,
@@ -265,12 +259,14 @@ const LogHistory = () => {
       log.purpose,
       log.queue_no,
     ]);
-
+  
+    // Header function to add title
     const header = () => {
       doc.setFontSize(16);
       doc.text("Log History", 105, 20, null, null, "center");
     };
-
+  
+    // Adding table to PDF
     doc.autoTable({
       head: [columns],
       body: rows,
@@ -289,25 +285,40 @@ const LogHistory = () => {
       },
       startY: 30,
     });
-
+  
+    // Generate PDF blob
     const pdfBlob = doc.output("blob");
     const pdfUrl = URL.createObjectURL(pdfBlob);
-    window.open(pdfUrl, "_blank");
+  
+    // Open a new tab and set its title to "Log History"
+    const newTab = window.open("", "_blank");
+    if (newTab) {
+      newTab.document.title = "Log History"; // Set the title of the new tab to "Log History"
+      const embed = newTab.document.createElement("embed");
+      embed.src = pdfUrl;
+      embed.width = "100%";
+      embed.height = "100%";
+      embed.type = "application/pdf";
+      newTab.document.body.appendChild(embed); // Embed the PDF in the new tab
+    }
+  
+    // Clean up the object URL after the PDF is opened
+    setTimeout(() => URL.revokeObjectURL(pdfUrl), 10000);
   };
-
+  
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div className="log-history">
+    <div className="staff-loghistory">
       <div className="greeting">
         <h1>Hello Ma'am {staffName}!</h1>
         <p className="small-font">
           This is the <span className="bold-text"> Log History </span> for{" "}
           {windowNo.length > 1
             ? `${windowNo.join(", ")}`
-            : ` Window ${windowNo[0]}` || "N/A"}
+            : `${windowNo[0]}` || "N/A"}
           .
         </p>
       </div>
@@ -432,14 +443,21 @@ const LogHistory = () => {
               <li onClick={() => handlePurposeChange("Correction of Name")}>
                 Correction of Name
               </li>
-              <li onClick={() => handlePurposeChange("Transcript of Records")}>
-                Transcript of Records
+              <li onClick={() => handlePurposeChange("Transcript of Records (TOR)")}>
+                Transcript of Records (TOR)
               </li>
               <li onClick={() => handlePurposeChange("Permit to Study")}>
                 Permit to Study
               </li>
               <li onClick={() => handlePurposeChange("Rush Fee")}>Rush Fee</li>
               <li onClick={() => handlePurposeChange("Form 137")}>Form 137</li>
+              <li onClick={() => handlePurposeChange("Enrollment")}>Enrollment</li>
+              <li onClick={() => handlePurposeChange("Graduation")}>Graduation</li>
+              <li onClick={() => handlePurposeChange("Diploma")}>Diploma</li>
+              <li onClick={() => handlePurposeChange("Completion of INC")}> Completion of INC</li>
+              <li onClick={() => handlePurposeChange("Transfer")}>Transfer</li>
+
+
             </ul>
           )}
         </div>

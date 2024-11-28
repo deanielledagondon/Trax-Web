@@ -25,7 +25,7 @@ const AreaCard = ({ colors, percentFillValue, cardInfo }) => {
       {/* Conditionally render the image for the "Busiest Window" card */}
       {cardInfo.title === "Busiest Window" && (
         <div className="area-card-image">
-          <img src={busiestWindowImage} alt="Busiest Window" />
+          <img src={busiestWindowImage} alt=" Frequently Visited" />
         </div>
       )}
       {/* Conditionally render the chart only if the card is not the "Busiest Window" */}
