@@ -19,7 +19,7 @@
   --ustpColor: #0f0a43;
   --blackColor: #000000;
   --blue-color: #475be8;
-  --green-color: #4ce13f;
+  --green-color: #2f8428;
   --orange-color: #f29a2e;
   --red-color: #ef0606;
   --dark-color: #292929;
@@ -223,6 +223,11 @@ body {
       color: var(--text-color-inverted); // Use theme text color inverted
     }
 
+    .profile-buttons {
+      display: flex;
+      gap: 20px;
+    }
+
     .save-changes-btn {
       display: flex;
       background-color: var(--green-color);
@@ -238,5 +243,142 @@ body {
         background-color: #38a82e; // Manual darken for hover effect
       }
     }
+
+    /* Change Password Button Styling */
+.change-password-btn {
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.change-password-btn:hover {
+  background-color: #e68900;
+}
+  }
+
+  
+}
+
+
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  gap: 15px; /* Add spacing between children */
+  align-items: stretch; /* Ensure children take up the modal width */
+}
+
+.modal h2 {
+  margin: 0;
+  text-align: center; /* Center-align the heading */
+  color: #000000;
+
+}
+
+.modal-field {
+  display: flex;
+  flex-direction: column; /* Stack label and input */
+  color: #000000;
+
+}
+
+.modal-field label {
+  margin-bottom: 5px; /* Add spacing below label */
+  font-weight: bold;
+  color: #000000;
+}
+
+.modal-field input {
+  width: 100%; /* Make input take the full width of the modal */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #000000;
+
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between; /* Spread buttons evenly */
+  gap: 10px; /* Add spacing between buttons */
+}
+
+.modal-buttons button {
+  flex: 1; /* Make buttons equal in size */
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.modal-buttons button:nth-child(2) {
+  background-color: #f44336;
+}
+
+.modal-buttons button:hover {
+  opacity: 0.9;
+}
+
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  input {
+    flex: 1;
+    padding-right: 40px; // Space for the icon
+    border: 1px solid var(--border-color-inverted);
+    border-radius: 4px;
+    background-color: var(--secondary-color);
+    color: var(--text-color-inverted);
+  }
+
+  .input-icon {
+    position: absolute;
+    right: 10px; // Position near the edge of the input
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: var(--text-color-inverted); // Icon matches inverted text color
+    transition: color 0.3s, transform 0.2s;
+
+    &:hover {
+      color: var(--primary-color); // Highlight with theme's primary color on hover
+      transform: scale(1.1); // Slightly enlarge on hover for better UX
+    }
+
+    &:active {
+      transform: scale(0.95); // Provide a "pressed" effect
+    }
   }
 }
+

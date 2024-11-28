@@ -128,7 +128,7 @@ const Sidebar = () => {
                 <span className="menu-link-text">Analytics</span>
               </Link>
             </li>
-            <li className="menu-item">
+            {/* <li className="menu-item">
               <Link
                 to="/feedback"
                 className={`menu-link ${isActive("/feedback") ? "active" : ""}`}
@@ -138,7 +138,7 @@ const Sidebar = () => {
                 </span>
                 <span className="menu-link-text">Feedback</span>
               </Link>
-            </li>
+            </li> */}
           </ul>
         </div>
 
