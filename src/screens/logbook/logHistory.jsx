@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faCalendarAlt, faPrint, faCaretRight, faCaretDown, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faCalendarAlt, faPrint, faCaretRight, faCaretDown, faTimes, faBold } from '@fortawesome/free-solid-svg-icons';
 import LogHistoryTable from '../../components/logbook/logHistoryTable';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
@@ -195,48 +195,94 @@ const LogHistory = () => {
   }, [logHistory, selectedWindow, selectedPurposeType, selectedSubOption, searchPriority, startDate, endDate]);
 
   console.log("Filtered data length:", filteredData.length);
-
-
   const handlePrint = () => {
     const doc = new jsPDF();
-    const columns = ['Date', 'Name', 'Window', 'Purpose', 'Queue No.'];
-    const rows = filteredData.map(log => [
-      log.transaction_date,
-      log.name,
-      log.window_no,
-      log.purpose,
-      log.queue_no
-    ]);
-
-    const header = () => {
-      doc.setFontSize(16);
-      doc.text("Log History", 105, 20, null, null, 'center');
+    const windows = ["Window 1", "Window 2", "Window 3", "Window 4", "Window 5", "Window 6"];
+    const fileName = selectedWindow === "All Windows" ? "All Windows Log History" : `${selectedWindow} Log History`;
+  
+    const currentDate = new Date().toISOString().split('T')[0];
+    doc.setProperties({ title: fileName });
+  
+    const columns = ['DATE', 'NAME', 'PURPOSE', 'QUEUE NO.'];
+  
+    const renderWindowData = (filteredWindowData, windowTitle) => {
+      const rows = filteredWindowData.map(log => [
+        log.transaction_date,
+        log.name,
+        log.purpose,
+        log.queue_no,
+      ]);
+  
+      doc.autoTable({
+        head: [columns],
+        body: rows,
+        startY: 40,
+        theme: 'striped',
+        headStyles: {
+          fillColor: [0, 0, 128],
+          textColor: [255, 255, 255],
+          halign: 'center',
+        },
+        bodyStyles: {
+          halign: 'center',
+        },
+      });
     };
-
-    doc.autoTable({
-      head: [columns],
-      body: rows,
-      margin: { top: 30 },
-      theme: 'striped',
-      headStyles: {
-        fillColor: [0, 0, 128],
-        textColor: [255, 255, 255],
-        halign: 'center',
-      },
-      bodyStyles: {
-        halign: 'center',
-      },
-      didDrawPage: (data) => {
-        header();
-      },
-      startY: 30,
-    });
-
+  
+    if (selectedWindow === "All Windows") {
+      windows.forEach((window, index) => {
+        const filteredWindowData = filteredData.filter(log => `Window ${log.window_no.slice(1)}` === window);
+        
+        if (filteredWindowData.length > 0) {
+          if (index > 0) doc.addPage(); // Add a page break for all windows after the first
+          
+          doc.setFontSize(16);
+          doc.text("Log History", 105, 25, null, null, 'center');
+  
+          doc.setFontSize(13);
+          doc.text(window, 105, 35, null, null, 'center');
+          
+          renderWindowData(filteredWindowData, window);
+        }
+      });
+    } else {
+      const filteredWindowData = filteredData.filter(
+        log => `Window ${log.window_no.slice(1)}` === selectedWindow
+      );
+  
+      if (filteredWindowData.length > 0) {
+        doc.setFontSize(16);
+        doc.text("Log History", 105, 25, null, null, 'center');
+  
+        doc.setFontSize(13);
+        doc.text(selectedWindow, 105, 35, null, null, 'center');
+  
+        renderWindowData(filteredWindowData, selectedWindow);
+      } else {
+        doc.setFontSize(12);
+        doc.text("No data available for the selected window.", 105, 20, null, null, 'center');
+      }
+    }
+  
     const pdfBlob = doc.output('blob');
     const pdfUrl = URL.createObjectURL(pdfBlob);
-    window.open(pdfUrl, '_blank');
+  
+    const newTab = window.open(pdfUrl, '_blank');
+    if (newTab) {
+      newTab.document.title = fileName;
+      const embed = newTab.document.createElement("embed");
+      embed.src = pdfUrl;
+      embed.width = "100%";
+      embed.height = "100%";
+      embed.type = "application/pdf";
+      newTab.document.body.appendChild(embed);
+    }
+  
+    setTimeout(() => URL.revokeObjectURL(pdfUrl), 10000);
   };
-
+  
+  
+  
   if (isLoading) {
     return <div> Loading... </div>;
   }
@@ -355,6 +401,11 @@ const LogHistory = () => {
               <li onClick={() => handlePurposeChange('Permit to Study')}>Permit to Study</li>
               <li onClick={() => handlePurposeChange('Rush Fee')}>Rush Fee</li>
               <li onClick={() => handlePurposeChange('Form 137')}>Form 137</li>
+              <li onClick={() => handlePurposeChange("Enrollment")}>Enrollment</li>
+              <li onClick={() => handlePurposeChange("Graduation")}>Graduation</li>
+              <li onClick={() => handlePurposeChange("Diploma")}>Diploma</li>
+              <li onClick={() => handlePurposeChange("Completion of INC")}> Completion of INC</li>
+              <li onClick={() => handlePurposeChange("Transfer")}>Transfer</li>
             </ul>
           )}
         </div>

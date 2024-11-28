@@ -15,9 +15,10 @@ const CurrentQueue = () => {
   const [selectedWindowQueue, setSelectedWindowQueue] = useState([]);
   const [userEmail, setUserEmail] = useState("");
   const [userWindows, setUserWindows] = useState([]);
+  const [filterStatus, setFilterStatus] = useState("All");
 
   useEffect(() => {
-    // Get logged-in user's email
+    
     const fetchUser = async () => {
       const {
         data: { user },
@@ -45,12 +46,12 @@ const CurrentQueue = () => {
           }
 
           if (data.length > 0) {
-            const userWindows = data[0].window_no; // Assume `window_no` is an array
+            const userWindows = data[0].window_no; 
             setUserWindows(userWindows);
 
             const statusMap = {};
             userWindows.forEach((window) => {
-              statusMap[window] = data[0].status; // assuming status applies to all windows
+              statusMap[window] = data[0].status; 
             });
             setWindowsStatus(statusMap);
           }
@@ -67,13 +68,16 @@ const CurrentQueue = () => {
           .select(
             "id, name, queue_no, status, window_no, purpose, created_at, type, transaction_date"
           )
-          .eq("status", "Waiting")
           .order("id", { ascending: true });
 
         if (selectedWindow) {
           query = query.eq("window_no", selectedWindow);
         } else if (userWindows.length > 0) {
-          query = query.in("window_no", userWindows); // Only fetch queues for the user's windows
+          query = query.in("window_no", userWindows); 
+        }
+
+        if (filterStatus !== "All") {
+          query = query.eq("status", filterStatus);
         }
 
         const { data, error } = await query;
@@ -99,7 +103,7 @@ const CurrentQueue = () => {
     }, 5000);
 
     return () => clearInterval(intervalId);
-  }, [selectedWindow, userEmail, userWindows]);
+  }, [selectedWindow, userEmail, userWindows, filterStatus]);
 
   const handleDelete = async (id) => {
     try {
@@ -137,6 +141,33 @@ const CurrentQueue = () => {
     );
   };
 
+  const handlePending = async () => {
+    const currentQueueItem = selectedWindowQueue[currentQueueIndex];
+    console.log("Marking as pending:", currentQueueItem);
+
+    try {
+      const { error } = await supabase
+        .from("queue")
+        .update({ status: "Pending" })
+        .eq("id", currentQueueItem.id);
+
+      if (error) {
+        throw new Error(`Error updating status to pending: ${error.message}`);
+      }
+
+      setSelectedWindowQueue((prevQueue) =>
+        prevQueue.map((item) =>
+          item.id === currentQueueItem.id ? { ...item, status: "Pending" } : item
+        )
+      );
+
+    
+      handleNext();
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
   const handleDone = async (time) => {
     const currentQueueItem = selectedWindowQueue[currentQueueIndex];
     console.log("Done with:", currentQueueItem);
@@ -153,11 +184,11 @@ const CurrentQueue = () => {
       );
     }
 
-    // Manually increment the id
+   
     const newId = latestLog.length > 0 ? latestLog[0].id + 1 : 1;
 
     try {
-      // Insert into log_history table
+    
       const { error: logError } = await supabase.from("log_history").insert([
         {
           id: newId,
@@ -168,8 +199,8 @@ const CurrentQueue = () => {
           window_no: currentQueueItem.window_no,
           purpose: currentQueueItem.purpose,
           status: "Processing",
-          // time_taken: `${time.hr}:${time.min}:${time.sec}`,
-          created_at: new Date(), // current timestamp
+          
+          created_at: new Date(), 
         },
       ]);
 
@@ -177,7 +208,7 @@ const CurrentQueue = () => {
         throw new Error(`Error logging into log_history: ${logError.message}`);
       }
 
-      // Delete the queue item from queue table after successful logging
+      
       const { error: deleteError } = await supabase
         .from("queue")
         .delete()
@@ -187,12 +218,12 @@ const CurrentQueue = () => {
         throw new Error(`Error deleting from queue: ${deleteError.message}`);
       }
 
-      // Update the local state to remove the deleted item from queue
+   
       setSelectedWindowQueue((prevQueue) =>
         prevQueue.filter((item) => item.id !== currentQueueItem.id)
       );
 
-      // Move to the next item
+     
       handleNext();
     } catch (error) {
       console.error(error.message);
@@ -200,17 +231,22 @@ const CurrentQueue = () => {
   };
 
   const getStatusColor = (status) => {
-    return status === "away"
+    return status === "Away"
       ? "red"
-      : status === "available"
+      : status === "Available"
       ? "green"
       : "black";
   };
 
+  const handleFilterClick = (status) => {
+    setFilterStatus(status);
+  };
+
   const filteredQueue = queue.filter(
     (item) =>
-      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.queue_no.toString().includes(searchTerm)
+      (filterStatus === "All" || item.status === filterStatus) &&
+      (item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.queue_no.toString().includes(searchTerm))
   );
 
   if (loading) {
@@ -249,7 +285,7 @@ const CurrentQueue = () => {
           <div className="current-queue">
             <h1>Queue No: {currentQueueItem.queue_no}</h1>
             <p>Name: {currentQueueItem.name}</p>
-            <Timer onDone={handleDone} />
+            <Timer onDone={handleDone} onPending={handlePending} />
           </div>
         ) : selectedWindowQueue.length > 0 ? (
           <p>
@@ -261,9 +297,23 @@ const CurrentQueue = () => {
           </p>
         )}
       </div>
+      <div className="filter-navbar">
+        {["All", "Waiting", "Pending", "Processing"].map((status) => (
+          <button
+            key={status}
+            onClick={() => handleFilterClick(status)}
+            className={`filter-button ${
+              filterStatus === status ? "active" : ""
+            }`}
+          >
+            {status}
+          </button>
+        ))}
+      </div>
 
       <div className="current-queuee-container">
         <div className="current-queuee">
+         
           <input
             type="text"
             placeholder="Search by name or queue number..."
@@ -271,6 +321,7 @@ const CurrentQueue = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
           />
+          
           <div className="current-queue-list">
             {filteredQueue.length > 0 ? (
               filteredQueue.map((item) => (
@@ -280,11 +331,27 @@ const CurrentQueue = () => {
                     <p> {item.name} </p>
                     <p
                       className={
-                        item.status === "Waiting" ? "status-waiting" : "#e79600"
+                        item.status === "Waiting"
+                          ? "status-waiting"
+                          : item.status === "Pending"
+                          ? "status-pending"
+                          : ""
                       }
                     >
-                      <div className="status-no"> {item.status}</div>
+                      <div
+                        className="status-no"
+                        style={
+                          item.status === "Pending"
+                            ? { color: "blue" }
+                            : item.status === "Waiting"
+                            ? { color: "orange" }
+                            : {}
+                        }
+                      >
+                        {item.status}
+                      </div>
                     </p>
+
                     <div className="item-actions">
                       <button
                         onClick={() => handleDelete(item.id)}

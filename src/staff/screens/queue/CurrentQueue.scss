@@ -34,9 +34,14 @@
     margin: 20px 0;
     width: 100%;
   }
+
+  .status-filter-dropdown{
+    margin-bottom: 20px;
+  }
   
-  .window-status-cardd {
-    padding: 20px;
+  .window-status-list .window-status-cardd {
+    height: 100px;
+    padding: 10px;
     border-radius: 8px;
     box-shadow: 0 2px 5px var(--shadow-color);
     display: flex;
@@ -84,4 +89,41 @@
       grid-template-columns: 1fr; /* One column on smaller screens */
     }
   }
+  /* Filter Navbar */
+.filter-navbar {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: var(--background-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 5px var(--shadow-color);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.filter-button {
+  padding: 10px 15px;
+  background-color: transparent;
+  border: 2px solid var(--button-bg-color);
+  color: var(--button-bg-color);
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+.filter-button:hover {
+  background-color: var(--button-hover-bg-color);
+  color: var(--btn-text-color);
+  transform: scale(1.05);
+}
+
+.filter-button.active {
+  background-color: var(--button-bg-color);
+  color: var(--btn-text-color);
+  border-color: var(--button-hover-bg-color);
+  transform: scale(1.05);
+}
+
   
