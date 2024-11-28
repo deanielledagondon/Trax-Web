@@ -127,10 +127,12 @@ const CurrentQueue = () => {
 
   const handleViewQueue = (windowNo) => {
     setSelectedWindow(windowNo);
-
+  
+    
     const filteredQueueForWindow = queue.filter(
-      (item) => item.window_no === windowNo
+      (item) => item.window_no === windowNo && item.status === "Waiting"
     );
+    
     setSelectedWindowQueue(filteredQueueForWindow);
     setCurrentQueueIndex(0);
   };
@@ -168,6 +170,60 @@ const CurrentQueue = () => {
     }
   };
 
+  const handleDoneFromList = async (item) => {
+    console.log("Marking as done from list:", item);
+  
+    try {
+      const { data: latestLog, error: fetchError } = await supabase
+        .from("log_history")
+        .select("id")
+        .order("id", { ascending: false })
+        .limit(1);
+  
+      if (fetchError) {
+        throw new Error(
+          `Error fetching latest id from log_history: ${fetchError.message}`
+        );
+      }
+  
+      const newId = latestLog.length > 0 ? latestLog[0].id + 1 : 1;
+  
+      const { error: logError } = await supabase.from("log_history").insert([
+        {
+          id: newId,
+          type: item.type,
+          transaction_date: item.transaction_date,
+          queue_no: item.queue_no,
+          name: item.name,
+          window_no: item.window_no,
+          purpose: item.purpose,
+          status: "Completed",
+          created_at: new Date(),
+        },
+      ]);
+  
+      if (logError) {
+        throw new Error(`Error logging into log_history: ${logError.message}`);
+      }
+  
+      // Delete from queue
+      const { error: deleteError } = await supabase
+        .from("queue")
+        .delete()
+        .eq("id", item.id);
+  
+      if (deleteError) {
+        throw new Error(`Error deleting from queue: ${deleteError.message}`);
+      }
+  
+      // Update the local queue state
+      setQueue((prevQueue) => prevQueue.filter((queueItem) => queueItem.id !== item.id));
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+  
+
   const handleDone = async (time) => {
     const currentQueueItem = selectedWindowQueue[currentQueueIndex];
     console.log("Done with:", currentQueueItem);
@@ -198,7 +254,7 @@ const CurrentQueue = () => {
           name: currentQueueItem.name,
           window_no: currentQueueItem.window_no,
           purpose: currentQueueItem.purpose,
-          status: "Processing",
+          status: "Completed",
           
           created_at: new Date(), 
         },
@@ -298,7 +354,7 @@ const CurrentQueue = () => {
         )}
       </div>
       <div className="filter-navbar">
-        {["All", "Waiting", "Pending", "Processing"].map((status) => (
+        {["All", "Waiting", "Pending"].map((status) => (
           <button
             key={status}
             onClick={() => handleFilterClick(status)}
@@ -353,18 +409,29 @@ const CurrentQueue = () => {
                     </p>
 
                     <div className="item-actions">
+
+                    <button
+                        onClick={() => handleDoneFromList(item)}
+                        className="btn btn-done"
+                      >
+                        Done
+                      </button>
                       <button
                         onClick={() => handleDelete(item.id)}
                         className="btn btn-delete"
                       >
                         Delete
                       </button>
+
+    
                       <button
                         onClick={() => setExpandedQueue(item)}
                         className="btn btn-details"
                       >
                         View Details
                       </button>
+                      
+              
                     </div>
                   </div>
                 </div>
@@ -395,6 +462,7 @@ const CurrentQueue = () => {
                 </div>
               </div>
               <div className="right-column">
+                
                 <div className="DetailsQueue">
                   <h3>Appointment: </h3>
                   <p>{expandedQueue.created_at}</p>
