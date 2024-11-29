@@ -14,7 +14,15 @@ const CurrentQueue = () => {
   const [currentQueueIndex, setCurrentQueueIndex] = useState(0);
   const [selectedWindowQueue, setSelectedWindowQueue] = useState([]);
   const [statusFilter, setStatusFilter] = useState('All'); 
+  const [userEmail, setUserEmail] = useState("");
+  const [userWindows, setUserWindows] = useState([]);
+  const [filterStatus, setFilterStatus] = useState("All");
+  const [isPopupVisible, setIsPopupVisible] = useState(false); 
+  const [isMovePopupVisible, setIsMovePopupVisible] = useState(false);
+  const [queueToMove, setQueueToMove] = useState(null);
+  const [targetWindow, setTargetWindow] = useState("");
 
+  
   useEffect(() => {
     const fetchQueues = async () => {
       try {
@@ -109,19 +117,151 @@ const CurrentQueue = () => {
   };
 
   const handleNext = () => {
-    setCurrentQueueIndex((prevIndex) => (prevIndex + 1) % selectedWindowQueue.length);
+    setCurrentQueueIndex(
+      (prevIndex) => (prevIndex + 1) % selectedWindowQueue.length
+    );
   };
+
+  const handlePending = async () => {
+    const currentQueueItem = selectedWindowQueue[currentQueueIndex];
+    console.log("Marking as pending:", currentQueueItem);
+
+    try {
+      const { error } = await supabase
+        .from("queue")
+        .update({ status: "Pending" })
+        .eq("id", currentQueueItem.id);
+
+      if (error) {
+        throw new Error(`Error updating status to pending: ${error.message}`);
+      }
+
+      setSelectedWindowQueue((prevQueue) =>
+        prevQueue.map((item) =>
+          item.id === currentQueueItem.id ? { ...item, status: "Pending" } : item
+        )
+      );
+
+    
+      handleNext();
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  const handleDoneFromList = async (item) => {
+    console.log("Marking as done from list:", item);
+  
+    try {
+      const { data: latestLog, error: fetchError } = await supabase
+        .from("log_history")
+        .select("id")
+        .order("id", { ascending: false })
+        .limit(1);
+  
+      if (fetchError) {
+        throw new Error(
+          `Error fetching latest id from log_history: ${fetchError.message}`
+        );
+      }
+  
+      const newId = latestLog.length > 0 ? latestLog[0].id + 1 : 1;
+  
+      const { error: logError } = await supabase.from("log_history").insert([
+        {
+          id: newId,
+          type: item.type,
+          transaction_date: item.transaction_date,
+          queue_no: item.queue_no,
+          name: item.name,
+          window_no: item.window_no,
+          purpose: item.purpose,
+          status: "Completed",
+          created_at: new Date(),
+        },
+      ]);
+  
+      if (logError) {
+        throw new Error(`Error logging into log_history: ${logError.message}`);
+      }
+  
+      // Delete from queue
+      const { error: deleteError } = await supabase
+        .from("queue")
+        .delete()
+        .eq("id", item.id);
+  
+      if (deleteError) {
+        throw new Error(`Error deleting from queue: ${deleteError.message}`);
+      }
+  
+      setQueue((prevQueue) => prevQueue.filter((queueItem) => queueItem.id !== item.id));
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+  
 
   const handleDone = async (time) => {
     const currentQueueItem = selectedWindowQueue[currentQueueIndex];
-    console.log('Done with:', currentQueueItem);
+    console.log("Done with:", currentQueueItem);
 
-    await supabase
-      .from('queue')
-      .update({ status: 'Done', updated_at : `${time.hr}:${time.min}:${time.sec}` })
-      .eq('id', currentQueueItem.id);
+    const { data: latestLog, error: fetchError } = await supabase
+      .from("log_history")
+      .select("id")
+      .order("id", { ascending: false })
+      .limit(1);
 
-    handleNext();
+    if (fetchError) {
+      throw new Error(
+        `Error fetching latest id from log_history: ${fetchError.message}`
+      );
+    }
+
+   
+    const newId = latestLog.length > 0 ? latestLog[0].id + 1 : 1;
+
+    try {
+    
+      const { error: logError } = await supabase.from("log_history").insert([
+        {
+          id: newId,
+          type: currentQueueItem.type,
+          transaction_date: currentQueueItem.transaction_date,
+          queue_no: currentQueueItem.queue_no,
+          name: currentQueueItem.name,
+          window_no: currentQueueItem.window_no,
+          purpose: currentQueueItem.purpose,
+          status: "Completed",
+          
+          created_at: new Date(), 
+        },
+      ]);
+
+      if (logError) {
+        throw new Error(`Error logging into log_history: ${logError.message}`);
+      }
+
+      
+      const { error: deleteError } = await supabase
+        .from("queue")
+        .delete()
+        .eq("id", currentQueueItem.id);
+
+      if (deleteError) {
+        throw new Error(`Error deleting from queue: ${deleteError.message}`);
+      }
+
+   
+      setSelectedWindowQueue((prevQueue) =>
+        prevQueue.filter((item) => item.id !== currentQueueItem.id)
+      );
+
+     
+      handleNext();
+    } catch (error) {
+      console.error(error.message);
+    }
   };
 
   const getStatusColor = (status) => {
@@ -143,7 +283,54 @@ const CurrentQueue = () => {
   }
 
   const currentQueueItem = selectedWindowQueue[currentQueueIndex];
+  const handleViewDetails = (details) => {
+    setExpandedQueue(details);
+    setIsPopupVisible(true); 
+  };
 
+  const handleClosePopup = () => {
+    setIsPopupVisible(false); 
+  };
+
+  const handleMoveClick = (item) => {
+    setQueueToMove(item); 
+    setIsMovePopupVisible(true); 
+  };
+
+  
+  const handleMoveQueue = async () => {
+    if (!targetWindow || !queueToMove) {
+      alert("Please select a target window.");
+      return;
+    }
+
+    try {
+     
+      const { error } = await supabase
+        .from("queue")
+        .update({ window_no: targetWindow })
+        .eq("id", queueToMove.id);
+
+      if (error) {
+        throw new Error(`Error moving queue: ${error.message}`);
+      }
+
+      setQueue((prevQueue) =>
+        prevQueue.map((item) =>
+          item.id === queueToMove.id
+            ? { ...item, window_no: targetWindow }
+            : item
+        )
+      );
+
+ 
+      setIsMovePopupVisible(false);
+      setQueueToMove(null);
+      setTargetWindow("");
+    } catch (error) {
+      console.error("Error moving queue:", error.message);
+    }
+  };
   return (
     <>
       <div className="window-status">
@@ -166,13 +353,15 @@ const CurrentQueue = () => {
           <div className="current-queue">
             <h1>Queue No: {currentQueueItem.queue_no}</h1>
             <p>Name: {currentQueueItem.name}</p>
-            <Timer onDone={handleDone} />
+            <Timer onDone={handleDone} onPending={handlePending} />
           </div>
         ) : selectedWindowQueue.length > 0 ? (
           <p><center>No more items in the queue.</center></p>
         ) : (
           <p><center>No queue for this window.</center></p>
         )}
+
+        
 
         <div className="status-card">
           <button onClick={() => handleViewQueue(null)} className="btn btn-view-queue">
@@ -204,66 +393,131 @@ const CurrentQueue = () => {
           </select>
 
           <div className="current-queue-list">
-            {filteredQueue.length > 0 ? (
-              filteredQueue.map((item) => (
-                <div className="current-queue-card" key={item.id}>
-                  <div className="item-info">
-                    <div className="queue-no"> {item.queue_no}</div>
-                    <p> {item.name}  </p>
-                    <p className={item.status === 'Waiting' ? 'status-waiting' : item.status === 'Pending' ? 'status-pending' : ''}>
-                      <div className="status-no"> {item.status}</div>
-                    </p>
-                    <div className="item-actions">
-                      <button onClick={() => handleDelete(item.id)} className="btn btn-delete">Delete</button>
-                      <button onClick={() => setExpandedQueue(item)} className="btn btn-details">
-                        View Details
-                      </button>
-                    </div>
+        {filteredQueue.length > 0 ? (
+          filteredQueue.map((item) => (
+            <div className="current-queue-card" key={item.id}>
+              <div className="item-info">
+                <div className="queue-no">{item.queue_no}</div>
+                <p>{item.name}</p>
+                <p
+                  className={
+                    item.status === "Waiting"
+                      ? "status-waiting"
+                      : item.status === "Pending"
+                      ? "status-pending"
+                      : ""
+                  }
+                >
+                  <div
+                    className="status-no"
+                    style={
+                      item.status === "Pending"
+                        ? { color: "blue" }
+                        : item.status === "Waiting"
+                        ? { color: "orange" }
+                        : {}
+                    }
+                  >
+                    {item.status}
                   </div>
+                </p>
+
+                <div className="item-actions">
+                  <button
+                    onClick={() => handleDoneFromList(item)}
+                    className="btn btn-done"
+                  >
+                    Done
+                  </button>
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    className="btn btn-delete"
+                  >
+                    Delete
+                  </button>
+                  <button
+                    onClick={() => handleViewDetails(item)}
+                    className="btn btn-details"
+                  >
+                    View Details
+                  </button>
+                  <button
+                    onClick={() => handleMoveClick(item)} // Show move popup
+                    className="btn btn-move"
+                  >
+                    Move
+                  </button>
                 </div>
-              ))
-            ) : (
-              <div className="no-queue">No queue at the moment</div>
-            )}
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="no-queue">No queue at the moment</div>
+        )}
+      </div>
+
+      {/* Move Popup */}
+      {isMovePopupVisible && (
+        <div className="popup-overlay">
+          <div className="popup-window">
+            <h3>Move Queue</h3>
+            <p>
+              Moving <strong>{queueToMove?.name}</strong> (Queue No:{" "}
+              {queueToMove?.queue_no}) to another window.
+            </p>
+            <label htmlFor="target-window"><p><strong>Select Target Window:</strong></p></label>
+            <select
+              id="target-window"
+              value={targetWindow}
+              onChange={(e) => setTargetWindow(e.target.value)}
+            >
+              <option value="">-- Select Window --</option>
+              {["W1", "W2", "W3", "W4", "W5", "W6"]
+                .filter((window) => window !== queueToMove?.window_no) // Exclude current window
+                .map((window) => (
+                  <option key={window} value={window}>
+                    Window {window}
+                  </option>
+                ))}
+            </select>
+            <div className="popup-actions">
+              <button onClick={handleMoveQueue} className="btn btn-confirm">
+                Confirm
+              </button>
+              <button
+                onClick={() => setIsMovePopupVisible(false)}
+                className="btn btn-cancel"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
+      )}
+      
 
-        {/* Queue Details Section (Hidden when no queue is selected) */}
-        {expandedQueue && (
-          <div className="queue-details">
-            <h2>Queue Details</h2>
-            <div className="details-card grid-layout">
-              <div className="left-column">
-                {expandedQueue.profile_image ? (
-                  <img 
-                    src={expandedQueue.profile_image} 
-                    alt="Profile" 
-                    className="profile-image" 
-                  />
-                ) : (
-                  <span className="profile-icon">👤</span> // Unicode icon
-                )}
-                <h3>{expandedQueue.name}</h3>
-                <div className="appointment-schedule">
-                  <p>{expandedQueue.queue_no}</p>
-                </div>
-              </div>
-              <div className="right-column">
-                <div className="DetailsQueue">
-                  <h3>Appointment: </h3><p>{expandedQueue.created_at}</p>
-                  <h3>Status: </h3><p>{expandedQueue.status}</p>
-                  <h3>Details</h3>
-                  <p>E-mail: {expandedQueue.email}</p>
-                  <p>Type: {expandedQueue.type}</p>
-                  <p>Purpose: {expandedQueue.purpose}</p>
-                </div>
-              </div>
+        {/* Pop-up for queue details */}
+        {isPopupVisible && (
+          <div className="queue-details-popup show">
+            <div className="queue-details-content">
+              <button className="close-btn" onClick={handleClosePopup}>
+                &times;
+              </button>
+              <p><strong>Queue Details</strong></p>
+              <p><strong>Name:</strong> {expandedQueue?.name}</p>
+              <p><strong>Queue No:</strong> {expandedQueue?.queue_no}</p>
+              <p><strong>Status:</strong> {expandedQueue?.status}</p>
+              <p><strong>Window No:</strong> {expandedQueue?.window_no}</p>
+              <p><strong>Purpose:</strong> {expandedQueue?.purpose}</p>
+              {/* Add more details as needed */}
             </div>
           </div>
         )}
       </div>
+      </div>
     </>
   );
 };
+
 
 export default CurrentQueue;
