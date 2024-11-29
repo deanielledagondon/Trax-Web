@@ -6,11 +6,7 @@ import PieChartBox from './pieCartBox/PieChartBox'
 import { useEffect, useState } from 'react';
 import { supabase } from '../helper/supabaseClient';
 
-import {
-  barChartBoxRevenue,
-  barChartBoxVisit,
-  topDealUsers,
-} from "../analytics/barChartBox/data";
+
 
 import Stackbox from './StackedBox/Stackbox'
 
@@ -60,7 +56,7 @@ const Cards = () => {
                     <h3>Total Registrants</h3>
                 </div>
                 <h1>{monthlyLogCount}</h1>
-                <h4>this month</h4>
+                <h4>This Month</h4>
             </div>
             <div className='card'>
                 <div className='card-inner'>

@@ -1,5 +1,5 @@
-import React, { useState, useEffect, forwardRef, useImperativeHandle, useRef } from 'react';
-import './timer.scss';
+import React, { useState, useEffect, forwardRef, useImperativeHandle, useRef } from "react";
+import "./timer.scss";
 
 const Timer = forwardRef(({ onDone, onPending }, ref) => {
   const [time, setTime] = useState({ hr: 0, min: 0, sec: 0 });
@@ -40,15 +40,15 @@ const Timer = forwardRef(({ onDone, onPending }, ref) => {
     setTime({ hr: 0, min: 0, sec: 0 });
     setIsRunning(false);
   };
-  
+
   const handleDoneClick = () => {
-    onDone(time);
-    handleReset();
+    onDone(time); // Trigger the "Done" callback with the current time
+    handleReset(); // Reset the timer
   };
 
   const handlePendingClick = () => {
-    onPending();
-    handleStop();
+    onPending(); // Trigger the "Pending" callback
+    handleReset(); // Reset the timer for the next queue
   };
 
   return (
@@ -61,7 +61,6 @@ const Timer = forwardRef(({ onDone, onPending }, ref) => {
       <div className="buttons">
         <button className="start-button" onClick={handleStart}>Start</button>
         <button className="pause-button" onClick={handleStop}>Pause</button>
-        <button className="reset-button" onClick={handleReset}>Reset</button>
         <button className="pending-button" onClick={handlePendingClick}>Pending</button>
         <button className="done-button" onClick={handleDoneClick}>Done</button>
       </div>

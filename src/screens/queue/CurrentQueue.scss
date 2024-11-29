@@ -28,7 +28,8 @@ body.dark-mode {
 }
 
 .current-queuee {
-    padding: 16px;
+    width: 1000px;
+   
     border-radius: 4px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     background-color: var(--background-light);
@@ -100,7 +101,7 @@ body.dark-mode .current-queue-item:hover {
 
 .item-actions {
     display: flex;
-    justify-content: space-between;
+    
 }
 
 .btn {
@@ -233,7 +234,7 @@ body.dark-mode .current-queue-card {
 
 .item-actions {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 /* Table for queue-details */
@@ -320,7 +321,7 @@ body.dark-mode .queue-details h2 {
 }
 
 .queue-details {
-    width: 700px;
+    width: 500px;
     background-color: var(--background-color);
     padding: 10px;
     border-radius: 5px;
@@ -359,12 +360,12 @@ body.dark-mode .queue-details h2 {
   }
 
   .profile-icon {
-    font-size: 120px;
+    font-size: 110px;
     color: gray;
   }
 
   .queue-details h3 {
-    font-size: 20px;
+    font-size: 15px;
     font-weight: bold;
     margin-bottom: 20px;
     color: var(--text-light); 
@@ -409,6 +410,7 @@ body.dark-mode .DetailsQueue p {
     font-size: 1.2rem;
     color: #888;
   }
+  
   
 
 

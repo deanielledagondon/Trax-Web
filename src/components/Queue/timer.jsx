@@ -1,11 +1,10 @@
-import React, { useState, useEffect, forwardRef, useImperativeHandle, useRef } from 'react';
-import './timer.scss';
+import React, { useState, useEffect, forwardRef, useImperativeHandle, useRef } from "react";
+import "./timer.scss";
 
-const Timer = forwardRef(({ onDone }, ref) => {
+const Timer = forwardRef(({ onDone, onPending }, ref) => {
   const [time, setTime] = useState({ hr: 0, min: 0, sec: 0 });
   const [isRunning, setIsRunning] = useState(false);
   const timerId = useRef(null);
-
 
   useEffect(() => {
     if (isRunning) {
@@ -28,54 +27,41 @@ const Timer = forwardRef(({ onDone }, ref) => {
     return () => clearInterval(timerId.current);
   }, [isRunning]);
 
-  
   useImperativeHandle(ref, () => ({
     resetTimer() {
-      setTime({ hr: 0, min: 0, sec: 0 }); // Reset time to 0
-      setIsRunning(false); // Stop the timer
+      setTime({ hr: 0, min: 0, sec: 0 });
+      setIsRunning(false);
     }
   }));
 
-  const handleStart = () => {
-    setIsRunning(true);
-  };
-
-  const handleStop = () => {
-    setIsRunning(false);
-  };
-
+  const handleStart = () => setIsRunning(true);
+  const handleStop = () => setIsRunning(false);
   const handleReset = () => {
     setTime({ hr: 0, min: 0, sec: 0 });
     setIsRunning(false);
   };
 
   const handleDoneClick = () => {
-    onDone(time);  
-    handleReset(); 
+    onDone(time); // Trigger the "Done" callback with the current time
+    handleReset(); // Reset the timer
+  };
+
+  const handlePendingClick = () => {
+    onPending(); // Trigger the "Pending" callback
+    handleReset(); // Reset the timer for the next queue
   };
 
   return (
     <div className="timer-container">
       <h2>
-        {time.hr.toLocaleString("en-US", {
-          minimumIntegerDigits: 2,
-          useGrouping: false,
-        })}
-        :
-        {time.min.toLocaleString("en-US", {
-          minimumIntegerDigits: 2,
-          useGrouping: false,
-        })}
-        :
-        {time.sec.toLocaleString("en-US", {
-          minimumIntegerDigits: 2,
-          useGrouping: false,
-        })}
+        {time.hr.toLocaleString("en-US", { minimumIntegerDigits: 2 })}:
+        {time.min.toLocaleString("en-US", { minimumIntegerDigits: 2 })}:
+        {time.sec.toLocaleString("en-US", { minimumIntegerDigits: 2 })}
       </h2>
       <div className="buttons">
         <button className="start-button" onClick={handleStart}>Start</button>
         <button className="pause-button" onClick={handleStop}>Pause</button>
-        <button className="reset-button" onClick={handleReset}>Reset</button>
+        <button className="pending-button" onClick={handlePendingClick}>Pending</button>
         <button className="done-button" onClick={handleDoneClick}>Done</button>
       </div>
     </div>
