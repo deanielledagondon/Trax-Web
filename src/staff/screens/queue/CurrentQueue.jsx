@@ -57,7 +57,7 @@ const CurrentQueue = () => {
             userWindows.forEach((window) => {
               statusMap[window] = data[0].status; 
             });
-            setWindowsStatus(statusMap);
+            // setWindowsStatus(statusMap);
           }
         }
       } catch (error) {
