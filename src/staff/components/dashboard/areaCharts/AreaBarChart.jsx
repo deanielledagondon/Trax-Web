@@ -84,6 +84,10 @@ const AreaBarChart = () => {
         }
 
         const aggregatedData = data.reduce((acc, item) => {
+          if (!item.transaction_date) {
+            console.warn("Invalid transaction_date:", item); // Log invalid entries
+            return acc; // Skip processing this item
+          }
           const month = format(parseISO(item.transaction_date), 'MMM');
           if (!acc[month]) {
             acc[month] = { month, completed: 0, ongoing: 0 };
