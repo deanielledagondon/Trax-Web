@@ -2,6 +2,7 @@
   position: static;
   padding: 20px;
   transition: background-color 0.3s, color 0.3s;
+  /* Custom dropdown styles */
 }
 .dark-mode .log-history {
   background-color: #2b2d3e;
@@ -12,6 +13,19 @@
   margin-bottom: 20px;
   color: var(--text-color-inverted);
 }
+.dark-mode .log-history h1 {
+  color: #ffffff;
+}
+.log-history .small-font {
+  font-size: 16px;
+}
+.log-history .bold-text {
+  font-weight: bold;
+  color: black;
+}
+.dark-mode .log-history .bold-text {
+  color: #ffffff;
+}
 .log-history .filters {
   display: flex;
   align-items: center;
@@ -20,6 +34,8 @@
   margin-bottom: 20px;
   margin-left: 20px;
   flex-wrap: wrap;
+  font-weight: normal;
+  font-size: 14px;
 }
 .dark-mode .log-history .filters {
   background-color: #2b2d3e;
@@ -37,6 +53,8 @@
   background-color: #ffffff;
   color: #333333;
   cursor: pointer;
+  font-weight: normal;
+  font-size: 14px;
 }
 .dark-mode .log-history .filters button, .dark-mode .log-history .filters select, .dark-mode .log-history .filters input {
   background-color: #3a3d52;
@@ -51,8 +69,10 @@
   border-color: #888;
 }
 .log-history .filters .search-container {
-  position: relative;
+  position: absolute;
+  right: 14%;
   flex-grow: 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 .log-history .filters .search-container input {
   width: 100%;
@@ -60,13 +80,54 @@
   padding-right: 30px;
   border: 1px solid #ccc;
   border-radius: 1px;
+  text-align: left;
+}
+.log-history .filters .search-container .search-queue-wrapper {
+  position: relative;
+}
+.log-history .filters .search-container .search-queue-wrapper input {
+  padding-right: 50px;
 }
 .log-history .filters .search-container .search-icon {
   position: absolute;
-  right: 10px;
+  right: 20px;
   top: 50%;
   transform: translateY(-50%);
   color: #888;
+}
+.log-history .filters .search-container .clear-search-btn {
+  position: absolute;
+  right: 40px;
+  top: 25%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+  padding: 0;
+  font-size: 14px;
+}
+.log-history .filters .search-container .clear-search-btn:hover {
+  color: #333;
+}
+.dark-mode .log-history .filters .search-container .clear-search-btn {
+  color: #aaa;
+}
+.dark-mode .log-history .filters .search-container .clear-search-btn:hover {
+  color: #fff;
+}
+.log-history .filters .print-button-container {
+  position: absolute;
+  right: 5%;
+}
+.log-history .filters .print-button-container .print-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.log-history .filters .print-button-container .print-icon {
+  font-size: 16px;
 }
 .log-history .filters .date-container {
   display: flex;
@@ -74,6 +135,11 @@
   border: 1px solid #ccc;
   padding: 8px 12px;
   border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+.dark-mode .log-history .filters .date-container {
+  background-color: #3a3d52;
+  border-color: #4a4d62;
 }
 .log-history .filters .date-text {
   margin-right: 5px;
@@ -81,7 +147,7 @@
   font-size: 14px;
 }
 .log-history .filters .date-icon {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: normal;
 }
 .log-history .date-picker-container {
@@ -93,50 +159,81 @@
   top: 100%;
   left: 0;
   z-index: 1000;
-  background-color: #ffffff;
+  background-color: white;
   border: 1px solid #ccc;
   border-radius: 4px;
-  padding: 15px;
+  padding: 30px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  max-height: 650px;
 }
 .dark-mode .log-history .date-range-picker {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
   background-color: #2b2d3e;
   border-color: #4a4d62;
+  border-radius: 4px;
+  padding: 30px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  max-height: 650px;
 }
 .log-history .date-range-picker .date-inputs {
   display: flex;
   gap: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
-.log-history .date-range-picker .date-inputs .react-datepicker-wrapper {
-  flex: 1;
-}
-.log-history .date-range-picker .date-inputs .react-datepicker-wrapper input {
-  width: 100%;
-  padding: 8px;
+.log-history .date-range-picker .date-inputs input[type=text] {
+  flex-grow: 1;
+  width: 280px;
+  padding: 8px 12px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  background-color: #ffffff;
-  color: #333333;
+  background-color: #fff;
+  color: #333;
+  text-align: center;
 }
-.dark-mode .log-history .date-range-picker .date-inputs .react-datepicker-wrapper input {
+.dark-mode .log-history .date-range-picker .date-inputs input[type=text] {
   background-color: #3a3d52;
-  color: #ffffff;
+  color: #fff;
   border-color: #4a4d62;
+}
+.log-history .date-range-picker .date-inputs .date-input-wrapper {
+  position: relative;
+  display: inline-block;
+}
+.log-history .date-range-picker .date-inputs .clear-date-btn {
+  position: absolute;
+  right: 10px;
+  top: 25%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+}
+.log-history .date-range-picker .date-inputs .clear-date-btn:hover {
+  color: #000;
+}
+.dark-mode .log-history .date-range-picker .date-inputs .clear-date-btn:hover {
+  color: #ffffff;
+}
+.log-history .date-range-picker .date-inputs .react-datepicker__input-container input {
+  padding-right: 30px; /* Make room for the clear button */
 }
 .log-history .date-range-picker .calendars {
   display: flex;
-  gap: 20px;
+  gap: 10px;
 }
 .log-history .date-range-picker .calendars .react-datepicker {
   border: none;
   background-color: #ffffff;
   color: #333333;
   width: 280px;
+  flex-direction: column;
 }
 .dark-mode .log-history .date-range-picker .calendars .react-datepicker {
-  background-color: #3a3d52;
+  background-color: #2b2d3e;
   color: #ffffff;
 }
 .log-history .date-range-picker .calendars .react-datepicker .react-datepicker__header {
@@ -159,31 +256,313 @@
 }
 .dark-mode .log-history .date-range-picker .calendars .react-datepicker .react-datepicker__day {
   color: #ffffff;
+  background-color: #2b2d3e;
 }
 .log-history .date-range-picker .calendars .react-datepicker .react-datepicker__day:hover {
   background-color: #f0f0f0;
+  color: #3a3d52;
 }
 .dark-mode .log-history .date-range-picker .calendars .react-datepicker .react-datepicker__day:hover {
   background-color: #4a4d62;
+  color: black;
 }
 .log-history .date-range-picker .calendars .react-datepicker .react-datepicker__day--selected, .log-history .date-range-picker .calendars .react-datepicker .react-datepicker__day--in-selecting-range, .log-history .date-range-picker .calendars .react-datepicker .react-datepicker__day--in-range {
   background-color: #007bff;
   color: #ffffff;
 }
+.dark-mode .log-history .date-range-picker .calendars .react-datepicker .react-datepicker__day--selected, .dark-mode .log-history .date-range-picker .calendars .react-datepicker .react-datepicker__day--in-selecting-range, .dark-mode .log-history .date-range-picker .calendars .react-datepicker .react-datepicker__day--in-range {
+  background-color: #3a3d52;
+  color: white;
+}
 .log-history .date-range-picker .calendars .react-datepicker .react-datepicker__navigation {
-  top: 5px;
-  background: none;
+  position: absolute; /* Ensure positioning relative to the parent */
+  top: 0; /* Align with the top of the header */
+  background-color: transparent;
   border: none;
   line-height: 1.7rem;
   text-align: center;
+  width: 2rem; /* Set a fixed width for the navigation buttons */
+  height: 2rem; /* Set a fixed height for the navigation buttons */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .log-history .date-range-picker .calendars .react-datepicker .react-datepicker__navigation--previous {
-  left: 7px;
+  left: 0; /* Align to the left edge of the header */
 }
 .log-history .date-range-picker .calendars .react-datepicker .react-datepicker__navigation--next {
-  right: 7px;
+  right: 0; /* Align to the right edge of the header */
 }
 .log-history .date-range-picker .calendars .react-datepicker .react-datepicker__month-container {
   float: none;
+}
+.log-history .react-datepicker-popper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  gap: 10px;
+}
+.log-history .react-datepicker-popper .react-datepicker {
+  border: none;
+  background-color: #ffffff;
+  color: #333333;
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+}
+.dark-mode .log-history .react-datepicker-popper .react-datepicker {
+  background-color: #2b2d3e;
+  color: #ffffff;
+}
+.log-history .react-datepicker-popper .react-datepicker .react-datepicker__header {
+  background-color: #f2f2f2;
+  border-bottom: none;
+}
+.dark-mode .log-history .react-datepicker-popper .react-datepicker .react-datepicker__header {
+  background-color: #3a3d52;
+}
+.log-history .react-datepicker-popper .react-datepicker .react-datepicker__current-month,
+.log-history .react-datepicker-popper .react-datepicker .react-datepicker__day-name {
+  color: #333333;
+}
+.dark-mode .log-history .react-datepicker-popper .react-datepicker .react-datepicker__current-month,
+.dark-mode .log-history .react-datepicker-popper .react-datepicker .react-datepicker__day-name {
+  color: #ffffff;
+}
+.log-history .react-datepicker-popper .react-datepicker .react-datepicker__day {
+  color: #333333;
+}
+.dark-mode .log-history .react-datepicker-popper .react-datepicker .react-datepicker__day {
+  color: #ffffff;
+  background-color: #2b2d3e;
+}
+.log-history .react-datepicker-popper .react-datepicker .react-datepicker__day:hover {
+  background-color: #f0f0f0;
+  color: black;
+}
+.dark-mode .log-history .react-datepicker-popper .react-datepicker .react-datepicker__day:hover {
+  background-color: #4a4d62;
+  color: black;
+}
+.log-history .react-datepicker-popper .react-datepicker .react-datepicker__day--selected, .log-history .react-datepicker-popper .react-datepicker .react-datepicker__day--in-selecting-range, .log-history .react-datepicker-popper .react-datepicker .react-datepicker__day--in-range {
+  background-color: #007bff;
+  color: #ffffff;
+}
+.dark-mode .log-history .react-datepicker-popper .react-datepicker .react-datepicker__day--selected, .dark-mode .log-history .react-datepicker-popper .react-datepicker .react-datepicker__day--in-selecting-range, .dark-mode .log-history .react-datepicker-popper .react-datepicker .react-datepicker__day--in-range {
+  background-color: #3a3d52;
+  color: white;
+}
+.log-history .react-datepicker-popper .react-datepicker .react-datepicker__navigation {
+  position: absolute; /* Ensure positioning relative to the parent */
+  top: 0; /* Align with the top of the header */
+  background-color: transparent;
+  border: none;
+  line-height: 1.7rem;
+  text-align: center;
+  width: 2rem; /* Set a fixed width for the navigation buttons */
+  height: 2rem; /* Set a fixed height for the navigation buttons */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.log-history .react-datepicker-popper .react-datepicker .react-datepicker__navigation--previous {
+  left: 0; /* Align to the left edge of the header */
+}
+.log-history .react-datepicker-popper .react-datepicker .react-datepicker__navigation--next {
+  right: 0; /* Align to the right edge of the header */
+}
+.log-history .dropdown-all-windows {
+  position: absolute;
+  left: 41%;
+  display: inline-block;
+}
+.log-history .dropdown-all-windows .dropdown-button {
+  border: 1px solid #ccc;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  width: auto;
+  padding: 8px 12px;
+  cursor: pointer;
+  position: relative;
+}
+.log-history .dropdown-all-windows .dropdown-icon {
+  margin-left: 8px;
+}
+.log-history .dropdown-all-windows .dropdown-menu {
+  position: absolute;
+  top: 100%; /* Position below the button */
+  left: 0;
+  background-color: #ffffff;
+  color: #333333;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  list-style: none;
+  padding: 6px 10px;
+  margin: 0;
+  min-width: 100%; /* Adjust width as needed */
+  max-width: 200%;
+  z-index: 3;
+  font-size: 13px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.dark-mode .log-history .dropdown-all-windows .dropdown-menu {
+  background-color: #3a3d52;
+  color: #fff;
+  border-color: #4a4d62;
+}
+.log-history .dropdown-all-windows .dropdown-menu li {
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.log-history .dropdown-all-windows .dropdown-menu li:hover {
+  background-color: #f0f0f0;
+}
+.dark-mode .log-history .dropdown-all-windows .dropdown-menu li:hover {
+  background-color: #3a3d52;
+  color: #fff;
+  border-color: #4a4d62;
+}
+.dark-mode .log-history .dropdown-all-windows .dropdown-menu li:hover:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+.log-history .custom-dropdown {
+  position: absolute;
+  left: 52%;
+  display: inline-block;
+}
+.log-history .custom-dropdown .dropdown-button {
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 200px; /* Adjust width as needed */
+  max-width: 350px;
+  position: relative;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.log-history .custom-dropdown .dropdown-icon {
+  margin-left: 8px;
+}
+.log-history .custom-dropdown .dropdown-menu {
+  position: absolute;
+  top: 100%; /* Position below the button */
+  left: 0;
+  background-color: #ffffff;
+  color: #333333;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  list-style: none;
+  padding: 6px 10px;
+  margin: 0;
+  min-width: 100%; /* Adjust width as needed */
+  max-width: 200%;
+  z-index: 3;
+  font-size: 13px;
+}
+.dark-mode .log-history .custom-dropdown .dropdown-menu {
+  background-color: #3a3d52;
+  color: #fff;
+  border-color: #4a4d62;
+}
+.log-history .custom-dropdown .dropdown-menu li {
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.log-history .custom-dropdown .dropdown-menu li:hover {
+  background-color: #f0f0f0;
+}
+.dark-mode .log-history .custom-dropdown .dropdown-menu li:hover {
+  background-color: #3a3d52;
+  color: #fff;
+  border-color: #4a4d62;
+}
+.dark-mode .log-history .custom-dropdown .dropdown-menu li:hover:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+.log-history .custom-dropdown .cav-certification {
+  position: relative;
+}
+.log-history .custom-dropdown .submenu {
+  position: absolute;
+  left: 100%; /* Position submenu to the right of the parent */
+  top: 0;
+  background-color: #fff;
+  color: #333333;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 0;
+  list-style: none;
+  z-index: 2;
+  width: 150px;
+  font-size: 13px;
+  text-align: left;
+  overflow-y: auto;
+  max-height: 380px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+.dark-mode .log-history .custom-dropdown .submenu {
+  color: #555;
+  scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
+}
+.log-history .custom-dropdown .submenu::-webkit-scrollbar {
+  width: 8px;
+}
+.log-history .custom-dropdown .submenu::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+.log-history .custom-dropdown .submenu::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+.log-history .custom-dropdown .submenu:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.dark-mode .log-history .custom-dropdown .submenu {
+  background-color: #3a3d52;
+  color: #fff;
+  border-color: #4a4d62;
+}
+.log-history .custom-dropdown .cav-certification,
+.log-history .custom-dropdown .certification {
+  position: relative;
+}
+.log-history .custom-dropdown .cav-certification .submenu-icon,
+.log-history .custom-dropdown .certification .submenu-icon {
+  margin-left: 0.5rem;
+}
+.log-history .custom-dropdown .cav-certification:hover .submenu,
+.log-history .custom-dropdown .certification:hover .submenu {
+  display: block;
+}
+.log-history .custom-dropdown .submenu {
+  display: none;
+}
+.log-history .custom-dropdown .submenu li {
+  padding: 10px;
+  cursor: pointer;
+}
+.log-history .custom-dropdown .submenu li:hover {
+  background-color: #f0f0f0;
+}
+.log-history .custom-dropdown .submenu-icon {
+  margin-left: 8px;
+}
+.log-history .table-container {
+  font-size: 14px;
 }/*# sourceMappingURL=logHistory.css.map */
-

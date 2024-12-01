@@ -10,7 +10,7 @@ import Login from './screens/login/login';
 import Queue from './screens/queue/queue';
 import LogHistory from './screens/logbook/logHistory';
 import Analytics from './screens/analytics/analytics';
-import Feedback from './screens/feedback/feedback';
+import FormTracker from './screens/formTracker/formTracker';
 
 
 import Window1 from './components/Window1/Window1';
@@ -47,7 +47,7 @@ import SunIcon from "./assets/icons/sun.svg";
 import StaffLayout from "./staff/layout/StaffLayout";
 import StaffDashboard from "./staff/screens/dashboard/DashboardScreen";
 import StaffAnalytics from "./staff/screens/analytics/analytics";
-import StaffFeedback from "./staff/screens/feedback/feedback";
+// import StaffFeedback from "./staff/screens/feedback/feedback";
 import StaffLogHistory from "./staff/screens/logbook/logHistory";
 import StaffQueue from "./staff/screens/queue/queue";
 import StaffSettings from "./staff/screens/settings/settings";
@@ -101,7 +101,7 @@ function App() {
             <Route path="/queue" element={<Queue />} />
             <Route path="/logbook" element={<LogHistory />} />
             <Route path="/analytics" element={<Analytics />} />
-            <Route path="/feedback" element={<Feedback />} />
+            <Route path="/formTracker" element={<FormTracker />} />
             <Route path="/settings/*" element={<Settings />} />
             <Route path="*" element={<PageNotFound />} />
 
@@ -134,7 +134,7 @@ function App() {
             <Route path="/staff-logbook" element={<StaffLogHistory />} />
             
             <Route path="/staff-analytics" element={<StaffAnalytics />} />
-            <Route path="/staff-feedback" element={<StaffFeedback />} />
+            <Route path="/formTracker" element={<FormTracker />} />
             <Route path="/staff-settings/*" element={<StaffSettings />} />
             <Route path="*" element={<StaffPageNotFound />} />
           </Route>

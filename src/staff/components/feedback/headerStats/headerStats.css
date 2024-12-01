@@ -49,67 +49,27 @@ body {
   color: var(--text-color-inverted);
 }
 
-.title {
-  color: var(--text-color-inverted);
-  font-size: 2em;
+.bold-text {
   font-weight: bold;
+}
+
+.staff-info .greeting-text {
+  color: var(--text-color-inverted);
+  font-size: 1.8em;
   margin-top: 10px;
   margin-bottom: 10px;
-  margin-left: 80px;
+  font-weight: bold;
+}
+.staff-info .small-font {
+  margin-top: 15px;
+  font-size: 1em;
+  color: var(--text-color-inverted);
 }
 
-.dropdownButton {
-  background-color: var(--background-color);
-  border: 2px solid var(--border-color);
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  color: var(--text-color);
-  padding: 12px 24px;
-  transition: all 0.3s ease;
-  text-align: center;
-  outline: none;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  color: var(--text-color-inverted);
-}
-.dropdownButton:hover {
-  background-color: var(--hover-color);
-  color: black;
-}
-
-.dropdownMenu {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  background-color: var(--background-color);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  box-shadow: var(--shadow);
-  z-index: 1000;
-  min-width: 100%;
-  color: var(--text-color-inverted);
-  padding: 0;
-  text-align: center;
-}
-.dropdownMenu button {
-  display: block;
-  width: 100%;
-  padding: 12px 15px;
-  text-align: center;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--text-color-inverted);
-  font-size: 14px;
-  transition: background-color 0.3s ease;
-}
-.dropdownMenu button:hover {
-  background-color: var(--hover-color);
-  color: black;
-}
-.dropdownMenu button:not(:last-child) {
-  border-bottom: 1px solid var(--border-color);
+.button-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .header-stats-wrapper {
@@ -292,4 +252,34 @@ body {
     width: 100%;
     color: var(--text-color-inverted);
   }
+}
+.print-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.print-button {
+  background-color: var(--background-color);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text-color);
+  padding: 12px 24px;
+  transition: all 0.3s ease;
+  text-align: center;
+  outline: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: var(--text-color-inverted);
+}
+.print-button:hover {
+  background-color: var(--hover-color);
+  color: black;
+}
+
+.print-button svg {
+  width: 16px;
+  height: 16px;
 }/*# sourceMappingURL=headerStats.css.map */
