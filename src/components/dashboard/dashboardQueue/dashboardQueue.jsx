@@ -2,42 +2,73 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from './../../helper/supabaseClient';
 import './dashboardQueue.scss';
 
-
 const DashboardQueue = () => {
   const [queue, setQueue] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const user = localStorage.getItem("user");
+  const parsedUser = JSON.parse(user);
 
   useEffect(() => {
-    const fetchRegistrants = async () => {
+    const fetchData = async () => {
       try {
-        let { data, error } = await supabase
-          .from('queue')
-          .select('queue_no, name, status')
-          .eq('status', 'Waiting')
-          .order('id', { ascending: true });
-        if (error) {
-          console.log(error);
-          throw error;
+        // Fetch the window number
+        const { data: windowData, error: windowError } = await supabase
+          .from("registrants")
+          .select("window_no")
+          .eq("id", parsedUser.id)
+          .single();
+
+        if (windowError) throw windowError;
+
+        const windowNo = windowData.window_no;
+
+        if (!windowNo || windowNo.length === 0) {
+          setQueue([]);
+          setLoading(false);
+          return;
         }
-        setQueue(data);
+
+        // Fetch the registrants for the windows
+        const { data: queueData, error: queueError } = await supabase
+          .from('queue')
+          .select('queue_no, name, status, window_no')
+          .eq('status', 'Waiting')
+          .in('window_no', windowNo)
+          .order('id', { ascending: true });
+
+        if (queueError) throw queueError;
+
+        setQueue(queueData);
         setLoading(false);
-      } catch (error) {
-        setError(error.message);
+
+        // Set up live polling
+        const intervalId = setInterval(async () => {
+          try {
+            const { data: updatedQueueData, error: updatedQueueError } = await supabase
+              .from('queue')
+              .select('queue_no, name, status, window_no')
+              .eq('status', 'Waiting')
+              .in('window_no', windowNo)
+              .order('id', { ascending: true });
+
+            if (updatedQueueError) throw updatedQueueError;
+            setQueue(updatedQueueData);
+          } catch (pollingError) {
+            console.error("Polling error:", pollingError);
+          }
+        }, 3000);
+
+        // Clean up polling on unmount
+        return () => clearInterval(intervalId);
+      } catch (fetchError) {
+        setError(fetchError.message);
         setLoading(false);
       }
     };
 
-    fetchRegistrants();
-
-    // Set up live polling
-    const intervalId = setInterval(() => {
-      fetchRegistrants();
-    }, 3000);
-
-    // Clean up interval on component unmount
-    return () => clearInterval(intervalId);
-  }, []);
+    fetchData();
+  }, [parsedUser.id]);
 
   if (loading) {
     return <div>Loading...</div>;

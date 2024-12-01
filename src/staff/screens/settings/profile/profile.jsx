@@ -10,17 +10,16 @@ const ProfileSettings = () => {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [position, setPosition] = useState('');
-  const [assignedWindow, setAssignedWindow] = useState(''); // Added state for assigned window
+  const [assignedWindow, setAssignedWindow] = useState(''); // Still needed for display purposes
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [loading, setLoading] = useState(true);
 
-
-    // State for Change Password Modal
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [showNewPassword, setShowNewPassword] = useState(false); // Visibility toggle for New Password
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Visibility toggle for Confirm Password
+  // State for Change Password Modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -28,7 +27,7 @@ const ProfileSettings = () => {
         try {
           const { data, error } = await supabase
             .from('registrants')
-            .select('full_name, email, role, window_no') // Added window_no to select statement
+            .select('full_name, email, role, window_no') // Fetch assigned window
             .eq('id', session.user.id)
             .single();
 
@@ -40,7 +39,7 @@ const ProfileSettings = () => {
             setLastName(nameParts.slice(1).join(' '));
             setEmail(data.email);
             setPosition(data.role);
-            setAssignedWindow(data.window_no); // Set assigned window
+            setAssignedWindow(data.window_no); // Display assigned window
           }
         } catch (error) {
           console.error('Unexpected error:', error);
@@ -57,16 +56,15 @@ const ProfileSettings = () => {
     if (session) {
       try {
         const fullName = `${firstName} ${lastName}`;
-        const { data, error } = await supabase
+        const { error } = await supabase
           .from('registrants')
-          .update({ full_name: fullName, email, role: position, window_no: assignedWindow }) // Added window_no to update
+          .update({ full_name: fullName, email, role: position }) // Removed window_no from update
           .eq('id', session.user.id);
 
         if (error) {
           console.error('Error saving user data:', error);
           alert('Failed to save changes.');
         } else {
-          console.log('Changes saved', data);
           alert('Changes saved successfully.');
         }
       } catch (error) {
@@ -75,7 +73,6 @@ const ProfileSettings = () => {
       }
     }
   };
-
 
   const handlePasswordChange = async () => {
     if (newPassword !== confirmPassword) {
@@ -114,13 +111,6 @@ const ProfileSettings = () => {
   return (
     <div className={`profile-settings ${isDarkMode ? 'dark-mode' : ''}`}>
       <div className="profile-header">
-        {/* <div className="profile-image-container">
-          <img
-            src="https://via.placeholder.com/100"
-            alt="Profile"
-            className="profile-image"
-          />
-        </div> */}
         <div className="profile-info">
           <div className="profile-name">{`${firstName} ${lastName}`}</div>
           <div className="profile-position">{position}</div>
@@ -167,22 +157,15 @@ const ProfileSettings = () => {
             />
           </div>
         </div>
-        <div className="profile-field-row"> {/* Added select field for assigned window */}
+        <div className="profile-field-row">
           <div className="profile-field">
             <label htmlFor="assignedWindow">Assigned Window</label>
-            <select
+            <input
+              type="text"
               id="assignedWindow"
               value={assignedWindow}
-              onChange={(e) => setAssignedWindow(e.target.value)}
-            >
-              <option value="">Select a window</option>
-              <option value="W1">Window 1</option>
-              <option value="W2">Window 2</option>
-              <option value="W3">Window 3</option>
-              <option value="W4">Window 4</option>
-              <option value="W5">Window 5</option>
-              <option value="W6">Window 6</option>
-            </select>
+              readOnly
+            />
           </div>
         </div>
         <div className="profile-buttons">
@@ -195,68 +178,63 @@ const ProfileSettings = () => {
         </div>
       </div>
 
-
- {/* Modal for Change Password */}
-{isModalOpen && (
-  <div className="modal-overlay">
-    <div className="modal">
-      <h2>Change Password</h2>
-      {/* New Password Field */}
-      <div className="modal-field">
-        <label htmlFor="newPassword">New Password</label>
-        <div className="password-input-wrapper">
-          <input
-            type={showNewPassword ? "text" : "password"}
-            id="newPassword"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            placeholder="Enter new password"
-          />
-          {showNewPassword ? (
-            <MdVisibilityOff
-              className="input-icon"
-              onClick={() => setShowNewPassword(!showNewPassword)}
-            />
-          ) : (
-            <MdVisibility
-              className="input-icon"
-              onClick={() => setShowNewPassword(!showNewPassword)}
-            />
-          )}
+      {/* Password Change Modal */}
+      {isModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h2>Change Password</h2>
+            <div className="modal-field">
+              <label htmlFor="newPassword">New Password</label>
+              <div className="password-input-wrapper">
+                <input
+                  type={showNewPassword ? "text" : "password"}
+                  id="newPassword"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Enter new password"
+                />
+                {showNewPassword ? (
+                  <MdVisibilityOff
+                    className="input-icon"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                  />
+                ) : (
+                  <MdVisibility
+                    className="input-icon"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                  />
+                )}
+              </div>
+            </div>
+            <div className="modal-field">
+              <label htmlFor="confirmPassword">Confirm New Password</label>
+              <div className="password-input-wrapper">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  id="confirmPassword"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+                {showConfirmPassword ? (
+                  <MdVisibilityOff
+                    className="input-icon"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  />
+                ) : (
+                  <MdVisibility
+                    className="input-icon"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  />
+                )}
+              </div>
+            </div>
+            <div className="modal-buttons">
+              <button onClick={handlePasswordChange}>Confirm</button>
+              <button onClick={() => setIsModalOpen(false)}>Cancel</button>
+            </div>
+          </div>
         </div>
-      </div>
-      {/* Confirm Password Field */}
-      <div className="modal-field">
-        <label htmlFor="confirmPassword">Confirm New Password</label>
-        <div className="password-input-wrapper">
-          <input
-            type={showConfirmPassword ? "text" : "password"}
-            id="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-          {showConfirmPassword ? (
-            <MdVisibilityOff
-              className="input-icon"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-
-            />
-          ) : (
-            <MdVisibility
-              className="input-icon"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            />
-          )}
-        </div>
-      </div>
-      {/* Buttons */}
-      <div className="modal-buttons">
-        <button onClick={handlePasswordChange}>Confirm</button>
-        <button onClick={() => setIsModalOpen(false)}>Cancel</button>
-      </div>
-    </div>
-  </div>
-)}
+      )}
     </div>
   );
 };

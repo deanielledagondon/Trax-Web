@@ -192,6 +192,24 @@ const HeaderStats = ({
         });
 
         // 5. Ratings Over Time
+addSection('• Ratings Over Time', () => {
+  if (ratingsOverTime && ratingsOverTime.length > 0) {
+    // Sort ratingsOverTime by date (assuming `date` is a valid date string)
+    const sortedRatings = ratingsOverTime.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    // Prepare table content
+    const ratingsOverTimeTable = sortedRatings.map((entry) => ({
+      Date: entry.date,
+      Rating: `${entry.rating}%`
+    }));
+
+    // Add the data to the PDF with autoTable
+    addAutoTableWithSpacing(ratingsOverTimeTable);
+  } else {
+    addTextToPDF('No ratings trend data available.');
+  }
+});
+
 
 
         pdf.setFontSize(10);
