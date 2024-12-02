@@ -20,6 +20,12 @@ const CurrentQueue = () => {
   const [queueToMove, setQueueToMove] = useState(null);
   const [targetWindow, setTargetWindow] = useState("");
 
+   // Claiming popup state
+   const [isClaimingPopupVisible, setIsClaimingPopupVisible] = useState(false);
+   const [claimingNote, setClaimingNote] = useState("");
+   const [claimingDate, setClaimingDate] = useState("");
+   const [selectedQueueItem, setSelectedQueueItem] = useState(null);
+
   
   useEffect(() => {
     
@@ -57,7 +63,7 @@ const CurrentQueue = () => {
             userWindows.forEach((window) => {
               statusMap[window] = data[0].status; 
             });
-            // setWindowsStatus(statusMap);
+            setWindowsStatus(statusMap);
           }
         }
       } catch (error) {
@@ -313,6 +319,29 @@ const CurrentQueue = () => {
   }
 
   const currentQueueItem = selectedWindowQueue[currentQueueIndex];
+  const handleCancel = async (id) => {
+    try {
+      const confirmed = window.confirm(
+        "Are you sure you want to cancel this queue?"
+      );
+
+      if (confirmed) {
+        const { error } = await supabase
+          .from("queue")
+          .update({ status: "Cancelled" })
+          .eq("id", id);
+
+        if (error) {
+          throw error;
+        }
+
+        setQueue(queue.filter((item) => item.id !== id));
+      }
+    } catch (error) {
+      console.error("Error canceling item:", error.message);
+    }
+  };
+
 
   const handleViewDetails = (details) => {
     setExpandedQueue(details);
@@ -363,6 +392,46 @@ const CurrentQueue = () => {
     }
   };
 
+  const handleClaim = (item) => {
+    setSelectedQueueItem(item);
+    setIsClaimingPopupVisible(true); // Show claiming popup
+  };
+
+  const handleClaimSubmit = async () => {
+    try {
+      if (!claimingNote || !claimingDate) {
+        alert("Please fill in both the note and the claiming date.");
+        return;
+      }
+
+      const { error } = await supabase
+        .from("queue")
+        .update({
+          status: "Claimed", // Change status to "Claimed"
+          claiming_note: claimingNote, // Store the note
+          claiming_date: claimingDate, // Store the date
+        })
+        .eq("id", selectedQueueItem.id);
+
+      if (error) {
+        throw error;
+      }
+
+      setQueue(queue.map((item) =>
+        item.id === selectedQueueItem.id
+          ? { ...item, status: "Claimed", claiming_note: claimingNote, claiming_date: claimingDate }
+          : item
+      ));
+
+      setIsClaimingPopupVisible(false); // Close the popup
+      setClaimingNote(""); // Reset the fields
+      setClaimingDate("");
+    } catch (error) {
+      console.error("Error claiming queue:", error.message);
+    }
+  };
+
+
   return (
     <>
       <div className="window-status">
@@ -402,7 +471,7 @@ const CurrentQueue = () => {
         )}
       </div>
       <div className="filter-navbar">
-      {["All", "Waiting", "Pending"].map((status) => (
+      {["All", "Waiting", "Pending" , "Claiming", "Cancelled"].map((status) => (
         <button
           key={status}
           onClick={() => handleFilterClick(status)} // Click to update the filter
@@ -436,20 +505,28 @@ const CurrentQueue = () => {
                 <p
                   className={
                     item.status === "Waiting"
-                      ? "status-waiting"
-                      : item.status === "Pending"
-                      ? "status-pending"
-                      : ""
+                    ? "status-waiting"
+                    : item.status === "Pending"
+                    ? "status-pending"
+                    : item.status === "Claiming"
+                    ? "status-claiming"
+                    : item.status === "Cancelled"
+                    ? "status-cancelled"
+                    : ""
                   }
                 >
                   <div
                     className="status-no"
                     style={
                       item.status === "Pending"
-                        ? { color: "blue" }
-                        : item.status === "Waiting"
-                        ? { color: "orange" }
-                        : {}
+                      ? { color: "blue" }
+                      : item.status === "Waiting"
+                      ? { color: "orange" }
+                      : item.status === "Claiming"
+                      ? { color: "yellow" }
+                      : item.status === "Cancelled"
+                      ? { color: "red" }
+                      : {}
                     }
                   >
                     {item.status}
@@ -457,18 +534,22 @@ const CurrentQueue = () => {
                 </p>
 
                 <div className="item-actions">
-                  <button
-                    onClick={() => handleDoneFromList(item)}
-                    className="btn btn-done"
+                <button
+                    onClick={() => handleClaim(item)}
+                    className="btn btn-claim"
                   >
-                    Done
+                    Claim
                   </button>
+
+
                   <button
-                    onClick={() => handleDelete(item.id)}
-                    className="btn btn-delete"
-                  >
-                    Delete
-                  </button>
+                    onClick={() => handleCancel(item.id)} 
+                    className="btn btn-cancel"
+                        >
+                    Cancel
+                    </button>
+
+        
                   <button
                     onClick={() => handleViewDetails(item)}
                     className="btn btn-details"
@@ -476,19 +557,49 @@ const CurrentQueue = () => {
                     View Details
                   </button>
                   <button
-                    onClick={() => handleMoveClick(item)} // Show move popup
+                    onClick={() => handleMoveClick(item)}
                     className="btn btn-move"
                   >
                     Move
                   </button>
+                 
                 </div>
               </div>
             </div>
           ))
         ) : (
-          <div className="no-queue">No queue at the moment</div>
+          <div className="no-queue">No list at the moment.</div>
         )}
       </div>
+
+      {isClaimingPopupVisible && (
+    <div className="claiming-popup">
+      <div className="popup-content">
+        <h3>Claiming Details</h3>
+        <textarea
+          placeholder="Enter a note for claiming..."
+          value={claimingNote}
+          onChange={(e) => setClaimingNote(e.target.value)}
+        />
+        <input
+          type="date"
+          value={claimingDate}
+          onChange={(e) => setClaimingDate(e.target.value)}
+        />
+        <div className="popup-buttons">
+          <button onClick={handleClaimSubmit} className="submit-button">
+            Submit
+          </button>
+          <button
+            onClick={() => setIsClaimingPopupVisible(false)}
+            className="cancel-button"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  )}
 
       {/* Move Popup */}
       {isMovePopupVisible && (
@@ -544,6 +655,23 @@ const CurrentQueue = () => {
               <p><strong>Window No:</strong> {expandedQueue?.window_no}</p>
               <p><strong>Purpose:</strong> {expandedQueue?.purpose}</p>
               {/* Add more details as needed */}
+
+              <div className="popup-buttons">
+             
+              <button
+                    onClick={() => handleDoneFromList(item)}
+                    className="btn btn-done"
+                  >
+                    Done
+                  </button>
+
+              <button
+                onClick={() => handleDelete(expandedQueue.id)}
+                className="btn btn-delete"
+              >
+                Delete
+              </button>
+              </div>
             </div>
           </div>
         )}

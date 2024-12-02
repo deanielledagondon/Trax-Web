@@ -187,6 +187,18 @@
   }
 }
 
+.btn-cancel {
+  background-color: #bd0e0e;
+
+  &:hover {
+    background-color: #e0a800;
+  }
+
+  &:active {
+    background-color: #d39e00;
+  }
+}
+
 .filter-button {
   padding: 8px 16px;
   margin: 5px;
@@ -326,4 +338,62 @@
 .popup-actions .btn-cancel {
   background-color: #f44336;
   color: #fff;
+}
+
+.claiming-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  text-align: center;
+}
+
+textarea, input[type="date"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.popup-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.submit-button, .cancel-button {
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.submit-button {
+  background-color: green;
+  color: white;
+}
+
+.cancel-button {
+  background-color: red;
+  color: white;
+}
+.popup-content{
+  color:#000000;
+  font-size: 15px; 
+  margin-bottom: 1px;
+}
+
+.popup-content h3{
+  margin-bottom: 15px;
 }
