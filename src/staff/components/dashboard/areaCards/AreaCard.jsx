@@ -23,13 +23,13 @@ const AreaCard = ({ colors, percentFillValue, cardInfo }) => {
         <p className="info-text">{cardInfo.text}</p>
       </div>
       {/* Conditionally render the image for the "Busiest Window" card */}
-      {cardInfo.title === "Busiest Window" && (
+      {cardInfo.title === "Frequently Visited" && (
         <div className="area-card-image">
           <img src={busiestWindowImage} alt="Frequently Visited" />
         </div>
       )}
       {/* Conditionally render the chart only if the card is not the "Busiest Window" */}
-      {cardInfo.title !== "Busiest Window" && (
+      {cardInfo.title !== "Frequently Visited" && (
         <div className="area-card-chart">
           <PieChart width={100} height={100}>
             <Pie

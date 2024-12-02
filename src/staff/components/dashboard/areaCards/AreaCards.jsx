@@ -96,7 +96,7 @@ const AreaCards = () => {
         colors={["#e4e8ef", "#f29a2e"]}
         percentFillValue={40}
         cardInfo={{
-          title: "Busiest Window",
+          title: "Frequently Visited",
           value: `${highestWindow.window_no}: ${highestWindow.count}`,
           text: "",
         }}
