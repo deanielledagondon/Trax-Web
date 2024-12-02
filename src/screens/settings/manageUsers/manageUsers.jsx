@@ -83,68 +83,116 @@ const ManageUsers = () => {
     setOpenConfirmDelete(true);
   };
 
-  const handleSaveEdit = async () => {    
-    if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match');
-      return;
-  } else if (formData.password.length < 6) {
-      alert('Password must be at least 6 characters long');
-      return;
-  } else {
-      const { data: user, error } = await supabaseAdmin.auth.admin.updateUserById(
-          selectedUser.id,
-          { password: formData.password }
-      );
+  const handleSaveEdit = async () => {
+    // Check if only the name is being edited
+    if (formData.name !== selectedUser .full_name) {
+      // Update the name in the database
+      try {
+        const { data, error } = await supabase
+          .from('registrants')
+          .update({ full_name: formData.name })
+          .eq('id', selectedUser .id);
   
-      if (error) {
-          console.error('Error updating password:', error);
-      } else {
-          console.log('Password updated successfully');
+        if (error) {
+          console.error('Error updating user name:', error);
+        } else {
+          const updatedUsers = users.map(user =>
+            user.id === selectedUser .id ? { ...user, full_name: formData.name } : user
+          );
+          setUsers(updatedUsers);
+        }
+      } catch (error) {
+        console.error('Unexpected error:', error);
       }
-  }
+    }
   
-
-    if (selectedUser.email !== formData.email) {
-      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // If the user is only editing the name, we can skip other validations
+    if (formData.password || formData.confirmPassword || formData.email || formData.window_no) {
+      // Check if the password is being updated
+      if (formData.password || formData.confirmPassword) {
+        if (formData.password !== formData.confirmPassword) {
+          alert('Passwords do not match');
+          return;
+        } else if (formData.password.length < 6) {
+          alert('Password must be at least 6 characters long');
+          return;
+        } else {
+          const { data: user, error } = await supabaseAdmin.auth.admin.updateUserById(
+            selectedUser .id,
+            { password: formData.password }
+          );
   
-      if (!emailPattern.test(formData.email)) {
+          if (error) {
+            console.error('Error updating password:', error);
+          } else {
+            console.log('Password updated successfully');
+          }
+        }
+      }
+  
+      // Check if the email is being updated
+      if (selectedUser .email !== formData.email) {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+        if (!emailPattern.test(formData.email)) {
           console.log("Invalid email format.");
           alert("Invalid email format.");
           return;
-      } else {
-          console.log("Email format is valid.");
+        } else {
           const { data: user, error } = await supabaseAdmin.auth.admin.updateUserById(
-            selectedUser.id,
+            selectedUser .id,
             { email: formData.email }
-          )
-      }
-  }
+          );
   
+          if (error) {
+            console.error('Error updating email:', error);
+          }
+        }
+      }
+  
+      // Update the window number if it's changed
+if (formData.window_no !== selectedUser .window_no) {
+  try {
+    const { data, error } = await supabase
+      .from('registrants')
+      .update({ window_no: `{${formData.window_no}}` }) // Wrap in curly braces to indicate an array
+      .eq('id', selectedUser .id);
 
-
+    if (error) {
+      console.error('Error updating window number:', error);
+    } else {
+      const updatedUsers = users.map(user =>
+        user.id === selectedUser .id ? { ...user, window_no: formData.window_no } : user
+      );
+      setUsers(updatedUsers);
+    }
+  } catch (error) {
+    console.error('Unexpected error:', error);
+  }
+}
+    }
+  
+    // Finally, update the user data in the registrants table for role
     try {
       const { data, error } = await supabase
         .from('registrants')
         .update({
-          full_name: formData.name,
-          email: formData.email,
-          role: formData.role,
-          window_no: formData.window_no
+          role: formData.role
         })
-        .eq('id', selectedUser.id);
-
+        .eq('id', selectedUser .id);
+  
       if (error) {
-        console.error('Error updating user:', error);
+        console.error('Error updating user role:', error);
       } else {
         const updatedUsers = users.map(user =>
-          user.id === selectedUser.id ? { ...user, ...formData } : user
+          user.id === selectedUser .id ? { ...user, role: formData.role } : user
         );
         setUsers(updatedUsers);
       }
     } catch (error) {
       console.error('Unexpected error:', error);
     }
-
+  
     handleCloseEdit();
   };
 
@@ -180,11 +228,11 @@ const ManageUsers = () => {
       };
   
       if (formData.role !== 'admin') {
-        userMetadata.window_no = formData.window_no;
+        userMetadata.window_no = formData.window_no; // Assign window_no directly for non-admins
       }
   
       // Create user in Supabase Auth
-      const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+      const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser ({
         email: formData.email,
         password: formData.password,
         email_confirm: true,
@@ -192,8 +240,8 @@ const ManageUsers = () => {
       });
   
       if (authError) {
-        console.error('Error creating user in Auth:', authError);
-        alert('Failed to create user in authentication system.');
+        console.error('Error creating user in Auth:', authError); // Log the error
+        alert('Failed to create user in authentication system: ' + authError.message); // Show error message
         return;
       }
   
@@ -211,8 +259,9 @@ const ManageUsers = () => {
         role: formData.role,
       };
   
+      // Assign window_no as an array if the user is not an admin
       if (formData.role !== 'admin') {
-        dbInsertData.window_no = formData.window_no;
+        dbInsertData.window_no = `{${formData.window_no}}`; // Wrap in curly braces to indicate an array
       }
   
       // Insert into the `registrants` table
@@ -224,7 +273,7 @@ const ManageUsers = () => {
         return;
       }
   
-      alert('User added successfully!');
+      alert('User  added successfully!');
       setUsers([...users, { ...formData, id: user.id }]); // Update local state
       handleCloseAdd(); // Close the dialog
     } catch (error) {
@@ -478,7 +527,7 @@ const togglePasswordVisibility = () => {
           }}
         >
           <MenuItem value="" disabled>Select Window No.</MenuItem>
-          <MenuItem value="W1">Window 0</MenuItem>
+          <MenuItem value="W0">Window 0</MenuItem>
           <MenuItem value="W1">Window 1</MenuItem>
           <MenuItem value="W2">Window 2</MenuItem>
           <MenuItem value="W3">Window 3</MenuItem>
