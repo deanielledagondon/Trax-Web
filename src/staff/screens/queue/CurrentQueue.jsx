@@ -187,6 +187,7 @@ const CurrentQueue = () => {
     console.log("Marking as done from list:", item);
   
     try {
+      // Insert the item into the log_history table
       const { data: latestLog, error: fetchError } = await supabase
         .from("log_history")
         .select("id")
@@ -194,13 +195,12 @@ const CurrentQueue = () => {
         .limit(1);
   
       if (fetchError) {
-        throw new Error(
-          `Error fetching latest id from log_history: ${fetchError.message}`
-        );
+        throw new Error(`Error fetching latest id from log_history: ${fetchError.message}`);
       }
   
       const newId = latestLog.length > 0 ? latestLog[0].id + 1 : 1;
   
+      // Insert into log_history
       const { error: logError } = await supabase.from("log_history").insert([
         {
           id: newId,
@@ -229,6 +229,7 @@ const CurrentQueue = () => {
         throw new Error(`Error deleting from queue: ${deleteError.message}`);
       }
   
+      // Update the state to remove the item from the queue
       setQueue((prevQueue) => prevQueue.filter((queueItem) => queueItem.id !== item.id));
     } catch (error) {
       console.error(error.message);
@@ -534,6 +535,13 @@ const CurrentQueue = () => {
                 </p>
 
                 <div className="item-actions">
+
+                <button
+                    onClick={() => handleDoneFromList(item)}
+                    className="btn btn-done"
+                  >
+                    Done
+                  </button>
                 <button
                     onClick={() => handleClaim(item)}
                     className="btn btn-claim"
@@ -658,12 +666,7 @@ const CurrentQueue = () => {
 
               <div className="popup-buttons">
              
-              <button
-                    onClick={() => handleDoneFromList(item)}
-                    className="btn btn-done"
-                  >
-                    Done
-                  </button>
+      
 
               <button
                 onClick={() => handleDelete(expandedQueue.id)}
