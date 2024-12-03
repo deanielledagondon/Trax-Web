@@ -105,7 +105,7 @@ const LogHistory = () => {
       const { data, error } = await supabase
         .from('log_history')
         .select('*')
-        .order('transaction_date', { ascending: true });
+        .order('transaction_date', { ascending: false });
       if (error) {
         console.error('Error fetching data:', error);
       } else {
