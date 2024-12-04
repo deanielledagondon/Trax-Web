@@ -12,6 +12,7 @@ import {
   MdOutlineLogout,
   MdOutlineSettings,
   MdPerson,
+  MdOutlineInventory2
 } from "react-icons/md";
 import { Link } from "react-router-dom";
 import LogoDark from "../../assets/images/logo-dark-small.png";
@@ -133,19 +134,17 @@ const Sidebar = () => {
                 <span className="menu-link-text">Analytics</span>
               </Link>
             </li>
-            {/* <li className="menu-item">
+            <li className="menu-item">
               <Link
-                to="/staff-feedback"
-                className={`menu-link ${
-                  isActive("/staff-feedback") ? "active" : ""
-                }`}
+                to="/staff-formTracker"
+                className={`menu-link ${isActive("/staff-formTracker") ? "active" : ""}`}
               >
                 <span className="menu-link-icon">
-                  <MdOutlineComment size={20} />
+                  <MdOutlineInventory2 size={20} />
                 </span>
-                <span className="menu-link-text">Feedback</span>
+                <span className="menu-link-text">Form Tracker</span>
               </Link>
-            </li> */}
+            </li>
           </ul>
         </div>
 

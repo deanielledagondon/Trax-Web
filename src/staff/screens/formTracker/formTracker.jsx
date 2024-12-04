@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import "./formTracker.scss";
 
-const FormTracker = () => {
+const StaffFormTracker = () => {
   const [formData, setFormData] = useState([
     { date: "2024-12-01", user: "John Doe", form: "INC Form" },
     { date: "2024-12-02", user: "Jane Smith", form: "Request for credentials" },
@@ -27,26 +27,7 @@ const FormTracker = () => {
     { date: "2024-12-02", user: "Jane Smith", form: "Request for credentials" },
     { date: "2024-12-03", user: "Michael Johnson", form: "Leave of Absence" },
     { date: "2024-12-04", user: "Emily Brown", form: "Students clearance" },
-    { date: "2024-12-05", user: "Chris Lee", form: "INC Form" },
-    { date: "2024-12-01", user: "John Doe", form: "INC Form" },
-    { date: "2024-12-02", user: "Jane Smith", form: "Request for credentials" },
-    { date: "2024-12-03", user: "Michael Johnson", form: "Leave of Absence" },
-    { date: "2024-12-04", user: "Emily Brown", form: "Students clearance" },
-    { date: "2024-12-05", user: "Chris Lee", form: "INC Form" },
-    { date: "2024-12-02", user: "Jane Smith", form: "Request for credentials" },
-    { date: "2024-12-03", user: "Michael Johnson", form: "Leave of Absence" },
-    { date: "2024-12-04", user: "Emily Brown", form: "Students clearance" },
-    { date: "2024-12-05", user: "Chris Lee", form: "INC Form" },
-    { date: "2024-12-01", user: "John Doe", form: "INC Form" },
-    { date: "2024-12-02", user: "Jane Smith", form: "Request for credentials" },
-    { date: "2024-12-03", user: "Michael Johnson", form: "Leave of Absence" },
-    { date: "2024-12-04", user: "Emily Brown", form: "Students clearance" },
-    { date: "2024-12-05", user: "Chris Lee", form: "INC Form" },
-    { date: "2024-12-01", user: "John Doe", form: "INC Form" },
-    { date: "2024-12-02", user: "Jane Smith", form: "Request for credentials" },
-    { date: "2024-12-03", user: "Michael Johnson", form: "Leave of Absence" },
-    { date: "2024-12-04", user: "Emily Brown", form: "Students clearance" },
-    { date: "2024-12-05", user: "Chris Lee", form: "INC Form" },
+    { date: "2024-12-10", user: "Chris Lee", form: "INC Form" },
   ]);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -55,12 +36,18 @@ const FormTracker = () => {
   const [endDate, setEndDate] = useState("");
   const tableRef = useRef(null);
 
-  const handleSearch = (event) => setSearchTerm(event.target.value);
+  // Updated to handle case-insensitive search
+  const handleSearch = (event) => {
+    const term = event.target.value;
+    setSearchTerm(term);
+  };
+
   const handleFormFilter = (event) => setSelectedForm(event.target.value);
   const handleStartDate = (event) => setStartDate(event.target.value);
   const handleEndDate = (event) => setEndDate(event.target.value);
 
   const filteredData = formData.filter((item) => {
+    // Case-insensitive search that handles different capitalizations
     const matchesSearch = item.user.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesForm = selectedForm ? item.form === selectedForm : true;
     const matchesDate =
@@ -71,7 +58,9 @@ const FormTracker = () => {
 
   const handlePrint = () => {
     const printWindow = window.open('', '', 'height=500, width=800');
-    printWindow.document.write('<html><head><title>Form Tracker Print</title>');
+  //  printWindow.document.write('<html><head><title>Form Tracker Print</title>');
+    
+    // Add some basic styling to make the print view look neat
     printWindow.document.write(`
       <style>
         body { font-family: Arial, sans-serif; }
@@ -81,7 +70,10 @@ const FormTracker = () => {
         .print-header { text-align: center; margin-bottom: 20px; }
       </style>
     `);
+    
     printWindow.document.write('</head><body>');
+    
+    // Add a header with current filter information
     printWindow.document.write(`
       <div class="print-header">
         <h1>Form Tracker Report</h1>
@@ -92,10 +84,13 @@ const FormTracker = () => {
         <p>Total Entries: ${filteredData.length}</p>
       </div>
     `);
+
+    // Create table in print window
     printWindow.document.write('<table>');
     printWindow.document.write('<thead><tr><th>Date</th><th>Name</th><th>Form</th></tr></thead>');
     printWindow.document.write('<tbody>');
-    filteredData.forEach((item) => {
+    
+    filteredData.forEach(item => {
       printWindow.document.write(`
         <tr>
           <td>${item.date}</td>
@@ -104,20 +99,13 @@ const FormTracker = () => {
         </tr>
       `);
     });
+    
     printWindow.document.write('</tbody></table>');
     printWindow.document.write('</body></html>');
     printWindow.document.close();
+    
+    // Trigger print dialog
     printWindow.print();
-  };
-
-  // New function to handle deletion of all records
-  const handleDeleteAll = () => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this record? This action cannot be undone."
-    );
-    if (confirmDelete) {
-      setFormData([]); // Clear all records
-    }
   };
 
   return (
@@ -136,7 +124,11 @@ const FormTracker = () => {
         </div>
         <div className="form-tracker-input-group">
           <label htmlFor="form-select">Select Form</label>
-          <select id="form-select" value={selectedForm} onChange={handleFormFilter}>
+          <select 
+            id="form-select"
+            value={selectedForm} 
+            onChange={handleFormFilter}
+          >
             <option value="">All Forms</option>
             <option value="Leave of Absence">Leave of Absence</option>
             <option value="INC Form">INC Form</option>
@@ -146,57 +138,44 @@ const FormTracker = () => {
           </select>
         </div>
         <div className="form-tracker-input-group">
-          <label htmlFor="start-date">Start Date</label>
-          <input
-            id="start-date"
-            type="date"
-            className="form-tracker-date-picker"
-            value={startDate}
-            onChange={handleStartDate}
-          />
-        </div>
+  <label htmlFor="start-date">Start Date</label>
+  <input 
+    id="start-date"
+    type="date" 
+    className="form-tracker-date-picker"
+    value={startDate} 
+    onChange={handleStartDate} 
+  />
+</div>
+<div className="form-tracker-input-group">
+  <label htmlFor="end-date">End Date</label>
+  <input 
+    id="end-date"
+    type="date" 
+    className="form-tracker-date-picker"
+    value={endDate} 
+    onChange={handleEndDate} 
+  />
+</div>
         <div className="form-tracker-input-group">
-          <label htmlFor="end-date">End Date</label>
-          <input
-            id="end-date"
-            type="date"
-            className="form-tracker-date-picker"
-            value={endDate}
-            onChange={handleEndDate}
-          />
-        </div>
-        <div className="form-tracker-input-group">
-          <button
-            className="print-button"
+     
+          <button 
+           className="print-button"
             onClick={handlePrint}
             style={{
-              padding: "10px",
-              backgroundColor: "#white",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
+              padding: '10px',
+              backgroundColor: '#white',
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer'
             }}
           >
             Print Report
           </button>
+
         </div>
-        <div className="form-tracker-input-group">
-          <button
-            className="delete-button"
-            onClick={handleDeleteAll}
-            style={{
-              padding: "10px",
-              backgroundColor: "#ff4d4d",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-          >
-            Delete All Records
-          </button>
-        </div>
+        <div className="table-wrapper"></div>
       </div>
       <div className="form-tracker-table-container">
         <table className="form-tracker-table" ref={tableRef}>
@@ -222,4 +201,4 @@ const FormTracker = () => {
   );
 };
 
-export default FormTracker;
+export default StaffFormTracker;

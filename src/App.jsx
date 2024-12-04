@@ -52,6 +52,8 @@ import StaffLogHistory from "./staff/screens/logbook/logHistory";
 import StaffQueue from "./staff/screens/queue/queue";
 import StaffSettings from "./staff/screens/settings/settings";
 import StaffPageNotFound from "./staff/screens/error/PageNotFound";
+import StaffFormTracker from "./staff/screens/formTracker/formTracker";
+
 
 
 
@@ -134,7 +136,7 @@ function App() {
             <Route path="/staff-logbook" element={<StaffLogHistory />} />
             
             <Route path="/staff-analytics" element={<StaffAnalytics />} />
-            <Route path="/formTracker" element={<FormTracker />} />
+            <Route path="/staff-formTracker" element={<StaffFormTracker />} />
             <Route path="/staff-settings/*" element={<StaffSettings />} />
             <Route path="*" element={<StaffPageNotFound />} />
           </Route>

@@ -132,7 +132,7 @@ const Sidebar = () => {
             <li className="menu-item">
               <Link
                 to="/formTracker"
-                className={`menu-link ${isActive("/feedback") ? "active" : ""}`}
+                className={`menu-link ${isActive("/formTracker") ? "active" : ""}`}
               >
                 <span className="menu-link-icon">
                   <MdOutlineInventory2 size={20} />
