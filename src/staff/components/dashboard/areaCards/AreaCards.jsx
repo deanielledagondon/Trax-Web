@@ -76,7 +76,7 @@ const AreaCards = () => {
     <section className="content-area-cards">
       <AreaCard
         colors={["#e4e8ef", "#475be8"]}
-        percentFillValue={0}
+        percentFillValue={(todayLogCount / logCount) * 100} // Dynamic percent fill value
         cardInfo={{
           title: "Today's Visitors",
           value: todayLogCount,
