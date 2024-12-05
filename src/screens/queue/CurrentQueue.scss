@@ -411,6 +411,40 @@ body.dark-mode .DetailsQueue p {
     color: #888;
   }
   
+  .status-navbar {
+    display: flex;
+    justify-content: center;
+    gap: 15px; /* Adds space between the buttons */
+    padding: 10px 0;
+  
+    border-bottom: 2px solid #ddd; /* Border at the bottom for separation */
+  }
+  
+  .status-btn {
+    padding: 8px 20px; /* Adjust the size of the buttons */
+    font-size: 14px; /* Set font size */
+    background-color: #f0f0f0; /* Default background color */
+    border: 2px solid #ddd; /* Border around the buttons */
+    border-radius: 5px; /* Rounded corners for the buttons */
+    color: #333; /* Text color */
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s; /* Smooth transitions */
+    text-transform: uppercase; /* Uppercase text for consistency */
+  }
+  
+  .status-btn:hover {
+    background-color: #ccc; /* Darker background on hover */
+  }
+  
+  .status-btn.active {
+    background-color: #6fbd4c; /* Green background for active button */
+    color: white; /* White text when active */
+    border-color: #6fbd4c; /* Match the border color to the active button */
+  }
+  
+  .status-btn:focus {
+    outline: none; /* Remove outline on focus */
+  }
   
 
 

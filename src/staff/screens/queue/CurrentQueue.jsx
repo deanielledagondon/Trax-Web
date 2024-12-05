@@ -233,58 +233,29 @@ const CurrentQueue = () => {
     }
   };
 
-  const handleClaim = async (item) => {
-    console.log("Marking as done from list:", item);
-  
+  const handleClaiming = async (id) => {
     try {
-      // Insert the item into the log_history table
-      const { data: latestLog, error: fetchError } = await supabase
-        .from("log_history")
-        .select("id")
-        .order("id", { ascending: false })
-        .limit(1);
-  
-      if (fetchError) {
-        throw new Error(`Error fetching latest id from log_history: ${fetchError.message}`);
+      const { error } = await supabase
+        .from('queue')
+        .update({ status: 'Claiming' })
+        .eq('id', id);
+
+      if (error) {
+        throw new Error(`Error updating status to Claiming: ${error.message}`);
       }
-  
-      const newId = latestLog.length > 0 ? latestLog[0].id + 1 : 1;
-  
-      // Insert into log_history
-      const { error: logError } = await supabase.from("log_history").insert([
-        {
-          id: newId,
-          type: item.type,
-          transaction_date: item.transaction_date,
-          queue_no: item.queue_no,
-          name: item.name,
-          window_no: item.window_no,
-          purpose: item.purpose,
-          status: "Claiming",
-          created_at: new Date(),
-        },
-      ]);
-  
-      if (logError) {
-        throw new Error(`Error logging into log_history: ${logError.message}`);
-      }
-  
-      // Delete from queue
-      const { error: deleteError } = await supabase
-        .from("queue")
-        .delete()
-        .eq("id", item.id);
-  
-      if (deleteError) {
-        throw new Error(`Error deleting from queue: ${deleteError.message}`);
-      }
-  
-      // Update the state to remove the item from the queue
-      setQueue((prevQueue) => prevQueue.filter((queueItem) => queueItem.id !== item.id));
+
+      setQueue(queue.map(item =>
+        item.id === id ? { ...item, status: 'Claiming' } : item
+      ));
+
+      // Filter "Claiming" status in the dropdown
+      setStatusFilter('Claiming');
     } catch (error) {
       console.error(error.message);
     }
   };
+
+ 
   
   
 
@@ -537,7 +508,7 @@ const CurrentQueue = () => {
                       : item.status === "Waiting"
                       ? { color: "orange" }
                       : item.status === "Claiming"
-                      ? { color: "yellow" }
+                      ? { color: "green" }
                       : item.status === "Cancelled"
                       ? { color: "red" }
                       : {}
@@ -549,15 +520,16 @@ const CurrentQueue = () => {
 
                 <div className="item-actions">
 
+                <button onClick={() => handleClaiming(item.id)} className="btn btn-claim">
+                      Claiming
+                    </button>
                 <button
                     onClick={() => handleDoneFromList(item)}
                     className="btn btn-done"
                   >
                     Done
                   </button>
-                  <button 
-                  onClick={() => handleClaim(item.id)}>Claim</button>
-
+      
                   <button
                     onClick={() => handleCancel(item.id)} 
                     className="btn btn-cancel"

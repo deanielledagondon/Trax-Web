@@ -29,7 +29,7 @@ const CurrentQueue = () => {
         let query = supabase
           .from('queue')
           .select('id, name, queue_no, status, window_no, purpose, created_at, type, email')
-          .in('status', ['Waiting', 'Pending'])
+          .in('status', ['Waiting', 'Pending','Cancelled', 'Claiming'])
           .order('id', { ascending: true });
 
         if (selectedWindow) {
@@ -106,6 +106,8 @@ const CurrentQueue = () => {
       console.error('Error deleting item:', error.message);
     }
   };
+
+  
 
   const handleViewQueue = (windowNo) => {
     setSelectedWindow(windowNo);
@@ -297,6 +299,53 @@ const CurrentQueue = () => {
     setIsMovePopupVisible(true); 
   };
 
+  const handleCancel = async (id) => {
+    try {
+      const confirmed = window.confirm(
+        "Are you sure you want to cancel this queue?"
+      );
+
+      if (confirmed) {
+        const { error } = await supabase
+          .from("queue")
+          .update({ status: "Cancelled" })
+          .eq("id", id);
+
+        if (error) {
+          throw error;
+        }
+
+        setQueue(queue.filter((item) => item.id !== id));
+      }
+    } catch (error) {
+      console.error("Error canceling item:", error.message);
+    }
+  };
+
+  const handleClaiming = async (id) => {
+    try {
+      const { error } = await supabase
+        .from('queue')
+        .update({ status: 'Claiming' })
+        .eq('id', id);
+
+      if (error) {
+        throw new Error(`Error updating status to Claiming: ${error.message}`);
+      }
+
+      setQueue(queue.map(item =>
+        item.id === id ? { ...item, status: 'Claiming' } : item
+      ));
+
+      // Filter "Claiming" status in the dropdown
+      setStatusFilter('Claiming');
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+
+
   
   const handleMoveQueue = async () => {
     if (!targetWindow || !queueToMove) {
@@ -330,6 +379,11 @@ const CurrentQueue = () => {
     } catch (error) {
       console.error("Error moving queue:", error.message);
     }
+
+    
+    
+
+    
   };
   return (
     <>
@@ -363,11 +417,38 @@ const CurrentQueue = () => {
 
         
 
-        <div className="status-card">
-          <button onClick={() => handleViewQueue(null)} className="btn btn-view-queue">
-            View All Queues
-          </button>
-        </div>
+      </div>
+      <div className="status-navbar">
+        <button
+          className={`status-btn ${statusFilter === 'All' ? 'active' : ''}`}
+          onClick={() => setStatusFilter('All')}
+        >
+          All
+        </button>
+        <button
+          className={`status-btn ${statusFilter === 'Waiting' ? 'active' : ''}`}
+          onClick={() => setStatusFilter('Waiting')}
+        >
+          Waiting
+        </button>
+        <button
+          className={`status-btn ${statusFilter === 'Pending' ? 'active' : ''}`}
+          onClick={() => setStatusFilter('Pending')}
+        >
+          Pending
+        </button>
+        <button
+          className={`status-btn ${statusFilter === 'Cancelled' ? 'active' : ''}`}
+          onClick={() => setStatusFilter('Cancelled')}
+        >
+          Cancelled
+        </button>
+        <button
+          className={`status-btn ${statusFilter === 'Claiming' ? 'active' : ''}`}
+          onClick={() => setStatusFilter('Claiming')}
+        >
+          Claiming
+        </button>
       </div>
 
       <div className="current-queuee-container">
@@ -380,17 +461,6 @@ const CurrentQueue = () => {
             className="search-input"
           />
           
-          
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="status-filter-dropdown"
-          >
-            <option value="All">All</option>
-            <option value="Waiting">Waiting</option>
-            <option value="Pending">Pending</option>
-            <option value="Done">Done</option>
-          </select>
 
           <div className="current-queue-list">
         {filteredQueue.length > 0 ? (
@@ -402,10 +472,14 @@ const CurrentQueue = () => {
                 <p
                   className={
                     item.status === "Waiting"
-                      ? "status-waiting"
-                      : item.status === "Pending"
-                      ? "status-pending"
-                      : ""
+                    ? "status-waiting"
+                    : item.status === "Pending"
+                    ? "status-pending"
+                    : item.status === "Claiming"
+                    ? "status-claiming"
+                    : item.status === "Cancelled"
+                    ? "status-cancelled"
+                    : ""
                   }
                 >
                   <div
@@ -415,6 +489,10 @@ const CurrentQueue = () => {
                         ? { color: "blue" }
                         : item.status === "Waiting"
                         ? { color: "orange" }
+                        : item.status === "Cancelled"
+                        ? { color: "red" }
+                        : item.status === "Claiming"
+                        ? { color: "green" }
                         : {}
                     }
                   >
@@ -423,17 +501,16 @@ const CurrentQueue = () => {
                 </p>
 
                 <div className="item-actions">
+
+                <button onClick={() => handleClaiming(item.id)} className="btn btn-claim">
+                      Claiming
+                    </button>
+
                   <button
                     onClick={() => handleDoneFromList(item)}
                     className="btn btn-done"
                   >
                     Done
-                  </button>
-                  <button
-                    onClick={() => handleDelete(item.id)}
-                    className="btn btn-delete"
-                  >
-                    Delete
                   </button>
                   <button
                     onClick={() => handleViewDetails(item)}
@@ -447,6 +524,15 @@ const CurrentQueue = () => {
                   >
                     Move
                   </button>
+                    <button
+                    onClick={() => handleCancel(item.id)} 
+                    className="btn btn-cancel"
+                        >
+                    Cancel
+                    </button>
+
+
+                  
                 </div>
               </div>
             </div>
@@ -510,6 +596,13 @@ const CurrentQueue = () => {
               <p><strong>Window No:</strong> {expandedQueue?.window_no}</p>
               <p><strong>Purpose:</strong> {expandedQueue?.purpose}</p>
               {/* Add more details as needed */}
+
+              <button
+                    onClick={() => handleDelete(item.id)}
+                    className="btn btn-delete"
+                  >
+                    Delete
+                  </button>
             </div>
           </div>
         )}
