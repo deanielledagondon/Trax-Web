@@ -15,6 +15,8 @@ import GaugeCharts from './Gaugechart/gaugeChart'
 const Cards = () => {
     const [logHistory, setLogs] = useState([]);
     const [monthlyLogCount, setMonthlyLogCount] = useState(0);
+    const [mostRequestedCredential, setMostRequestedCredential] = useState(null);
+    const [cancelledQueueCount, setCancelledQueueCount] = useState(0); 
 
     useEffect(() => {
         async function fetchData() {
@@ -37,11 +39,41 @@ const Cards = () => {
             });
 
             setMonthlyLogCount(filteredLogs.length);
+
+            const credentialRequestCount = filteredLogs.reduce((acc, log) => {
+                const purpose = log.purpose; // Assuming `purpose` specifies the type of credential requested
+                acc[purpose] = (acc[purpose] || 0) + 1;
+                return acc;
+            }, {});
+
+            const mostRequested = Object.entries(credentialRequestCount)
+                .sort((a, b) => b[1] - a[1])
+                .map(([credential, count]) => ({ credential, count }))[0];
+
+            setMostRequestedCredential(mostRequested);
+
+            
           }
         }
         fetchData();
       }, []);
+      
+      const fetchCancelledQueueCount = async () => {
+        try {
+            const { data, error } = await supabase
+                .from('queue') // Assuming the table name is 'queue'
+                .select('*')
+                .eq('status', 'Cancelled'); // Filter by status 'Cancelled'
 
+            if (error) throw error;
+
+            setCancelledQueueCount(data.length); // Set the count of cancelled queues
+        } catch (error) {
+            console.error('Error fetching cancelled queue count:', error);
+        }
+    };
+
+    fetchCancelledQueueCount();
 
   return (
     <main className='main-container'>
@@ -60,23 +92,29 @@ const Cards = () => {
             </div>
             <div className='card'>
                 <div className='card-inner'>
-                    <h3>Average Visit Time</h3>
-                </div>
-                <h1>4m 5s</h1>
-                <h4>higher than yesterday </h4>
+                <h3>Most Requested Credentials</h3>
+                    </div>
+                    {mostRequestedCredential ? (
+                        <ul>
+                            <li>
+                                <h1><strong>{mostRequestedCredential.credential}</strong></h1> 
+                            </li>
+                        </ul>
+                    ) : (
+                        <p>No data available</p>
+                    )}
             </div>
             <div className='card'>
                 <div className='card-inner'>
                     <h3>Window Analysis</h3>
                 </div>
-                <h1>All Windows</h1>
+                <h1>Window 6</h1>
             </div>
             <div className='card'>
                 <div className='card-inner'>
-                    <h3>Service Comments</h3>
+                    <h3>Cancelled Queue</h3>
                 </div>
-                <h1>25</h1>
-                <h4>higher than yesterday</h4>
+                <h1>{cancelledQueueCount} Queues </h1>
             </div>
         </div>
 

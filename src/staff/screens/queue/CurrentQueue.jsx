@@ -20,12 +20,9 @@ const CurrentQueue = () => {
   const [queueToMove, setQueueToMove] = useState(null);
   const [targetWindow, setTargetWindow] = useState("");
 
-   // Claiming popup state
-   const [isClaimingPopupVisible, setIsClaimingPopupVisible] = useState(false);
-   const [claimingNote, setClaimingNote] = useState("");
-   const [claimingDate, setClaimingDate] = useState("");
-   const [selectedQueueItem, setSelectedQueueItem] = useState(null);
-
+ 
+   
+   
   
   useEffect(() => {
     
@@ -235,6 +232,60 @@ const CurrentQueue = () => {
       console.error(error.message);
     }
   };
+
+  const handleClaim = async (item) => {
+    console.log("Marking as done from list:", item);
+  
+    try {
+      // Insert the item into the log_history table
+      const { data: latestLog, error: fetchError } = await supabase
+        .from("log_history")
+        .select("id")
+        .order("id", { ascending: false })
+        .limit(1);
+  
+      if (fetchError) {
+        throw new Error(`Error fetching latest id from log_history: ${fetchError.message}`);
+      }
+  
+      const newId = latestLog.length > 0 ? latestLog[0].id + 1 : 1;
+  
+      // Insert into log_history
+      const { error: logError } = await supabase.from("log_history").insert([
+        {
+          id: newId,
+          type: item.type,
+          transaction_date: item.transaction_date,
+          queue_no: item.queue_no,
+          name: item.name,
+          window_no: item.window_no,
+          purpose: item.purpose,
+          status: "Claiming",
+          created_at: new Date(),
+        },
+      ]);
+  
+      if (logError) {
+        throw new Error(`Error logging into log_history: ${logError.message}`);
+      }
+  
+      // Delete from queue
+      const { error: deleteError } = await supabase
+        .from("queue")
+        .delete()
+        .eq("id", item.id);
+  
+      if (deleteError) {
+        throw new Error(`Error deleting from queue: ${deleteError.message}`);
+      }
+  
+      // Update the state to remove the item from the queue
+      setQueue((prevQueue) => prevQueue.filter((queueItem) => queueItem.id !== item.id));
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+  
   
 
   const handleDone = async (time) => {
@@ -299,6 +350,7 @@ const CurrentQueue = () => {
     }
   };
 
+  
  
   const handleFilterClick = (status) => {
     setFilterStatus(status);
@@ -390,45 +442,6 @@ const CurrentQueue = () => {
       setTargetWindow("");
     } catch (error) {
       console.error("Error moving queue:", error.message);
-    }
-  };
-
-  const handleClaim = (item) => {
-    setSelectedQueueItem(item);
-    setIsClaimingPopupVisible(true); // Show claiming popup
-  };
-
-  const handleClaimSubmit = async () => {
-    try {
-      if (!claimingNote || !claimingDate) {
-        alert("Please fill in both the note and the claiming date.");
-        return;
-      }
-
-      const { error } = await supabase
-        .from("queue")
-        .update({
-          status: "Claimed", // Change status to "Claimed"
-          claiming_note: claimingNote, // Store the note
-          claiming_date: claimingDate, // Store the date
-        })
-        .eq("id", selectedQueueItem.id);
-
-      if (error) {
-        throw error;
-      }
-
-      setQueue(queue.map((item) =>
-        item.id === selectedQueueItem.id
-          ? { ...item, status: "Claimed", claiming_note: claimingNote, claiming_date: claimingDate }
-          : item
-      ));
-
-      setIsClaimingPopupVisible(false); // Close the popup
-      setClaimingNote(""); // Reset the fields
-      setClaimingDate("");
-    } catch (error) {
-      console.error("Error claiming queue:", error.message);
     }
   };
 
@@ -542,13 +555,8 @@ const CurrentQueue = () => {
                   >
                     Done
                   </button>
-                <button
-                    onClick={() => handleClaim(item)}
-                    className="btn btn-claim"
-                  >
-                    Claim
-                  </button>
-
+                  <button 
+                  onClick={() => handleClaim(item.id)}>Claim</button>
 
                   <button
                     onClick={() => handleCancel(item.id)} 
@@ -580,35 +588,7 @@ const CurrentQueue = () => {
         )}
       </div>
 
-      {isClaimingPopupVisible && (
-    <div className="claiming-popup">
-      <div className="popup-content">
-        <h3>Claiming Details</h3>
-        <textarea
-          placeholder="Enter a note for claiming..."
-          value={claimingNote}
-          onChange={(e) => setClaimingNote(e.target.value)}
-        />
-        <input
-          type="date"
-          value={claimingDate}
-          onChange={(e) => setClaimingDate(e.target.value)}
-        />
-        <div className="popup-buttons">
-          <button onClick={handleClaimSubmit} className="submit-button">
-            Submit
-          </button>
-          <button
-            onClick={() => setIsClaimingPopupVisible(false)}
-            className="cancel-button"
-          >
-            Cancel
-          </button>
-        </div>
-      </div>
-    </div>
-  )}
-
+      
       {/* Move Popup */}
       {isMovePopupVisible && (
         <div className="popup-overlay">
@@ -660,7 +640,7 @@ const CurrentQueue = () => {
               <p><strong>Name:</strong> {expandedQueue?.name}</p>
               <p><strong>Queue No:</strong> {expandedQueue?.queue_no}</p>
               <p><strong>Status:</strong> {expandedQueue?.status}</p>
-              <p><strong>Window No:</strong> {expandedQueue?.window_no}</p>
+
               <p><strong>Purpose:</strong> {expandedQueue?.purpose}</p>
               {/* Add more details as needed */}
 
