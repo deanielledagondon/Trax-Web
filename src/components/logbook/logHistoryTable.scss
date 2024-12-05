@@ -6,7 +6,7 @@ $dark-mode-scrollbar-color: #555;
 
   .log-table-container {
     overflow-y: auto;
-    max-height: 450px; 
+    max-height: 300px; 
     scrollbar-width: thin; 
     scrollbar-color: rgba(0, 0, 0, 0.2) transparent; 
     position: relative;
@@ -198,152 +198,215 @@ $dark-mode-scrollbar-color: #555;
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 1000;
+}
 
-  .modal-content {
-    background: #fff;
-    padding: 30px;
+.button-group {
+  display: flex;
+  justify-content: center; // Center align buttons horizontally
+  align-items: center;     // Center align buttons vertically
+  gap: 1rem;               // Space between buttons
+  margin-top: 1.5rem;
+
+  button {
+    width: 115px;         // Fixed width for all buttons
+    height: 40px;         // Fixed height for all buttons
+    font-size: 1rem;      // Uniform font size
+    border: none;         // Remove default borders
+    border-radius: 4px;   // Rounded corners for consistency
+    cursor: pointer;      // Pointer cursor for clickability
+    transition: background-color 0.3s ease, color 0.3s ease; // Smooth transitions
+    padding: 0;           // Ensures consistent sizing with fixed width/height
+    display: flex;
+    align-items: center;
+    justify-content: center; // Align content horizontally and vertically
+
+    &.save-btn {
+      margin-bottom: 20px;
+      background-color:  #007bff;
+      color: white;
+
+      &:hover {
+        background-color: #005ab9;
+      }
+    }
+
+
+   
+
+
+    &.cancel-btn {
+      background-color: #36af3c;
+      color: white;
+
+      &:hover {
+        background-color: #008504;
+      }
+    }
+
+    &.delete-btn {
+      background-color: #f44336;
+      color: white;
+  
+      &:hover {
+        background-color: #da190b;
+      }
+    }
+  }
+}
+
+// Edit Log Modal Styles
+.edit-log-modal {
+  @extend .modal;
+
+  .edit-log-content {
+    background-color: #fff;
     border-radius: 8px;
-    width: 400px;
-    max-width: 90%;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    color: var(--text-color-inverted);
+    padding: 2rem;
+    width: 100%;
+    max-width: 350px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0);
+    font-weight: bold;
 
-    
+    .queue-label {
+      color: #007bff;
+      font-weight: bold;
+
+      .dark-mode & {
+        color: #007bff;
+      }
+    }
+
     h2 {
       margin-bottom: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
+      color: #333;
 
       svg {
         margin-right: 10px;
+      }
+
+      .dark-mode & {
+        background-color: #3a3d52;
+        color: #f2f2f2;
       }
     }
 
     form {
       display: flex;
       flex-direction: column;
-    }
+      gap: 1rem;
 
-    label {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 15px;
-      text-align: left;
-      font-size: 15px;
+      label {
+        display: flex;
+        flex-direction: column;
+        font-size: 0.9rem;
+        color: #333;
 
-      input {
-        margin-top: 5px;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 15px;
-      }
-    }
+        input {
+          margin-top: 0.5rem;
+          padding: 0.5rem;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          font-size: 1rem;
 
-    .button-group {
-      display: flex;
-      justify-content: center;
-      margin-top: 20px;
+          &[readonly] {
+            background-color: #f9f9f9;
+            cursor: not-allowed;
+          }
 
-      button {
-        margin: 0 10px; 
-      }
-    }
+          .dark-mode & {
+            background-color: #3a3d52;
+            color: #f2f2f2;
+          }
+        }
 
-    button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-
-      &.save-btn, &.delete-btn {
-        background-color: #4CAF50;
-        color: white;
-
-        &:hover {
-          background-color: #45a049;
-          opacity: 1;
+        .dark-mode & {
+          background-color: #3a3d52;
+          color: #f2f2f2;
         }
       }
+    }
+   
+    .save-btn {
+      margin-bottom: 20px;
+      background-color:  #007bff;
+      color: white;
 
-      &.cancel-btn {
-        background-color: #f44336;
-        color: white;
-
-        &:hover {
-          background-color: #da190b;
-          opacity: 1;
-        }
+      &:hover {
+        background-color: #005ab9;
       }
+    }
+    
+
+    .dark-mode & {
+      background-color: #3a3d52;
     }
   }
 }
 
-.delete-modal {
-  .modal-content {
-    text-align: center;
+// Delete Log Modal Styles
+.delete-log-modal {
+  @extend .modal;
+
+  .delete-log-content {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    h2 {
+      margin: 0 0 1rem;
+      font-size: 1.5rem;
+      color: red;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin-top: 10px; // Add some space before the header
+      svg {
+        margin-right: 10px;
+      }
+      .dark-mode & {
+        background-color: #3a3d52;
+        color: red;
+      }
+    }
 
     p {
+      font-size: 16px;
+      color: #333;
       margin-bottom: 20px;
-    }
+      text-align: center;
 
-    .button-group {
-      justify-content: center;
-
-      button {
-        margin: 0 10px;
-      }
-    }
-  }
-}
-
-.dark-mode {
-  .success-message {
-    background-color: #2e7d32;
-  }
-
-  .modal .modal-content {
-    background: #2c2c2c;
-    color: #fff;
-
-    input {
-      background-color: #3a3a3a;
-      color: #fff;
-      border-color: #555;
-    }
-
-    button {
-      &.save-btn, &.delete-btn {
-        background-color: #388e3c;
-
-        &:hover {
-          background-color: #2e7d32;
-          opacity: 1;
-        }
-      }
-
-      &.cancel-btn {
-        background-color: #d32f2f;
-
-        &:hover {
-          background-color: #c62828;
-          opacity: 1;
-        }
+      .dark-mode & {
+        background-color: #3a3d52;
+        color: #f2f2f2;
       }
     }
 
-    
-    
-  }
+    .delete-btn {
+      background-color: #f44336;
+      color: white;
 
-  
+      &:hover {
+        background-color: #da190b;
+      }
+    }
+
+    .dark-mode & {
+      background-color: #3a3d52;
+      color: #f2f2f2;
+    }
+  }
 }

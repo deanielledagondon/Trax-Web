@@ -204,6 +204,7 @@ const LogHistory = () => {
     console.log("Selected Submenu:", selectedSubOption);
 
     return logHistory.filter((log) => {
+      
       let purposeMatch = false;
 
       if (selectedPurposeType === "All") {
@@ -249,13 +250,12 @@ const LogHistory = () => {
 
   const handlePrint = () => {
     const doc = new jsPDF();
-    const columns = ["DATE", "NAME", "WINDOW", "PURPOSE", "QUEUEU NO."];
+    const columns = ["DATE", "NAME", "PURPOSE", "QUEUEU NO."];
   
     // Map your filtered data to rows
     const rows = filteredData.map((log) => [
       log.transaction_date,
       log.name,
-      log.window_no,
       log.purpose,
       log.queue_no,
     ]);
@@ -313,7 +313,7 @@ const LogHistory = () => {
   return (
     <div className="staff-loghistory">
       <div className="greeting">
-        <h1>Hello Ma'am {staffName}!</h1>
+        <h1>Hello {staffName}!</h1>
         <p className="small-font">
           This is the <span className="bold-text"> Log History </span> for{" "}
           {windowNo.length > 1
@@ -443,19 +443,15 @@ const LogHistory = () => {
               <li onClick={() => handlePurposeChange("Correction of Name")}>
                 Correction of Name
               </li>
-              <li onClick={() => handlePurposeChange("Transcript of Records (TOR)")}>
-                Transcript of Records (TOR)
+              <li onClick={() => handlePurposeChange("Transcript of Records")}>
+                Transcript of Records
               </li>
               <li onClick={() => handlePurposeChange("Permit to Study")}>
                 Permit to Study
               </li>
               <li onClick={() => handlePurposeChange("Rush Fee")}>Rush Fee</li>
               <li onClick={() => handlePurposeChange("Form 137")}>Form 137</li>
-              <li onClick={() => handlePurposeChange("Enrollment")}>Enrollment</li>
-              <li onClick={() => handlePurposeChange("Graduation")}>Graduation</li>
-              <li onClick={() => handlePurposeChange("Diploma")}>Diploma</li>
-              <li onClick={() => handlePurposeChange("Completion of INC")}> Completion of INC</li>
-              <li onClick={() => handlePurposeChange("Transfer")}>Transfer</li>
+             
 
 
             </ul>

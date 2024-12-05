@@ -6,7 +6,7 @@ import ReactPaginate from 'react-paginate';
 import { supabase } from "../../components/helper/supabaseClient";
 import './logHistoryTable.scss';
 
-const LogHistoryTable = ({ logData, showWindowColumn, onDataChange, updateLogData }) => {
+const LogHistoryTable = ({ logData,  onDataChange, updateLogData }) => {
 
     const [editingLog, setEditingLog] = useState(null);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -96,9 +96,9 @@ const LogHistoryTable = ({ logData, showWindowColumn, onDataChange, updateLogDat
           }, [editingLog, localLogData, onDataChange, updateLogData]);
     
     return (
-        <div className="log-history-container">
+        <div className="staff-loghistory-container">
           
-            <div className="log-table-container">
+          <div className="log-table-container">
                 <table className="log-table">
                     <thead>
                         <tr>
@@ -106,7 +106,6 @@ const LogHistoryTable = ({ logData, showWindowColumn, onDataChange, updateLogDat
                             <th>Name</th>
                             <th>Purpose</th>
                             <th>Queue No.</th>
-                            {showWindowColumn && <th>Window No.</th>}
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -117,7 +116,6 @@ const LogHistoryTable = ({ logData, showWindowColumn, onDataChange, updateLogDat
                                 <td>{log.name}</td>
                                 <td>{log.purpose}</td>
                                 <td><a href="#">{log.queue_no}</a></td>
-                                {showWindowColumn && <td>{log.window_no}</td>}
                                 <td className="actions-column">
                                     <button className="action-btn edit" onClick={() => handleEditClick(log)} title="Edit">
                                         <FontAwesomeIcon icon={faEdit} />
@@ -148,54 +146,55 @@ const LogHistoryTable = ({ logData, showWindowColumn, onDataChange, updateLogDat
                     {`${indexOfFirstItem + 1}-${Math.min(indexOfLastItem, localLogData.length)} of ${localLogData.length} entries`}
                 </div>
             </div>    
-            {editingLog && (
-                <div className="modal edit-modal">
-                    <div className="modal-content">
+            
+                {editingLog && (
+                    <div className="edit-log-modal">
+                      <div className="edit-log-content">
                         <h2><FontAwesomeIcon icon={faEdit} /> Edit Log Entry</h2>
                         <form onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
-                            <label>
-                                Date:
-                                <input type="text" name="transaction_date" value={editingLog.transaction_date} readOnly onChange={handleChange} required />
-                            </label>
-                            <label>
-                                Name:
-                                <input type="text" name="name" value={editingLog.name} onChange={handleChange} required />
-                            </label>
-                            <label>
-                                Purpose:
-                                <input type="text" name="purpose" value={editingLog.purpose} readOnly onChange={handleChange} required />
-                            </label>
-                            <label>
-                                Queue No:
-                                <input type="text" name="queue_no" value={editingLog.queue_no} readOnly onChange={handleChange} required />
-                            </label>
-                            <label>
-                                Window No:
-                                <input type="text" name="window_no" value={editingLog.window_no} readOnly onChange={handleChange} required />
-                            </label>
-                            <div className="button-group">
-                                <button type="submit" className="save-btn">Save</button>
-                                <button type="button" className="cancel-btn" onClick={() => setEditingLog(null)}>Cancel</button>
-                            </div>
+                          <label>
+                            Date:
+                            <input type="text" name="transaction_date" value={editingLog.transaction_date} readOnly onChange={handleChange} required />
+                          </label>
+                          <label>
+                            Name:
+                            <input type="text" name="name" value={editingLog.name} onChange={handleChange} required />
+                          </label>
+                          <label>
+                            Purpose:
+                            <input type="text" name="purpose" value={editingLog.purpose} readOnly onChange={handleChange} required />
+                          </label>
+                          <label >
+                            Queue No:
+                            <input className="queue-label" type="text" name="queue_no" value={editingLog.queue_no} readOnly   onChange={handleChange}  required  />
+                         
+                        </label>
+                          <label>
+                            Window No:
+                            <input type="text" name="window_no" value={editingLog.window_no} readOnly onChange={handleChange} required />
+                          </label>
+                          <div className="button-group">
+                            <button type="submit" className="save-btn">Save</button>
+                            <button type="button" className="cancel-btn" onClick={() => setEditingLog(null)}>Cancel</button>
+                          </div>
                         </form>
+                      </div>
                     </div>
-                </div>
-            )}
-
-            {showDeleteConfirm && (
-                <div className="modal delete-modal">
-                    <div className="modal-content">
-                        <h2 style={{ color: 'red' }}>
-                            <FontAwesomeIcon icon={faTrash} /> Delete Entry
-                        </h2>                   
+                  )}
+                  
+                  {showDeleteConfirm && (
+                    <div className="delete-log-modal">
+                      <div className="delete-log-content">
+                        <h2><FontAwesomeIcon icon={faTrash} /> Delete Entry</h2>
                         <p>Are you sure you want to delete this entry?</p>
                         <div className="button-group">
-                            <button className="cancel-btn" onClick={() => setShowDeleteConfirm(false)}>Cancel</button>
-                            <button className="delete-btn" onClick={confirmDelete}>Delete</button>
+                          <button className="cancel-btn" onClick={() => setShowDeleteConfirm(false)}>Cancel</button>
+                          <button className="delete-btn" onClick={confirmDelete}>Delete</button>
                         </div>
+                      </div>
                     </div>
-                </div>
-            )}
+                  )}
+                  
         </div>
     );
 };
