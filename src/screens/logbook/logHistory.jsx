@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faCalendarAlt, faPrint, faCaretRight, faCaretDown, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faCalendarAlt, faPrint, faCaretRight, faCaretDown, faTimes, faBold } from '@fortawesome/free-solid-svg-icons';
 import LogHistoryTable from '../../components/logbook/logHistoryTable';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
@@ -9,30 +9,61 @@ import { supabase } from "../../components/helper/supabaseClient";
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 
-const DateRangePicker = ({ startDate, endDate, onStartDateChange, onEndDateChange }) => (
-  <div className="date-range-picker">
-    <div className="date-inputs">
-      <div className="date-input-wrapper">
+const DateRangePicker = ({ startDate, endDate, onStartDateChange, onEndDateChange }) => {
+  return (
+    <div className="date-range-picker">
+      <div className="date-inputs">
+        <div className="date-input-wrapper">
+          <DatePicker
+            selected={startDate}
+            onChange={onStartDateChange}
+            selectsStart
+            startDate={startDate}
+            endDate={endDate}
+            placeholderText="Start Date"
+            dateFormat="dd MMM yyyy"
+          />
+          {startDate && (
+            <button
+              className="clear-date-btn"
+              onClick={() => onStartDateChange(null)}
+              aria-label="Clear start date"
+            >
+              <FontAwesomeIcon icon={faTimes} />
+            </button>
+          )}
+        </div>
+        <div className="date-input-wrapper">
+          <DatePicker
+            selected={endDate}
+            onChange={onEndDateChange}
+            selectsEnd
+            startDate={startDate}
+            endDate={endDate}
+            minDate={startDate}
+            placeholderText="End Date"
+            dateFormat="dd MMM yyyy"
+          />
+          {endDate && (
+            <button
+              className="clear-date-btn"
+              onClick={() => onEndDateChange(null)}
+              aria-label="Clear end date"
+            >
+              <FontAwesomeIcon icon={faTimes} />
+            </button>
+          )}
+        </div>
+      </div>
+      <div className="calendars">
         <DatePicker
           selected={startDate}
           onChange={onStartDateChange}
           selectsStart
           startDate={startDate}
           endDate={endDate}
-          placeholderText="Start Date"
-          dateFormat="dd MMM yyyy"
+          inline
         />
-        {startDate && (
-          <button
-            className="clear-date-btn"
-            onClick={() => onStartDateChange(null)}
-            aria-label="Clear start date"
-          >
-            <FontAwesomeIcon icon={faTimes} />
-          </button>
-        )}
-      </div>
-      <div className="date-input-wrapper">
         <DatePicker
           selected={endDate}
           onChange={onEndDateChange}
@@ -40,50 +71,33 @@ const DateRangePicker = ({ startDate, endDate, onStartDateChange, onEndDateChang
           startDate={startDate}
           endDate={endDate}
           minDate={startDate}
-          placeholderText="End Date"
-          dateFormat="dd MMM yyyy"
+          inline
         />
-        {endDate && (
-          <button
-            className="clear-date-btn"
-            onClick={() => onEndDateChange(null)}
-            aria-label="Clear end date"
-          >
-            <FontAwesomeIcon icon={faTimes} />
-          </button>
-        )}
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const LogHistory = () => {
   const [selectedWindow, setSelectedWindow] = useState('All Windows');
   const [selectedPurposeType, setSelectedPurposeType] = useState('All');
   const [selectedSubOption, setSelectedSubOption] = useState('All');
-  const [showDropdown, setShowDropdown] = useState({
-    window: false,
-    purpose: false,
-    certification: false,
-    cav: false,
-  });
+  const [selectedReason, setSelectedReason] = useState('All');
+  const [showWindowDropdown, setShowWindowDropdown] = useState(false);
+  const [showPurposeDropdown, setShowPurposeDropdown] = useState(false);
+  const [showCertificationSubmenu, setShowCertificationSubmenu] = useState(false);
+  const [showCavSubmenu, setShowCavSubmenu] = useState(false);
   const [searchPriority, setSearchPriority] = useState('');
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [logHistory, setLogHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const datePickerRef = useRef(null);
+  const [submenuDirection, setSubmenuDirection] = useState('down');
+  const windowDropdownRef = useRef(null);
+  const purposeDropdownRef = useRef(null);
 
-  const dropdownRefs = {
-    window: useRef(null),
-    purpose: useRef(null),
-  };
-
-  const CAV_CERTIFICATION_TYPES = ['DFA', 'PNP', 'BJMP', 'CHED', 'POEA', 'DEP-ED', 'BFP'];
-  const CERTIFICATION_TYPES = [
-    'CAR', 'GPA', 'Endorsement', 'Officially enrolled', 'Subjects enrolled',
-    'USTP Conversion', 'English Medium of Instruction', 'Authorization Letter',
-    'Letter of No Objection', 'Graduated', 'Earned Units', 'Grading System', 'Subjects w/ grades',
-  ];
 
   useEffect(() => {
     async function fetchData() {
@@ -92,8 +106,12 @@ const LogHistory = () => {
         .from('log_history')
         .select('*')
         .order('transaction_date', { ascending: false });
-      if (error) console.error('Error fetching data:', error);
-      else setLogHistory(data);
+      console.log('Fetched data:', data);
+      if (error) {
+        console.error('Error fetching data:', error);
+      } else {
+        setLogHistory(data);
+      }
       setIsLoading(false);
     }
     fetchData();
@@ -101,116 +119,401 @@ const LogHistory = () => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      Object.keys(dropdownRefs).forEach((key) => {
-        if (dropdownRefs[key].current && !dropdownRefs[key].current.contains(event.target)) {
-          setShowDropdown((prev) => ({ ...prev, [key]: false }));
-        }
-      });
+      if (windowDropdownRef.current && !windowDropdownRef.current.contains(event.target)) {
+        setShowWindowDropdown(false);
+      }
+      if (purposeDropdownRef.current && !purposeDropdownRef.current.contains(event.target)) {
+        setShowPurposeDropdown(false);
+      }
+      if (datePickerRef.current && !datePickerRef.current.contains(event.target)) {
+        setIsDatePickerOpen(false);
+      }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
-  const handlePurposeChange = (purpose, subOption = 'All') => {
+  const handlePurposeChange = (purpose, subOption = 'All', reason = 'All') => {
+    console.log('handlePurposeChange called with:', purpose, subOption, reason);
+    
     setSelectedPurposeType(purpose);
     setSelectedSubOption(subOption);
-    setShowDropdown({ ...showDropdown, purpose: false, certification: false, cav: false });
+    setSelectedReason(reason);
+    
+    // Reset all submenus
+    setShowCertificationSubmenu(false);
+    setShowCavSubmenu(false);
+    setShowPurposeDropdown(false);
+  
   };
 
+  
   const handleWindowChange = (window) => {
+    console.log('Changing window to:', window);
     setSelectedWindow(window);
-    setShowDropdown({ ...showDropdown, window: false });
+    setShowWindowDropdown(false);
   };
 
-  const filteredData = useMemo(() => logHistory.filter(log => {
-    const purposeMatch =
-      selectedPurposeType === 'All' ||
-      (selectedPurposeType === 'CAV Certification Thru' && (
-        selectedSubOption === 'All' || log.purpose === selectedSubOption
-      )) ||
-      (selectedPurposeType === 'Certification' && (
-        selectedSubOption === 'All' || log.purpose === selectedSubOption
-      )) ||
-      log.purpose === selectedPurposeType;
+  const handleClearSearch = () => {
+    setSearchPriority('');
+  };
 
-    const windowMatch =
-      selectedWindow === 'All Windows' ||
-      `Window ${log.window_no.slice(1)}` === selectedWindow;
+  const filteredData = useMemo(() => {
+    console.log("Filtering data...");
+    console.log("Selected Purpose:", selectedPurposeType);
+    console.log("Selected Submenu:", selectedSubOption);
+  
+  
+    return logHistory.filter(log => {
+      const purposesArray = typeof log.purpose === 'string' 
+        ? log.purpose.split(',').map(purpose => purpose.trim())
+        : [log.purpose];
+      
+      const reasonArray = typeof log.reason === 'string'
+        ? log.reason.split(',').map(reason => reason.trim())
+        : [log.reason];
+  
+      let purposeMatch = false;
+      let reasonMatch = false;
+  
+      const checkPurposeMatch = (purposeTypes) => {
+        if (selectedSubOption === 'All') {
+          return purposesArray.some(p => purposeTypes.includes(p));
+        } else {
+          return purposesArray.includes(selectedSubOption);
+        }
+      };
+  
+      const checkReasonMatch = (reasonTypes) => {
+        if (selectedReason === 'All') {
+          return true; // If 'All' is selected, match any reason
+        } else {
+          return reasonArray.includes(selectedReason);
+        }
+      };
+  
+      if (selectedPurposeType === "All") {
+        purposeMatch = true;
+      } else if (selectedPurposeType === "CAV Certification Thru") {
+        if (selectedSubOption === "All") {
+          purposeMatch = CAV_CERTIFICATION_TYPES.includes(log.purpose);
+        } else {
+          purposeMatch = log.purpose === selectedSubOption;
+        }
+      } else if (selectedPurposeType === "Certification") {
+        if (selectedSubOption === "All") {
+          purposeMatch = CERTIFICATION_TYPES.includes(log.purpose);
+        } else {
+          purposeMatch = log.purpose === selectedSubOption;
+        }
+      } else {
+        purposeMatch = log.purpose === selectedPurposeType;
+      }
 
-    const priorityMatch = log.queue_no.toString().toLowerCase().includes(searchPriority.toLowerCase());
+      const windowMatch = selectedWindow === 'All Windows' || `Window ${log.window_no.slice(1)}` === selectedWindow;
+      const priorityMatch = log.queue_no.toString().toLowerCase().includes(searchPriority.toLowerCase());
+      const dateMatch = (!startDate || !endDate) || 
+        (new Date(log.transaction_date) >= startDate && new Date(log.transaction_date) <= endDate);
+  
+      return purposeMatch && reasonMatch && windowMatch && priorityMatch && dateMatch;
+    });
+  }, [logHistory, selectedWindow, selectedPurposeType, selectedSubOption, selectedReason, searchPriority, startDate, endDate]);
+  
+  console.log("Filtered data length:", filteredData.length);
 
-    const dateMatch = (!startDate || !endDate) ||
-      (new Date(log.transaction_date) >= startDate && new Date(log.transaction_date) <= endDate);
-
-    return purposeMatch && windowMatch && priorityMatch && dateMatch;
-  }), [logHistory, selectedWindow, selectedPurposeType, selectedSubOption, searchPriority, startDate, endDate]);
-
+  
   const handlePrint = () => {
     const doc = new jsPDF();
     const windows = ["Window 1", "Window 2", "Window 3", "Window 4", "Window 5", "Window 6"];
     const fileName = selectedWindow === "All Windows" ? "All Windows Log History" : `${selectedWindow} Log History`;
-
-    const renderWindowData = (data, title) => {
-      doc.setFontSize(16);
-      doc.text(title, 105, 20, null, null, 'center');
-      const rows = data.map(log => [log.transaction_date, log.name, log.purpose, log.queue_no]);
+  
+    const currentDate = new Date().toISOString().split('T')[0];
+    doc.setProperties({ title: fileName });
+  
+    const columns = ['DATE', 'NAME', 'PURPOSE', 'REASON', 'QUEUE NO.'];
+  
+    const renderWindowData = (filteredWindowData, windowTitle) => {
+      const rows = filteredWindowData.map(log => [
+        log.transaction_date,
+        log.name,
+        log.purpose,
+        log.reason,
+        log.queue_no,
+      ]);
+  
       doc.autoTable({
-        head: [['DATE', 'NAME', 'PURPOSE', 'QUEUE NO.']],
+        head: [columns],
         body: rows,
-        startY: 30,
+        startY: 40,
         theme: 'striped',
+        headStyles: {
+          fillColor: [0, 0, 128],
+          textColor: [255, 255, 255],
+          halign: 'center',
+        },
+        bodyStyles: {
+          halign: 'center',
+        },
       });
     };
-
+  
     if (selectedWindow === "All Windows") {
       windows.forEach((window, index) => {
-        const data = filteredData.filter(log => `Window ${log.window_no.slice(1)}` === window);
-        if (data.length > 0) {
-          if (index > 0) doc.addPage();
-          renderWindowData(data, window);
+        const filteredWindowData = filteredData.filter(log => `Window ${log.window_no.slice(1)}` === window);
+        
+        if (filteredWindowData.length > 0) {
+          if (index > 0) doc.addPage(); // Add a page break for all windows after the first
+          
+          doc.setFontSize(16);
+          doc.text("Log History", 105, 25, null, null, 'center');
+  
+          doc.setFontSize(13);
+          doc.text(window, 105, 35, null, null, 'center');
+          
+          renderWindowData(filteredWindowData, window);
         }
       });
     } else {
-      renderWindowData(filteredData, selectedWindow);
+      const filteredWindowData = filteredData.filter(
+        log => `Window ${log.window_no.slice(1)}` === selectedWindow
+      );
+  
+      if (filteredWindowData.length > 0) {
+        doc.setFontSize(16);
+        doc.text("Log History", 105, 25, null, null, 'center');
+  
+        doc.setFontSize(13);
+        doc.text(selectedWindow, 105, 35, null, null, 'center');
+  
+        renderWindowData(filteredWindowData, selectedWindow);
+      } else {
+        doc.setFontSize(12);
+        doc.text("No data available for the selected window.", 105, 20, null, null, 'center');
+      }
     }
-
-    doc.save(`${fileName}.pdf`);
+  
+    const pdfBlob = doc.output('blob');
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+  
+    const newTab = window.open(pdfUrl, '_blank');
+    if (newTab) {
+      newTab.document.title = fileName;
+      const embed = newTab.document.createElement("embed");
+      embed.src = pdfUrl;
+      embed.width = "100%";
+      embed.height = "100%";
+      embed.type = "application/pdf";
+      newTab.document.body.appendChild(embed);
+    }
+  
+    setTimeout(() => URL.revokeObjectURL(pdfUrl), 10000);
   };
-
-  if (isLoading) return <div>Loading...</div>;
+  
+  
+  
+  if (isLoading) {
+    return <div> Loading... </div>;
+  }
+  
 
   return (
     <div className="log-history">
-      <h1>Hello, Ma'am Jonalin!</h1>
-      <p>This is the <strong>Log History</strong> for All Windows.</p>
-
+      <div className="greetings">
+        <h1>Hello, Ma'am Jonalin!</h1>
+        <p className="small-font">This is the <span className="bold-text"> Log History </span> for All Windows.</p>
+      </div>
       <div className="filters">
         <span>Filter By:</span>
-        <div ref={dropdownRefs.window}>
-          <button onClick={() => setShowDropdown((prev) => ({ ...prev, window: !prev.window }))}>
-            {selectedWindow} <FontAwesomeIcon icon={faCaretDown} />
+        <div className="date-picker-container" ref={datePickerRef}>
+          <button className="date-container" onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}>
+            <span className="date-text">Date</span>
+            <span className="date-icon"><FontAwesomeIcon icon={faCalendarAlt} /></span>
           </button>
-          {showDropdown.window && (
-            <ul>
+          {isDatePickerOpen && (
+            <DateRangePicker
+              startDate={startDate}
+              endDate={endDate}
+              onStartDateChange={setStartDate}
+              onEndDateChange={setEndDate}
+            />
+          )}
+        </div>
+
+        <div className="dropdown-all-windows" ref={windowDropdownRef}>
+          <button
+            onClick={() => {
+              setShowWindowDropdown(!showWindowDropdown);
+              setShowPurposeDropdown(false);
+              setIsDatePickerOpen(false);
+            }}
+            className="dropdown-button"
+          >
+            {selectedWindow}
+            <FontAwesomeIcon icon={faCaretDown} className="dropdown-icon" />
+          </button>
+          {showWindowDropdown && (
+            <ul className="dropdown-menu">
               <li onClick={() => handleWindowChange('All Windows')}>All Windows</li>
-              {[1, 2, 3, 4, 5, 6].map((num) => (
-                <li key={num} onClick={() => handleWindowChange(`Window ${num}`)}>Window {num}</li>
-              ))}
+              <li onClick={() => handleWindowChange('Window 1')}>Window 1</li>
+              <li onClick={() => handleWindowChange('Window 2')}>Window 2</li>
+              <li onClick={() => handleWindowChange('Window 3')}>Window 3</li>
+              <li onClick={() => handleWindowChange('Window 4')}>Window 4</li>
+              <li onClick={() => handleWindowChange('Window 5')}>Window 5</li>
+              <li onClick={() => handleWindowChange('Window 6')}>Window 6</li>
             </ul>
           )}
         </div>
-        {/* Purpose Dropdown */}
-        <div ref={dropdownRefs.purpose}>
-          {/* Render Dropdown */}
+
+       
+        <div className="custom-dropdown" ref={purposeDropdownRef}>
+          <button
+            onClick={() => {
+              setShowPurposeDropdown(!showPurposeDropdown);
+              setShowWindowDropdown(false);
+              setIsDatePickerOpen(false);
+            }}
+            className="dropdown-button"
+          >
+            {selectedPurposeType === "CAV Certification Thru" &&
+            selectedSubOption === "All"
+              ? "CAV Certification Thru - All"
+              : selectedPurposeType === "Certification" &&
+                selectedSubOption === "All"
+              ? "Certification - All"
+              : selectedPurposeType !== "All"
+              ? selectedSubOption !== "All"
+                ? `${selectedPurposeType} - ${selectedSubOption}`
+                : selectedPurposeType
+              : "Purpose Type"}
+            <FontAwesomeIcon icon={faCaretDown} className="dropdown-icon" />
+          </button>
+          {showPurposeDropdown && (
+            <ul className="dropdown-menu">
+              <li onClick={() => handlePurposeChange("All")}>All</li>
+              <li
+                className="certification"
+                onMouseEnter={() => setShowCertificationSubmenu(true)}
+                onMouseLeave={() => setShowCertificationSubmenu(false)}
+              >
+                Certification
+                <FontAwesomeIcon icon={faCaretRight} className="submenu-icon" />
+                {showCertificationSubmenu && (
+                  <ul className="submenu">
+                    <li
+                      onClick={() =>
+                        handlePurposeChange("Certification", "All")
+                      }
+                    >
+                      All
+                    </li>
+
+                    {CERTIFICATION_TYPES.map((type) => (
+                      <li
+                        key={type}
+                        onClick={() =>
+                          handlePurposeChange("Certification", type)
+                        }
+                      >
+                        {type}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+              <li
+                className="cav-certification"
+                onMouseEnter={() => setShowCavSubmenu(true)}
+                onMouseLeave={() => setShowCavSubmenu(false)}
+              >
+                CAV Certification Thru
+                <FontAwesomeIcon icon={faCaretRight} className="submenu-icon" />
+                {showCavSubmenu && (
+                  <ul className="submenu">
+                    <li
+                      onClick={() =>
+                        handlePurposeChange("CAV Certification Thru", "All")
+                      }
+                    >
+                      All
+                    </li>
+                    {CAV_CERTIFICATION_TYPES.map((type) => (
+                      <li
+                        key={type}
+                        onClick={() =>
+                          handlePurposeChange("CAV Certification Thru", type)
+                        }
+                      >
+                        {type}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+              <li onClick={() => handlePurposeChange("Authentication")}>
+                Authentication
+              </li>
+              <li onClick={() => handlePurposeChange("Diploma Replacement")}>
+                Diploma Replacement
+              </li>
+              <li onClick={() => handlePurposeChange("Evaluation")}>
+                Evaluation
+              </li>
+              <li onClick={() => handlePurposeChange("Honorable Dismissal")}>
+                Honorable Dismissal
+              </li>
+              <li onClick={() => handlePurposeChange("Correction of Name")}>
+                Correction of Name
+              </li>
+              <li onClick={() => handlePurposeChange("Transcript of Records")}>
+                Transcript of Records
+              </li>
+              <li onClick={() => handlePurposeChange("Permit to Study")}>
+                Permit to Study
+              </li>
+              <li onClick={() => handlePurposeChange("Rush Fee")}>Rush Fee</li>
+              <li onClick={() => handlePurposeChange("Form 137")}>Form 137</li>
+             
+
+
+            </ul>
+          )}
         </div>
-        <button onClick={handlePrint}>
-          <FontAwesomeIcon icon={faPrint} /> Print
-        </button>
+
+        <div className="search-container">
+          <div className="search-queue-wrapper">
+            <input
+              type="text"
+              placeholder="Search Queue No."
+              value={searchPriority}
+              onChange={(e) => setSearchPriority(e.target.value)}
+            />
+            <FontAwesomeIcon icon={faSearch} className="search-icon" />
+            {searchPriority && (
+              <button onClick={handleClearSearch} className="clear-search-btn">
+                <FontAwesomeIcon icon={faTimes} />
+              </button>
+            )}
+          </div>
+        </div>
+
+        <div className="print-button-container">
+          <button onClick={handlePrint} className="print-button">
+            <FontAwesomeIcon icon={faPrint} className="print-icon" />
+            Print
+          </button>
+        </div>
       </div>
 
-      <LogHistoryTable logData={filteredData} />
+     <div className="table-container">
+        {filteredData.length > 0 ? (
+          <LogHistoryTable logData={filteredData} />
+        ) : (
+          <p>No log history data available.</p>
+        )}
+      </div>
     </div>
   );
 };

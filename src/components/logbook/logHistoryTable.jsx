@@ -1,18 +1,20 @@
 import React, { useState, useEffect, useCallback } from "react";
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrash, faCheckCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import ReactPaginate from 'react-paginate';
 import { supabase } from "../../components/helper/supabaseClient";
 import './logHistoryTable.scss';
 
-const LogHistoryTable = ({ logData, onDataChange, updateLogData }) => {
+const LogHistoryTable = ({ logData,  onDataChange, updateLogData }) => {
+
     const [editingLog, setEditingLog] = useState(null);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
     const [currentPage, setCurrentPage] = useState(0);
     const itemsPerPage = 20;
     const [localLogData, setLocalLogData] = useState(logData);
+
 
     useEffect(() => {
         setLocalLogData(logData);
@@ -37,6 +39,7 @@ const LogHistoryTable = ({ logData, onDataChange, updateLogData }) => {
         setShowDeleteConfirm(true);
     };
 
+   
     const confirmDelete = useCallback(async () => {
         try {
             const { error } = await supabase
@@ -45,7 +48,7 @@ const LogHistoryTable = ({ logData, onDataChange, updateLogData }) => {
                 .eq('id', deleteId);
             
             if (error) throw error;
-
+        
             const updatedData = localLogData.filter(log => log.id !== deleteId);
             setLocalLogData(updatedData);
             onDataChange(updatedData);
@@ -75,32 +78,35 @@ const LogHistoryTable = ({ logData, onDataChange, updateLogData }) => {
         
             if (error) throw error;
             if (!data || data.length === 0) throw new Error('No data returned after update');
-
+        
             const updatedData = localLogData.map(log => 
                 log.id === editingLog.id ? data[0] : log
-            );
-            setLocalLogData(updatedData);
-            updateLogData(updatedData);
-            onDataChange(updatedData);
-        } catch (error) {
-            console.error('Error updating log:', error);
-        } finally {
-            setEditingLog(null);
-        }
-    }, [editingLog, localLogData, onDataChange, updateLogData]);
-
+              );
+              setLocalLogData(updatedData);
+              updateLogData(updatedData);
+              onDataChange(updatedData);
+              setHighlightedRowId(editingLog.id); // highlight the row after saving
+              setTimeout(() => setHighlightedRowId(null), 2000); // highlight for 2 seconds
+              
+            } catch (error) {
+              console.error('Error updating log:', error);
+            } finally {
+              setEditingLog(null);
+            }
+          }, [editingLog, localLogData, onDataChange, updateLogData]);
+    
     return (
         <div className="log-history-container">
-            <div className="log-table-container">
+          
+          <div className="log-table-container">
                 <table className="log-table">
                     <thead>
                         <tr>
                             <th>Date</th>
                             <th>Name</th>
                             <th>Purpose</th>
-                          
-                            <th>Queue No.</th>
                             <th>Window No.</th>
+                            <th>Queue No.</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -110,9 +116,8 @@ const LogHistoryTable = ({ logData, onDataChange, updateLogData }) => {
                                 <td>{log.transaction_date}</td>
                                 <td>{log.name}</td>
                                 <td>{log.purpose}</td>
-                               
-                                <td><a href="#">{log.queue_no}</a></td>
                                 <td>{log.window_no}</td>
+                                <td><a href="#">{log.queue_no}</a></td>
                                 <td className="actions-column">
                                     <button className="action-btn edit" onClick={() => handleEditClick(log)} title="Edit">
                                         <FontAwesomeIcon icon={faEdit} />
@@ -143,7 +148,8 @@ const LogHistoryTable = ({ logData, onDataChange, updateLogData }) => {
                     {`${indexOfFirstItem + 1}-${Math.min(indexOfLastItem, localLogData.length)} of ${localLogData.length} entries`}
                 </div>
             </div>    
-            {editingLog && (
+            
+                {editingLog && (
                     <div className="edit-log-modal">
                       <div className="edit-log-content">
                         <h2><FontAwesomeIcon icon={faEdit} /> Edit Log Entry</h2>
@@ -190,6 +196,7 @@ const LogHistoryTable = ({ logData, onDataChange, updateLogData }) => {
                       </div>
                     </div>
                   )}
+                  
         </div>
     );
 };
@@ -203,10 +210,8 @@ LogHistoryTable.propTypes = {
         queue_no: PropTypes.string.isRequired,
         window_no: PropTypes.string.isRequired,
     }).isRequired).isRequired,
+    showWindowColumn: PropTypes.bool.isRequired,
     onDataChange: PropTypes.func.isRequired,
 };
 
 export default LogHistoryTable;
-
-
-

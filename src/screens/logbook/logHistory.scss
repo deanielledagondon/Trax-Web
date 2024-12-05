@@ -84,8 +84,7 @@
     }
 
     .search-container {
-      position: absolute;
-      right: 14%;
+      position: relative;
       flex-grow: 0;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 
@@ -142,8 +141,8 @@
     }
   
     .print-button-container {
-      position: absolute;
-      right: 5%;
+      position: relative;
+      
       .print-button {
         display: flex;
         align-items: center;
@@ -483,8 +482,7 @@
 
 
   .dropdown-all-windows {
-    position: absolute;
-    left: 41%;
+    position: relative;
     display: inline-block;
   
     .dropdown-button {
@@ -569,8 +567,8 @@
 
   /* Custom dropdown styles */
   .custom-dropdown {
-    position: absolute;
-    left: 52%;
+    position: relative;
+ 
     display: inline-block;
 
     
@@ -584,7 +582,7 @@
       justify-content: space-between;
       align-items: center;
       min-width: 200px; /* Adjust width as needed */
-      max-width: 350px;
+      max-width: 400px;
       position: relative;
       white-space: nowrap; // Prevent text from wrapping
       overflow: hidden; // Hide any overflowing text
@@ -609,7 +607,7 @@
       margin: 0;
       min-width: 100%; /* Adjust width as needed */
       max-width: 200%;
-      z-index: 3;
+      z-index: 1000;
       font-size: 13px;
      
   
@@ -657,7 +655,8 @@
      
     }
 
-    .cav-certification {
+    .cav-certification,
+    .certification {
       position: relative;
     }
 
@@ -672,16 +671,23 @@
       padding: 0;
       list-style: none;
       z-index: 2;
-      width: 150px;
+      width: 200px;
       font-size: 13px;
       text-align: left;
-
       overflow-y: auto;
-      max-height: 380px; 
+      max-height: auto; 
       scrollbar-width: thin; 
       scrollbar-color: rgba(0, 0, 0, 0.2) transparent; 
      
-     
+      &.submenu-down {
+        top: 0%; // Below the dropdown
+      }
+    
+      &.submenu-up {
+        bottom: 500%; // Above the dropdown
+      }
+    
+
       .dark-mode & {
         color: #555;
         scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
@@ -715,7 +721,21 @@
     }
 
     .cav-certification,
-    .certification {
+    .certification,
+    .authentication,
+    .diploma-replacement,
+    .evaluation,
+    .honorable-dismissal,
+    .correction-of-name,
+    .transcript-of-records,
+    .permit-to-study,
+    .rush-fee,
+    .form-137,
+    .car
+    
+    
+
+    {
       position: relative;
       .submenu-icon {
         margin-left: 0.5rem;

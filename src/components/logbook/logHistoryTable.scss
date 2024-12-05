@@ -6,7 +6,7 @@ $dark-mode-scrollbar-color: #555;
 
   .log-table-container {
     overflow-y: auto;
-    max-height: 300px; 
+    max-height: 450px; 
     scrollbar-width: thin; 
     scrollbar-color: rgba(0, 0, 0, 0.2) transparent; 
     position: relative;
@@ -132,8 +132,6 @@ $dark-mode-scrollbar-color: #555;
     }
   }
 
-
-
   .pagination-container {
     display: flex;
     justify-content: space-between;
@@ -227,6 +225,7 @@ $dark-mode-scrollbar-color: #555;
     align-items: center;
     justify-content: center; // Align content horizontally and vertically
 
+
     &.save-btn {
       margin-bottom: 20px;
       background-color:  #007bff;
@@ -236,11 +235,7 @@ $dark-mode-scrollbar-color: #555;
         background-color: #005ab9;
       }
     }
-
-
-   
-
-
+ 
     &.cancel-btn {
       background-color: #36af3c;
       color: white;
@@ -253,7 +248,7 @@ $dark-mode-scrollbar-color: #555;
     &.delete-btn {
       background-color: #f44336;
       color: white;
-  
+
       &:hover {
         background-color: #da190b;
       }
@@ -335,7 +330,7 @@ $dark-mode-scrollbar-color: #555;
         }
       }
     }
-   
+
     .save-btn {
       margin-bottom: 20px;
       background-color:  #007bff;
@@ -344,8 +339,8 @@ $dark-mode-scrollbar-color: #555;
       &:hover {
         background-color: #005ab9;
       }
-    }
     
+    }
 
     .dark-mode & {
       background-color: #3a3d52;
