@@ -91,10 +91,6 @@ const LogHistoryTable = ({ logData, onDataChange, updateLogData }) => {
         }
     }, [editingLog, localLogData, onDataChange, updateLogData]);
 
-    // New handler for "View Form Tracker" button
-    const handleViewFormTracker = () => {
-        navigate("/form-history"); // Redirect to Form History page
-    };
 
     return (
         <div className="log-history-container">
@@ -160,13 +156,7 @@ const LogHistoryTable = ({ logData, onDataChange, updateLogData }) => {
                     )} of ${localLogData.length} entries`}
                 </div>
             </div>
-            <button
-                className="action-btn view"
-                onClick={handleViewFormTracker}
-                title="View Form Tracker"
-            >
-                <FontAwesomeIcon icon={faEye} /> View Form Tracker
-            </button>
+
 
             {/* Existing modals and functionalities */}
             {editingLog && (
