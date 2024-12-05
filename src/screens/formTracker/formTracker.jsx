@@ -1,54 +1,9 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./formTracker.scss";
+import { supabase } from "../../components/helper/supabaseClient";
 
 const FormTracker = () => {
-  const [formData, setFormData] = useState([
-    { date: "2024-12-01", user: "John Doe", form: "INC Form" },
-    { date: "2024-12-02", user: "Jane Smith", form: "Request for credentials" },
-    { date: "2024-12-03", user: "Michael Johnson", form: "Leave of Absence" },
-    { date: "2024-12-04", user: "Emily Brown", form: "Students clearance" },
-    { date: "2024-12-05", user: "Chris Lee", form: "INC Form" },
-    { date: "2024-12-01", user: "John Doe", form: "INC Form" },
-    { date: "2024-12-02", user: "Jane Smith", form: "Request for credentials" },
-    { date: "2024-12-03", user: "Michael Johnson", form: "Leave of Absence" },
-    { date: "2024-12-04", user: "Emily Brown", form: "Students clearance" },
-    { date: "2024-12-05", user: "Chris Lee", form: "INC Form" },
-    { date: "2024-12-01", user: "John Doe", form: "INC Form" },
-    { date: "2024-12-02", user: "Jane Smith", form: "Request for credentials" },
-    { date: "2024-12-03", user: "Michael Johnson", form: "Leave of Absence" },
-    { date: "2024-12-04", user: "Emily Brown", form: "Students clearance" },
-    { date: "2024-12-05", user: "Chris Lee", form: "INC Form" },
-    { date: "2024-12-01", user: "John Doe", form: "INC Form" },
-    { date: "2024-12-02", user: "Jane Smith", form: "Request for credentials" },
-    { date: "2024-12-03", user: "Michael Johnson", form: "Leave of Absence" },
-    { date: "2024-12-04", user: "Emily Brown", form: "Students clearance" },
-    { date: "2024-12-05", user: "Chris Lee", form: "INC Form" },
-    { date: "2024-12-01", user: "John Doe", form: "INC Form" },
-    { date: "2024-12-02", user: "Jane Smith", form: "Request for credentials" },
-    { date: "2024-12-03", user: "Michael Johnson", form: "Leave of Absence" },
-    { date: "2024-12-04", user: "Emily Brown", form: "Students clearance" },
-    { date: "2024-12-05", user: "Chris Lee", form: "INC Form" },
-    { date: "2024-12-01", user: "John Doe", form: "INC Form" },
-    { date: "2024-12-02", user: "Jane Smith", form: "Request for credentials" },
-    { date: "2024-12-03", user: "Michael Johnson", form: "Leave of Absence" },
-    { date: "2024-12-04", user: "Emily Brown", form: "Students clearance" },
-    { date: "2024-12-05", user: "Chris Lee", form: "INC Form" },
-    { date: "2024-12-02", user: "Jane Smith", form: "Request for credentials" },
-    { date: "2024-12-03", user: "Michael Johnson", form: "Leave of Absence" },
-    { date: "2024-12-04", user: "Emily Brown", form: "Students clearance" },
-    { date: "2024-12-05", user: "Chris Lee", form: "INC Form" },
-    { date: "2024-12-01", user: "John Doe", form: "INC Form" },
-    { date: "2024-12-02", user: "Jane Smith", form: "Request for credentials" },
-    { date: "2024-12-03", user: "Michael Johnson", form: "Leave of Absence" },
-    { date: "2024-12-04", user: "Emily Brown", form: "Students clearance" },
-    { date: "2024-12-05", user: "Chris Lee", form: "INC Form" },
-    { date: "2024-12-01", user: "John Doe", form: "INC Form" },
-    { date: "2024-12-02", user: "Jane Smith", form: "Request for credentials" },
-    { date: "2024-12-03", user: "Michael Johnson", form: "Leave of Absence" },
-    { date: "2024-12-04", user: "Emily Brown", form: "Students clearance" },
-    { date: "2024-12-05", user: "Chris Lee", form: "INC Form" },
-  ]);
-
+  const [formData, setFormData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedForm, setSelectedForm] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -60,60 +15,122 @@ const FormTracker = () => {
   const handleStartDate = (event) => setStartDate(event.target.value);
   const handleEndDate = (event) => setEndDate(event.target.value);
 
-  const filteredData = formData.filter((item) => {
-    const matchesSearch = item.user.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesForm = selectedForm ? item.form === selectedForm : true;
-    const matchesDate =
-      (!startDate || new Date(item.date) >= new Date(startDate)) &&
-      (!endDate || new Date(item.date) <= new Date(endDate));
-    return matchesSearch && matchesForm && matchesDate;
-  });
+  // Fetch form data from Supabase on component mount
+  useEffect(() => {
+    const fetchFormData = async () => {
+      const { data, error } = await supabase
+        .from("grab_form")
+        .select("*");
+      
+      if (error) {
+        console.error("Error fetching data:", error.message);
+      } else {
+        setFormData(data);
+      }
+    };
+    fetchFormData();
+  }, []);
 
-  const handlePrint = () => {
-    const printWindow = window.open('', '', 'height=500, width=800');
-    printWindow.document.write('<html><head><title>Form Tracker Print</title>');
+  // Filter logic based on search and date ranges
+const filteredData = formData.filter((item) => {
+  const matchesSearch = item.purpose.some((purpose) =>
+    purpose.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  const matchesForm = selectedForm
+    ? item.purpose.some((purpose) => purpose === selectedForm)
+    : true;
+
+  const matchesDate =
+    (!startDate || new Date(item.transaction_date) >= new Date(startDate)) &&
+    (!endDate || new Date(item.transaction_date) <= new Date(endDate));
+
+    
+
+  return matchesSearch && matchesForm && matchesDate;
+}
+);
+
+
+// Print functionality
+const handlePrint = () => {
+  // Calculate total quantity for each specific purpose
+  const purposeTotalQuantity = filteredData.reduce((acc, item) => {
+    item.purpose.forEach((purpose, index) => {
+      // If the purpose doesn't exist in the accumulator, initialize it
+      if (!acc[purpose]) {
+        acc[purpose] = 0;
+      }
+      // Add the quantity to the corresponding purpose total
+      acc[purpose] += item.quantity[index];
+    });
+    return acc;
+  }, {});
+
+  const printWindow = window.open('', '', 'height=500, width=800');
+  printWindow.document.write('<html><head><title>Form Tracker Print</title>');
+  printWindow.document.write(`
+    <style>
+      body { font-family: Arial, sans-serif; }
+      table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+      th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+      th { background-color: #f2f2f2; }
+      .print-header { text-align: center; margin-bottom: 20px; }
+    </style>
+  `);
+  printWindow.document.write('</head><body>');
+  printWindow.document.write(`
+    <div class="print-header">
+      <h1>Form Tracker Report</h1>
+      ${searchTerm ? `<p>Search Term: ${searchTerm}</p>` : ''}
+      ${selectedForm ? `<p>Form Type: ${selectedForm}</p>` : ''}
+      ${startDate ? `<p>Start Date: ${startDate}</p>` : ''}
+      ${endDate ? `<p>End Date: ${endDate}</p>` : ''}
+      
+    </div>
+  `);
+
+  // Display total quantity for each purpose
+  printWindow.document.write('<h3>Total Quantity for Each Purpose</h3>');
+  printWindow.document.write('<table>');
+  printWindow.document.write('<thead><tr><th>Purpose</th><th>Total Quantity</th></tr></thead>');
+  printWindow.document.write('<tbody>');
+  for (const [purpose, totalQuantity] of Object.entries(purposeTotalQuantity)) {
     printWindow.document.write(`
-      <style>
-        body { font-family: Arial, sans-serif; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        .print-header { text-align: center; margin-bottom: 20px; }
-      </style>
+      <tr>
+        <td>${purpose}</td>
+        <td>${totalQuantity}</td>
+      </tr>
     `);
-    printWindow.document.write('</head><body>');
-    printWindow.document.write(`
-      <div class="print-header">
-        <h1>Form Tracker Report</h1>
-        ${searchTerm ? `<p>Search Term: ${searchTerm}</p>` : ''}
-        ${selectedForm ? `<p>Form Type: ${selectedForm}</p>` : ''}
-        ${startDate ? `<p>Start Date: ${startDate}</p>` : ''}
-        ${endDate ? `<p>End Date: ${endDate}</p>` : ''}
-        <p>Total Entries: ${filteredData.length}</p>
-      </div>
-    `);
-    printWindow.document.write('<table>');
-    printWindow.document.write('<thead><tr><th>Date</th><th>Name</th><th>Form</th></tr></thead>');
-    printWindow.document.write('<tbody>');
-    filteredData.forEach((item) => {
+  }
+  printWindow.document.write('</tbody></table>');
+  
+  // Now display the detailed records
+  printWindow.document.write('<h3>Detailed Records</h3>');
+  printWindow.document.write('<table>');
+  printWindow.document.write('<thead><tr><th>Date</th><th>Purpose</th><th>Quantity</th></tr></thead>');
+  printWindow.document.write('<tbody>');
+  filteredData.forEach((item) => {
+    item.purpose.forEach((purpose, index) => {
       printWindow.document.write(`
         <tr>
-          <td>${item.date}</td>
-          <td>${item.user}</td>
-          <td>${item.form}</td>
+          <td>${item.transaction_date}</td>
+          <td>${purpose}</td>
+          <td>${item.quantity[index]}</td>
         </tr>
       `);
     });
-    printWindow.document.write('</tbody></table>');
-    printWindow.document.write('</body></html>');
-    printWindow.document.close();
-    printWindow.print();
-  };
+  });
+  printWindow.document.write('</tbody></table>');
+  printWindow.document.write('</body></html>');
+  printWindow.document.close();
+  printWindow.print();
+};
 
-  // New function to handle deletion of all records
+
+  // Delete all records functionality
   const handleDeleteAll = () => {
     const confirmDelete = window.confirm(
-      "Are you sure you want to delete this record? This action cannot be undone."
+      "Are you sure you want to delete all records? This action cannot be undone."
     );
     if (confirmDelete) {
       setFormData([]); // Clear all records
@@ -125,11 +142,11 @@ const FormTracker = () => {
       <h2 className="form-tracker-title">Form Monitoring</h2>
       <div className="form-tracker-filters">
         <div className="form-tracker-input-group">
-          <label htmlFor="name-search">Search Name</label>
+          <label htmlFor="name-search">Search Form</label>
           <input
             id="name-search"
             type="text"
-            placeholder="Enter name..."
+            placeholder="Enter Form..."
             value={searchTerm}
             onChange={handleSearch}
           />
@@ -139,10 +156,10 @@ const FormTracker = () => {
           <select id="form-select" value={selectedForm} onChange={handleFormFilter}>
             <option value="">All Forms</option>
             <option value="Leave of Absence">Leave of Absence</option>
-            <option value="INC Form">INC Form</option>
-            <option value="Application for accreditation">Application for accreditation</option>
-            <option value="Request for credentials">Request for credentials</option>
-            <option value="Students clearance">Students clearance</option>
+            <option value="INC">INC</option>
+            <option value="Application for Accreditation">Application for Accreditation</option>
+            <option value="Request for Credentials">Request for Credentials</option>
+            <option value="Students Clearance">Students Clearance</option>
           </select>
         </div>
         <div className="form-tracker-input-group">
@@ -171,8 +188,8 @@ const FormTracker = () => {
             onClick={handlePrint}
             style={{
               padding: "10px",
-              backgroundColor: "#white",
-              color: "white",
+              backgroundColor: "#fff",
+              color: "#333",
               border: "none",
               borderRadius: "5px",
               cursor: "pointer",
@@ -203,18 +220,20 @@ const FormTracker = () => {
           <thead>
             <tr>
               <th>Date</th>
-              <th>Name</th>
               <th>Form</th>
+              <th>Quantity</th>
             </tr>
           </thead>
           <tbody>
-            {filteredData.map((item, index) => (
-              <tr key={index}>
-                <td>{item.date}</td>
-                <td>{item.user}</td>
-                <td>{item.form}</td>
-              </tr>
-            ))}
+            {filteredData.map((item, index) =>
+              item.purpose.map((purpose, subIndex) => (
+                <tr key={`${index}-${subIndex}`}>
+                  <td>{item.transaction_date}</td>
+                  <td>{purpose}</td>
+                  <td>{item.quantity[subIndex]}</td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
