@@ -566,7 +566,7 @@
       justify-content: space-between;
       align-items: center;
       min-width: 200px; /* Adjust width as needed */
-      max-width: 350px;
+      max-width: auto;
       position: relative;
       white-space: nowrap; // Prevent text from wrapping
       overflow: hidden; // Hide any overflowing text

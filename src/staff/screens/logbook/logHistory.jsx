@@ -304,8 +304,10 @@ const LogHistory = () => {
   
     // Clean up the object URL after the PDF is opened
     setTimeout(() => URL.revokeObjectURL(pdfUrl), 10000);
+    
+
   };
-  
+
   if (isLoading) {
     return <div>Loading...</div>;
   }

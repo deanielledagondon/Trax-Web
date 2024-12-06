@@ -141,8 +141,6 @@
     }
   
     .print-button-container {
-      position: relative;
-      
       .print-button {
         display: flex;
         align-items: center;
@@ -156,7 +154,6 @@
     }
 
     .date-container {
-    
       display: flex;
       align-items: center;
       border: 1px solid #ccc;
@@ -568,7 +565,6 @@
   /* Custom dropdown styles */
   .custom-dropdown {
     position: relative;
- 
     display: inline-block;
 
     
@@ -582,7 +578,7 @@
       justify-content: space-between;
       align-items: center;
       min-width: 200px; /* Adjust width as needed */
-      max-width: 400px;
+      max-width: auto;
       position: relative;
       white-space: nowrap; // Prevent text from wrapping
       overflow: hidden; // Hide any overflowing text
@@ -607,7 +603,7 @@
       margin: 0;
       min-width: 100%; /* Adjust width as needed */
       max-width: 200%;
-      z-index: 1000;
+      z-index: 3;
       font-size: 13px;
      
   
@@ -655,8 +651,7 @@
      
     }
 
-    .cav-certification,
-    .certification {
+    .cav-certification {
       position: relative;
     }
 
@@ -671,23 +666,16 @@
       padding: 0;
       list-style: none;
       z-index: 2;
-      width: 200px;
+      width: 150px;
       font-size: 13px;
       text-align: left;
+
       overflow-y: auto;
-      max-height: auto; 
+      max-height: 380px; 
       scrollbar-width: thin; 
       scrollbar-color: rgba(0, 0, 0, 0.2) transparent; 
      
-      &.submenu-down {
-        top: 0%; // Below the dropdown
-      }
-    
-      &.submenu-up {
-        bottom: 500%; // Above the dropdown
-      }
-    
-
+     
       .dark-mode & {
         color: #555;
         scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
@@ -721,21 +709,7 @@
     }
 
     .cav-certification,
-    .certification,
-    .authentication,
-    .diploma-replacement,
-    .evaluation,
-    .honorable-dismissal,
-    .correction-of-name,
-    .transcript-of-records,
-    .permit-to-study,
-    .rush-fee,
-    .form-137,
-    .car
-    
-    
-
-    {
+    .certification {
       position: relative;
       .submenu-icon {
         margin-left: 0.5rem;
