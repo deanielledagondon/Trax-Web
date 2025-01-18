@@ -6,7 +6,7 @@ $dark-mode-scrollbar-color: #555;
 
   .log-table-container {
     overflow-y: auto;
-    max-height: 450px; 
+    max-height: 550px; 
     scrollbar-width: thin; 
     scrollbar-color: rgba(0, 0, 0, 0.2) transparent; 
     position: relative;
@@ -204,7 +204,6 @@ $dark-mode-scrollbar-color: #555;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1000;
 }
-
 .button-group {
   display: flex;
   justify-content: center; // Center align buttons horizontally
@@ -225,14 +224,25 @@ $dark-mode-scrollbar-color: #555;
     align-items: center;
     justify-content: center; // Align content horizontally and vertically
 
-
-    &.save-btn {
+    .save-button {
       margin-bottom: 20px;
-      background-color:  #007bff;
+      background-color: #36af3c;
       color: white;
 
       &:hover {
-        background-color: #005ab9;
+        background-color: #008504;
+      }
+    
+    }
+
+
+    &.save-cancel-btn{
+      margin-bottom: 20px;
+      background-color: #f44336;
+      color: white;
+
+      &:hover {
+        background-color: #da190b;
       }
     }
  
@@ -331,13 +341,13 @@ $dark-mode-scrollbar-color: #555;
       }
     }
 
-    .save-btn {
+    .save-button {
       margin-bottom: 20px;
-      background-color:  #007bff;
+      background-color: #36af3c;
       color: white;
 
       &:hover {
-        background-color: #005ab9;
+        background-color: #008504;
       }
     
     }
@@ -346,6 +356,9 @@ $dark-mode-scrollbar-color: #555;
       background-color: #3a3d52;
     }
   }
+ 
+
+
 }
 
 // Delete Log Modal Styles
@@ -397,6 +410,9 @@ $dark-mode-scrollbar-color: #555;
       &:hover {
         background-color: #da190b;
       }
+
+      
+
     }
 
     .dark-mode & {

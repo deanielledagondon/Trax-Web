@@ -82,37 +82,104 @@ const LogHistory = () => {
   const [selectedWindow, setSelectedWindow] = useState('All Windows');
   const [selectedPurposeType, setSelectedPurposeType] = useState('All');
   const [selectedSubOption, setSelectedSubOption] = useState('All');
+  const [selectedReason, setSelectedReason] = useState('All');
   const [showWindowDropdown, setShowWindowDropdown] = useState(false);
   const [showPurposeDropdown, setShowPurposeDropdown] = useState(false);
-  const [showCertificationSubmenu, setShowCertificationSubmenu] = useState(false);
-  const [showCavSubmenu, setShowCavSubmenu] = useState(false);
   const [searchPriority, setSearchPriority] = useState('');
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [logHistory, setLogHistory] = useState([]);
+  const [adminName, setAdminName] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [windowNo, setWindowNo] = useState(null);
   const datePickerRef = useRef(null);
   const windowDropdownRef = useRef(null);
   const purposeDropdownRef = useRef(null);
+  const [activeDropdowns, setActiveDropdowns] = useState({
+    purposeType: null,
+    cavCertType: null,
+    CertType: null
+  });
 
-  const CAV_CERTIFICATION_TYPES = ['DFA', 'PNP', 'BJMP', 'CHED', 'POEA', 'DEP-ED', 'BFP'];
+  // Define all purpose types
   const CERTIFICATION_TYPES = ['CAR', 'GPA', 'Endorsement', 'Officially enrolled', 'Subjects enrolled', 'USTP Conversion', 'English Medium of Instruction', 'Authorization Letter', 'Letter of No Objection', 'Graduated', 'Earned Units', 'Grading System', 'Subjects w/ grades'];
+  const CAV_CERTIFICATION_TYPES = ['DFA', 'PNP', 'BJMP', 'CHED', 'POEA', 'DEP-ED', 'BFP'];
+  const OTHER_TYPES = ['Authentication', 'Diploma Replacement', 'Evaluation', 'Honorable Dismissal', 'Correction of Name', 'Transcript of Records', 'Permit to Study', 'Rush Fee', 'Form 137'];
+  
+  const COMMON_REASONS = ['All', 'For Evaluation', 'For Passport', 'For Employment', 'For Advanced Studies', 'For Scholarship', 'For Board Exam', 'For Personal File', 'For Ranking'];
+
+  const normalizeString = (str) => {
+    if (!str) return '';
+    // Handle potential non-string inputs
+    const stringValue = String(str);
+    return stringValue
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, ' '); // Replace multiple spaces with single space
+  };
+
+  const normalizeArrayStrings = (input) => {
+    if (!input) return [];
+    
+    // Handle string input that might contain commas
+    if (typeof input === 'string') {
+      return input.split(',').map(item => normalizeString(item));
+    }
+    
+    // Handle array input
+    if (Array.isArray(input)) {
+      return input.map(item => normalizeString(item));
+    }
+    
+    // If neither string nor array, convert to string and normalize
+    return [normalizeString(String(input))];
+  };
 
   useEffect(() => {
     async function fetchData() {
-      setIsLoading(true);
-      const { data, error } = await supabase
-        .from('log_history')
-        .select('*')
-        .order('transaction_date', { ascending: true });
-      if (error) {
-        console.error('Error fetching data:', error);
-      } else {
-        setLogHistory(data);
+      try {
+        setIsLoading(true);
+        const user = localStorage.getItem("user");
+        if (!user) {
+          console.error("No user data found in localStorage");
+          return;
+        }
+        
+        const parsedUser = JSON.parse(user);
+        if (!parsedUser.id) {
+          console.error("No user ID found in parsed user data");
+          return;
+        }
+
+        const { data: adminData, error: adminError } = await supabase
+          .from("registrants")
+          .select("full_name, window_no")
+          .eq("id", parsedUser.id)
+          .single();
+
+        if (adminError) throw adminError;
+
+        const firstName = adminData.full_name?.split(" ")[0] || "Admin";
+        setAdminName(firstName);
+        setWindowNo([adminData.window_no]);
+
+        const { data: logData, error: logError } = await supabase
+          .from("log_history")
+          .select("*")
+          .order('created_at', { ascending: false });
+
+        if (logError) throw logError;
+        setLogHistory(logData || []);
+        
+      } catch (error) {
+        console.error("Error:", error);
+        setLogHistory([]);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     }
+
     fetchData();
   }, []);
 
@@ -130,138 +197,457 @@ const LogHistory = () => {
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-  const handlePurposeChange = (purpose, subOption = 'All') => {
-    console.log('handlePurposeChange called with:', purpose, subOption);
-    
+
+  const handlePurposeChange = (purpose, subOption = 'All', reason = 'All') => {
     setSelectedPurposeType(purpose);
     setSelectedSubOption(subOption);
-    
-    setShowCertificationSubmenu(false);
-    setShowCavSubmenu(false);
+    setSelectedReason(reason);
+    setActiveDropdowns({
+      purposeType: null,
+      cavCertType: null,
+      CertType: null
+    });
     setShowPurposeDropdown(false);
   };
 
+  const toggleDropdown = (dropdownType, value) => {
+    setActiveDropdowns(prev => ({
+      ...prev,
+      [dropdownType]: prev[dropdownType] === value ? null : value
+    }));
+  };
+
   
+  const renderGenericReasonSubmenu = (purposeType) => (
+    <ul className="reasons-submenu">
+      {COMMON_REASONS.map(reason => (
+        <li 
+          key={reason} 
+          onClick={() => handlePurposeChange(purposeType, undefined, reason)}
+        >
+          {reason}
+        </li>
+      ))}
+      <li 
+        key="others-reason" 
+        onClick={() => handlePurposeChange(purposeType, undefined, 'Others')}
+      >
+        Others
+      </li>
+    </ul>
+  );
+
+  
+     const renderPurposeDropdown = () => {
+        return (
+          <ul className="dropdown-menu">
+            <li onClick={() => handlePurposeChange('All')}>All</li>
+            
+            {/* Certification */}
+            <li 
+            className="certification"
+            onMouseEnter={() => toggleDropdown('purposeType', 'Certification')}
+            onMouseLeave={() => toggleDropdown('purposeType', null)}
+          >
+            Certification
+            <FontAwesomeIcon 
+              icon={activeDropdowns.purposeType === 'Certification' ? faCaretDown : faCaretRight} 
+              className="submenu-icon" 
+            />
+            {activeDropdowns.purposeType === 'Certification' && (
+              <div className="submenu-container">
+                <ul className="submenu">
+                  <li onClick={() => handlePurposeChange('Certification', 'All', 'All')}>All</li>
+                  {CERTIFICATION_TYPES.map(type => (
+                    <li 
+                      key={type}
+                      onClick={() => handlePurposeChange('Certification', type, reason)}
+                      onMouseEnter={() => toggleDropdown('CertType', type)}
+                      onMouseLeave={() => toggleDropdown('CertType', null)}
+                    >
+                      {type}
+                      <FontAwesomeIcon 
+                        icon={activeDropdowns.CertType === type ? faCaretDown : faCaretRight} 
+                        className="submenu-icon" 
+                      />
+                      {activeDropdowns.CertType === type && renderGenericReasonSubmenu(type)}
+                    </li>
+                  ))}
+                  <li 
+                    key="others-cert"
+                    onClick={() => handlePurposeChange('Certification', 'Others', 'All')}
+                  >
+                    Others
+                  </li>
+                </ul>
+              </div>
+            )}
+          </li>
+            
+                    {/* CAV Certification */}
+                    
+                         <li 
+            className="cav-certification"
+            onMouseEnter={() => toggleDropdown('purposeType', 'CAV Certification Thru')}
+            onMouseLeave={() => toggleDropdown('purposeType', null)}
+          >
+            CAV Certification Thru
+            <FontAwesomeIcon 
+              icon={activeDropdowns.purposeType === 'CAV Certification Thru' ? faCaretDown : faCaretRight} 
+              className="submenu-icon" 
+            />
+            {activeDropdowns.purposeType === 'CAV Certification Thru' && (
+              <div className="submenu-container">
+                <ul className="submenu">
+                  <li onClick={() => handlePurposeChange('CAV Certification Thru', 'All', 'All')}>All</li>
+                  {CAV_CERTIFICATION_TYPES.map(type => (
+                    <li 
+                      key={type}
+                      onClick={() => handlePurposeChange('CAV Certification Thru', type, reason)}
+                      onMouseEnter={() => toggleDropdown('cavCertType', type)}
+                      onMouseLeave={() => toggleDropdown('cavCertType', null)}
+                    >
+                      {type}
+                      <FontAwesomeIcon 
+                        icon={activeDropdowns.cavCertType === type ? faCaretDown : faCaretRight} 
+                        className="submenu-icon" 
+                      />
+                      {activeDropdowns.cavCertType === type && renderGenericReasonSubmenu(type)}
+                    </li>
+                  ))}
+                  <li 
+                    key="others-cav"
+                    onClick={() => handlePurposeChange('CAV Certification Thru', 'Others', 'All')}
+                  >
+                    Others
+                  </li>
+                </ul>
+              </div>
+            )}
+          </li>
+                    
+            {/* Other Types */}
+            {OTHER_TYPES.map(type => (
+              <li 
+                key={type}
+                className={type.toLowerCase().replace(/\s+/g, '-')}
+                onMouseEnter={() => toggleDropdown('purposeType', type)}
+                onMouseLeave={() => toggleDropdown('purposeType', null)}
+              >
+                {type}
+                <FontAwesomeIcon 
+                  icon={activeDropdowns.purposeType === type ? faCaretDown : faCaretRight} 
+                  className="submenu-icon" 
+                />
+                {activeDropdowns.purposeType === type && renderGenericReasonSubmenu(type)}
+              </li>
+            ))}
+    
+            {/* General Inquiries */}
+            <li 
+              className="general-inquiries"
+              onClick={() => handlePurposeChange('General Inquiries')}
+            >
+              General Inquiries
+            </li>
+          </ul>
+        );
+      };
+
+    const handleClearSearch = () => {
+    setSearchPriority("");
+  };
+
+  const filteredData = useMemo(() => {
+  return logHistory.filter(log => {
+    try {
+      if (!log) return false;
+
+      const purposesArray = normalizeArrayStrings(log.purpose);
+      const reasonArray = normalizeArrayStrings(log.reason);
+      
+      const normalizedSelectedPurpose = normalizeString(selectedPurposeType);
+      const normalizedSelectedSubOption = normalizeString(selectedSubOption);
+      const normalizedSelectedReason = normalizeString(selectedReason);
+
+      // Normalize type arrays
+      const normalizedCertificationTypes = CERTIFICATION_TYPES.map(type => normalizeString(type));
+      const normalizedCAVTypes = CAV_CERTIFICATION_TYPES.map(type => normalizeString(type));
+      const normalizedOtherTypes = OTHER_TYPES.map(type => normalizeString(type));
+      const allNormalizedSpecificPurposes = [
+        ...normalizedCertificationTypes,
+        ...normalizedCAVTypes,
+        ...normalizedOtherTypes
+      ];
+
+      let purposeMatch = false;
+      let reasonMatch = false;
+
+      // Handle "All" purpose type
+      if (normalizedSelectedPurpose === 'all') {
+        purposeMatch = true;
+        reasonMatch = true;
+      }
+      // Handle "General Inquiries"
+      else if (normalizedSelectedPurpose === 'general inquiries') {
+        purposeMatch = purposesArray.every(purpose => 
+          !allNormalizedSpecificPurposes.some(specificPurpose => 
+            purpose.includes(specificPurpose) || specificPurpose.includes(purpose)
+          )
+        );
+        reasonMatch = true;
+      }
+      // Handle CAV Certification and regular Certification
+      else if (normalizedSelectedPurpose === 'cav certification thru' || 
+               normalizedSelectedPurpose === 'certification') {
+        const relevantTypes = normalizedSelectedPurpose === 'cav certification thru' 
+          ? normalizedCAVTypes 
+          : normalizedCertificationTypes;
+
+        if (normalizedSelectedSubOption === 'all') {
+          purposeMatch = purposesArray.some(purpose =>
+            relevantTypes.some(type => 
+              purpose.includes(type) || type.includes(purpose)
+            )
+          );
+        }
+        // Handle "Others" sub-option
+        else if (normalizedSelectedSubOption === 'others') {
+          purposeMatch = purposesArray.some(purpose =>
+            !relevantTypes.some(type => 
+              purpose.includes(type) || type.includes(purpose)
+            ) &&
+            purpose.toLowerCase().includes(normalizedSelectedPurpose)
+          );
+        }
+        else {
+          purposeMatch = purposesArray.some(purpose =>
+            purpose.includes(normalizedSelectedSubOption) || 
+            normalizedSelectedSubOption.includes(purpose)
+          );
+        }
+
+        // Handle reason matching including "Others"
+        if (normalizedSelectedReason === 'others') {
+          reasonMatch = reasonArray.some(reason =>
+            !COMMON_REASONS.map(r => normalizeString(r)).includes(normalizeString(reason))
+          );
+        } else {
+          reasonMatch = normalizedSelectedReason === 'all' || 
+            reasonArray.some(reason =>
+              reason.includes(normalizedSelectedReason) || 
+              normalizedSelectedReason.includes(reason)
+            );
+        }
+      }
+      // Handle other purpose types
+      else {
+        if (normalizedSelectedPurpose === 'others') {
+          // Match if the purpose is not in any of the predefined lists
+          purposeMatch = purposesArray.some(purpose =>
+            !allNormalizedSpecificPurposes.some(specificPurpose =>
+              purpose.includes(specificPurpose) || specificPurpose.includes(purpose)
+            )
+          );
+        } else {
+          purposeMatch = purposesArray.some(purpose =>
+            purpose.includes(normalizedSelectedPurpose) || 
+            normalizedSelectedPurpose.includes(purpose)
+          );
+        }
+        
+        // Handle reason matching for other purpose types
+        if (normalizedSelectedReason === 'others') {
+          reasonMatch = reasonArray.some(reason =>
+            !COMMON_REASONS.map(r => normalizeString(r)).includes(normalizeString(reason))
+          );
+        } else {
+          reasonMatch = normalizedSelectedReason === 'all' || 
+            reasonArray.some(reason =>
+              reason.includes(normalizedSelectedReason) || 
+              normalizedSelectedReason.includes(reason)
+            );
+        }
+      }
+
+      const windowMatch = selectedWindow === 'All Windows' || 
+        `Window ${log.window_no.slice(1)}` === selectedWindow;
+
+      const priorityMatch = log.queue_no
+        ? log.queue_no.toString().toLowerCase().includes(searchPriority.toLowerCase())
+        : false;
+
+      let dateMatch = true;
+      if (startDate && endDate) {
+        const logDate = new Date(log.created_at);
+        if (isNaN(logDate.getTime())) {
+          console.warn('Invalid date found:', log.created_at);
+          dateMatch = false;
+        } else {
+          const startDateTime = new Date(startDate).setHours(0, 0, 0, 0);
+          const endDateTime = new Date(endDate).setHours(23, 59, 59, 999);
+          dateMatch = logDate >= startDateTime && logDate <= endDateTime;
+        }
+      }
+
+      return purposeMatch && reasonMatch && windowMatch && dateMatch && priorityMatch;
+    } catch (error) {
+      console.error('Error filtering log entry:', error);
+      return false;
+    }
+  });
+}, [
+  logHistory,
+  selectedWindow,
+  selectedPurposeType,
+  selectedSubOption,
+  selectedReason,
+  searchPriority,
+  startDate,
+  endDate,
+]);
+
   const handleWindowChange = (window) => {
-    console.log('Changing window to:', window);
     setSelectedWindow(window);
     setShowWindowDropdown(false);
   };
 
-  const handleClearSearch = () => {
-    setSearchPriority('');
-  };
+  
 
+  
 
-  const filteredData = useMemo(() => {
-    console.log("Filtering data...");
-    console.log("Selected Purpose:", selectedPurposeType);
-    console.log("Selected Submenu:", selectedSubOption);
-    
-   
-  
-    return logHistory.filter(log => {
-      let purposeMatch = false;
-  
-      if (selectedPurposeType === 'All') {
-        purposeMatch = true;
-      } else if (selectedPurposeType === 'CAV Certification Thru') {
-        if (selectedSubOption === 'All') {
-          purposeMatch = CAV_CERTIFICATION_TYPES.includes(log.purpose);
-        } else {
-          purposeMatch = log.purpose === selectedSubOption;
-        }
-      } else if (selectedPurposeType === 'Certification') {
-        if (selectedSubOption === 'All') {
-          purposeMatch = CERTIFICATION_TYPES.includes(log.purpose);
-        } else {
-          purposeMatch = log.purpose === selectedSubOption;
-        }
-      } else {
-        purposeMatch = log.purpose === selectedPurposeType;
-      }
-  
-      const windowMatch = selectedWindow === 'All Windows' || `Window ${log.window_no.slice(1)}` === selectedWindow;
-      const priorityMatch = log.queue_no.toString().toLowerCase().includes(searchPriority.toLowerCase());
-      const dateMatch = (!startDate || !endDate) || 
-        (new Date(log.transaction_date) >= startDate && new Date(log.transaction_date) <= endDate);
-  
-      return purposeMatch && windowMatch && priorityMatch && dateMatch;
-    });
-  }, [logHistory, selectedWindow, selectedPurposeType, selectedSubOption, searchPriority, startDate, endDate]);
-
-  console.log("Filtered data length:", filteredData.length);
-  
   const handlePrint = () => {
     const doc = new jsPDF();
+    const windows = ["Window 1", "Window 2", "Window 3", "Window 4", "Window 5", "Window 6"];
+    const fileName = selectedWindow === "All Windows" ? "All Windows Log History" : `${selectedWindow} Log History`;
   
-    // Get the current date in YYYY-MM-DD format
     const currentDate = new Date().toISOString().split('T')[0];
+    doc.setProperties({ title: fileName });
   
-    // Set the title metadata for the PDF
-    doc.setProperties({
-      title: `Log History`, // This sets the displayed filename in the browser's tab
-    });
+    const columns = ['DATE', 'NAME', 'PURPOSE', 'REASON', 'QUEUE NO.'];
   
-    const columns = ['Date', 'Name', 'Purpose', 'Queue No.'];
-  
-    // Define the list of windows
-    const windows = ['Window 1', 'Window 2', 'Window 3', 'Window 4', 'Window 5', 'Window 6'];
-  
-    let currentY = 20;
-  
-    // Iterate through each window and generate a separate table
-    windows.forEach((window, index) => {
-      const windowData = filteredData.filter(log => `Window ${log.window_no.slice(1)}` === window);
-  
-      if (windowData.length > 0) {
-        const rows = windowData.map(log => [
-          log.transaction_date,
-          log.name,
-          log.purpose,
-          log.queue_no,
-        ]);
-  
-        if (index > 0) {
-          doc.addPage();
-        }
-        doc.setFontSize(14);
-        doc.text(`${window} Log History`, 105, currentY, null, null, 'center');
-  
-        doc.autoTable({
-          head: [columns],
-          body: rows,
-          startY: currentY + 10,
-          theme: 'striped',
-          headStyles: {
-            fillColor: [0, 0, 128],
-            textColor: [255, 255, 255],
-            halign: 'center',
-          },
-          bodyStyles: {
-            halign: 'center',
-          },
-        });
+    // Format date function
+    const formatDate = (dateString) => {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return 'Invalid Date';
       }
-    });
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        
+      });
+    };
   
-    // Generate PDF as Blob
+    const extractName = (fullName) => {
+      const courseIdentifiers = ['BSE', 'BSIT', 'BSCS', 'BS', 'BA', 'BEE', 'BSA', 'BSCE', 'BTLED', 'BTLED', 'BSESM', 'PSDE', 'BSArch','BSCE','BSECE','BSEE','BSME','BSCoE','BSGE','BSDS','BSCS','BSIT','BSTCM','BS Applied Physics','BS Applied Math','BS Chem','BS Env Sci','BS Food Tech','BS Autotronics','BSET',
+        'BSESM','BSEMT','BSMET','BSED','BTLED','BTVTED','PhD Math Ed','PhD Tech Ed', 'PhD Sci Ed (Chem)','MEng','MSEE','MSSD','MSAMS','MS Math Ed','MS Sci Ed (Chem)','MS Sci Ed (Physics)','MSTCM','PSM PSEM','MIT'];
+      
+      let cleanName = fullName.replace(/\s+/g, ' ').trim();
+      const parts = cleanName.split(' ');
+      let cutoffIndex = parts.length;
+      for (let i = 0; i < parts.length; i++) {
+        if (courseIdentifiers.some(identifier => 
+            parts[i].includes(identifier) || 
+            parts[i] === 'F' || 
+            parts[i] === '-')) {
+          cutoffIndex = i;
+          break;
+        }
+      }
+      const nameParts = parts.slice(0, cutoffIndex);
+      return nameParts.join(' ').trim();
+    };
+  
+    const renderWindowData = (filteredWindowData, windowTitle) => {
+      const rows = filteredWindowData.map(log => {
+        // Extract only the name part
+        const nameOnly = extractName(log.name);
+        
+        // Debug log to check the extraction
+        console.log('Original name:', log.name);
+        console.log('Extracted name:', nameOnly);
+        
+        return [
+          formatDate(log.created_at),  // Use created_at with proper formatting
+          nameOnly,
+          log.purpose,
+          log.reason ? log.reason : 'N/A',  // Add N/A if reason is empty
+          log.queue_no,
+        ];
+      });
+  
+      doc.autoTable({
+        head: [columns],
+        body: rows,
+        startY: 40,
+        theme: 'striped',
+        headStyles: {
+          fillColor: [0, 0, 128],
+          textColor: [255, 255, 255],
+          halign: 'center',
+        },
+        bodyStyles: {
+          halign: 'center',
+        },
+      });
+    };
+  
+    if (selectedWindow === "All Windows") {
+      windows.forEach((window, index) => {
+        const filteredWindowData = filteredData.filter(log => `Window ${log.window_no.slice(1)}` === window);
+        
+        if (filteredWindowData.length > 0) {
+          if (index > 0) doc.addPage();
+          
+          doc.setFontSize(18);
+          doc.text("Log History", 105, 25, null, null, 'center');
+  
+          doc.setFontSize(13);
+          doc.text(window, 105, 35, null, null, 'center');
+          
+          renderWindowData(filteredWindowData, window);
+        }
+      });
+    } else {
+      const filteredWindowData = filteredData.filter(
+        log => `Window ${log.window_no.slice(1)}` === selectedWindow
+      );
+  
+      if (filteredWindowData.length > 0) {
+        doc.setFontSize(18);
+        doc.text("Log History", 105, 25, null, null, 'center');
+  
+        doc.setFontSize(13);
+        doc.text(selectedWindow, 105, 35, null, null, 'center');
+  
+        renderWindowData(filteredWindowData, selectedWindow);
+      } else {
+        doc.setFontSize(12);
+        doc.text("No data available for the selected window.", 105, 20, null, null, 'center');
+      }
+    }
+  
     const pdfBlob = doc.output('blob');
-  
-    // Create a Blob URL with metadata
     const pdfUrl = URL.createObjectURL(pdfBlob);
   
-    // Open the PDF in a new tab
-    const newTab = window.open(pdfUrl, '_blank');
-    
-    // Optional cleanup to free memory
+    const newTab = window.open("", "_blank");
+    if (newTab) {
+      newTab.document.title = fileName;
+      const embed = newTab.document.createElement("embed");
+      embed.src = pdfUrl;
+      embed.width = "100%";
+      embed.height = "100%";
+      embed.type = "application/pdf";
+      newTab.document.body.appendChild(embed);
+    }
+  
     setTimeout(() => URL.revokeObjectURL(pdfUrl), 10000);
   };
-  
+
   if (isLoading) {
     return <div> Loading... </div>;
   }
@@ -270,9 +656,12 @@ const LogHistory = () => {
   return (
     <div className="log-history">
       <div className="greetings">
-        <h1>Hello, Ma'am Jonalin!</h1>
-        <p className="small-font">This is the <span className="bold-text"> Log History </span> for All Windows.</p>
-      </div>
+  <h1>Hello {adminName}!</h1>
+  <p className="small-font">
+    This is the <span className="bold-text">Log History</span> for{' '}
+    {selectedWindow === 'All Windows' ? 'All Windows' : selectedWindow}.
+  </p>
+</div>
       <div className="filters">
         <span>Filter By:</span>
         <div className="date-picker-container" ref={datePickerRef}>
@@ -316,73 +705,32 @@ const LogHistory = () => {
         </div>
 
         <div className="custom-dropdown" ref={purposeDropdownRef}>
-          <button
-            onClick={() => {
-              setShowPurposeDropdown(!showPurposeDropdown);
-              setShowWindowDropdown(false);
-              setIsDatePickerOpen(false);
-            }}
-            className="dropdown-button"
-          >
-            {selectedPurposeType === 'CAV Certification Thru' && selectedSubOption === 'All'
-              ? 'CAV Certification Thru - All'
-              : selectedPurposeType === 'Certification' && selectedSubOption === 'All'
-                ? 'Certification - All'
-                : selectedPurposeType !== 'All'
-                  ? selectedSubOption !== 'All'
-                    ? `${selectedPurposeType} - ${selectedSubOption}`
-                    : selectedPurposeType
-                  : 'Purpose Type'}
-            <FontAwesomeIcon icon={faCaretDown} className="dropdown-icon" />
-          </button>
-          {showPurposeDropdown && (
-            <ul className="dropdown-menu">
-              <li onClick={() => handlePurposeChange('All')}>All</li>
-              <li
-                className="certification"
-                onMouseEnter={() => setShowCertificationSubmenu(true)}
-                onMouseLeave={() => setShowCertificationSubmenu(false)}
-              >
-                Certification
-                <FontAwesomeIcon icon={faCaretRight} className="submenu-icon" />
-                {showCertificationSubmenu && (
-                  <ul className="submenu">
-                    <li onClick={() => handlePurposeChange('Certification', 'All')}>All</li>
-                    
-                    {CERTIFICATION_TYPES.map(type => (
-                      <li key={type} onClick={() => handlePurposeChange('Certification', type)}>{type}</li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-              <li
-                className="cav-certification"
-                onMouseEnter={() => setShowCavSubmenu(true)}
-                onMouseLeave={() => setShowCavSubmenu(false)}
-              >
-                CAV Certification Thru
-                <FontAwesomeIcon icon={faCaretRight} className="submenu-icon" />
-                {showCavSubmenu && (
-                  <ul className="submenu">
-                    <li onClick={() => handlePurposeChange('CAV Certification Thru', 'All')}>All</li>
-                    {CAV_CERTIFICATION_TYPES.map(type => (
-                      <li key={type} onClick={() => handlePurposeChange('CAV Certification Thru', type)}>{type}</li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-              <li onClick={() => handlePurposeChange('Authentication')}>Authentication</li>
-              <li onClick={() => handlePurposeChange('Diploma Replacement')}>Diploma Replacement</li>
-              <li onClick={() => handlePurposeChange('Evaluation')}>Evaluation</li>
-              <li onClick={() => handlePurposeChange('Honorable Dismissal')}>Honorable Dismissal</li>
-              <li onClick={() => handlePurposeChange('Correction of Name')}>Correction of Name</li>
-              <li onClick={() => handlePurposeChange('Transcript of Records')}>Transcript of Records</li>
-              <li onClick={() => handlePurposeChange('Permit to Study')}>Permit to Study</li>
-              <li onClick={() => handlePurposeChange('Rush Fee')}>Rush Fee</li>
-              <li onClick={() => handlePurposeChange('Form 137')}>Form 137</li>
-            </ul>
-          )}
-        </div>
+        <button
+          onClick={() => {
+            setShowPurposeDropdown(!showPurposeDropdown);
+            setShowWindowDropdown(false);
+            setIsDatePickerOpen(false);
+         
+          }}
+          className="dropdown-button"
+        >
+          {selectedPurposeType === 'CAV Certification Thru' && selectedSubOption === 'All'
+            ? 'CAV Certification Thru'
+            : selectedPurposeType === 'Certification' && selectedSubOption === 'All'
+              ? 'Certification'
+              : selectedPurposeType !== 'All'
+                ? selectedSubOption !== 'All'
+                  ? selectedReason !== 'All'
+                    ? `${selectedPurposeType} - ${selectedReason}`
+                    : `${selectedPurposeType} - ${selectedSubOption} `
+                  : selectedPurposeType
+                : 'Purpose Type'}
+          <FontAwesomeIcon icon={faCaretDown} className="dropdown-icon" />
+        </button>
+        
+        {showPurposeDropdown && renderPurposeDropdown()}
+      </div>
+
 
         <div className="search-container">
           <div className="search-queue-wrapper">

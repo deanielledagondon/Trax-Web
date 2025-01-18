@@ -141,6 +141,8 @@
     }
   
     .print-button-container {
+      position: relative;
+      
       .print-button {
         display: flex;
         align-items: center;
@@ -154,6 +156,7 @@
     }
 
     .date-container {
+    
       display: flex;
       align-items: center;
       border: 1px solid #ccc;
@@ -560,188 +563,169 @@
 
 
   }
-  
-
-  /* Custom dropdown styles */
   .custom-dropdown {
     position: relative;
-    display: inline-block;
-
-    
-    
-    .dropdown-button {
-      padding: 10px;
-      border: 1px solid #ccc;
-      background-color: #fff;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      min-width: 200px; /* Adjust width as needed */
-      max-width: auto;
-      position: relative;
-      white-space: nowrap; // Prevent text from wrapping
-      overflow: hidden; // Hide any overflowing text
-      text-overflow: ellipsis; // Add ellipsis if the text overflows
-     
-    }
-
-    .dropdown-icon {
-      margin-left: 8px;
-    }
-
+    font-family: Arial, sans-serif;
+  
     .dropdown-menu {
-      position: absolute;
-      top: 100%; /* Position below the button */
-      left: 0;
-      background-color: #ffffff;
-      color: #333333;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      list-style: none;
-      padding: 6px 10px;
-      margin: 0;
-      min-width: 100%; /* Adjust width as needed */
-      max-width: 200%;
-      z-index: 3;
-      font-size: 13px;
-     
-  
-    
-     
-
-
-
-      .dark-mode & {
-
-        background-color: #3a3d52;
-        color: #fff;
-        border-color: #4a4d62;
-      }
-
-     
-
-    }
-
-    .dropdown-menu li {
-      padding: 10px;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      
-    }
-
-    .dropdown-menu li:hover {
-      background-color: #f0f0f0;
- 
-      .dark-mode & {
-
-        background-color: #3a3d52;
-        color: #fff;
-        border-color: #4a4d62;
-
-        &:hover {
-          background-color: rgba(255, 255, 255, 0.05);
-        }
-  
-
-      }
-
-     
-    }
-
-    .cav-certification {
-      position: relative;
-    }
-
-    .submenu {
-      position: absolute;
-      left: 100%; /* Position submenu to the right of the parent */
-      top: 0;
-      background-color: #fff;
-      color: #333333;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+      list-style-type: none;
       padding: 0;
-      list-style: none;
-      z-index: 2;
-      width: 150px;
-      font-size: 13px;
-      text-align: left;
-
-      overflow-y: auto;
-      max-height: 380px; 
-      scrollbar-width: thin; 
-      scrollbar-color: rgba(0, 0, 0, 0.2) transparent; 
-     
-     
-      .dark-mode & {
-        color: #555;
-        scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
+      margin: 0;
+  
+      > li {
+        position: relative;
+        padding: 10px 15px;
+        cursor: pointer;
+        
+        &:hover {
+          background-color: #f0f0f0;
+        }
       }
-    
-      &::-webkit-scrollbar {
-        width: 8px;
+    }
+  
+    .certification, 
+    .cav-certification, 
+    .authentication,
+    .diploma-replacement,
+    .evaluation,
+    .honorable-dismissal, .correction-of-name, .transcript-of-records, .permit-to-study, .rush-fee, .form-137 {
+      position: relative;
+  
+      .submenu-icon {
+        margin-left: 10px;
       }
   
-      &::-webkit-scrollbar-thumb {
-        background-color: rgba(0, 0, 0, 0.2);
-        border-radius: 10px;
-      }
-  
-      &::-webkit-scrollbar-track {
-        background-color: transparent;
+      .submenu-container {
+        position: absolute;
+        left: 100%;
+        top: 0;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s ease, visibility 0.2s ease;
       }
   
       &:hover {
-        &::-webkit-scrollbar-thumb {
-          background-color: rgba(0, 0, 0, 0.5);
+        .submenu-container {
+          opacity: 1;
+          visibility: visible;
         }
       }
-    
+  
+      .submenu {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        min-width: 200px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  
+        > li {
+          padding: 10px 15px;
+          cursor: pointer;
+          position: relative;
+  
+          &:hover {
+            background-color: #f5f5f5;
+          }
+  
+          .submenu-icon {
+            margin-left: 10px;
+          }
+        }
 
+        &:hover {
+          &::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.2);
+          }
+        }
+  
+        // Dark mode styles
+        .dark-mode & {
+          background-color: #3a3d52;
+          color: #fff;
+          border-color: #4a4d62;
+        }
+
+        
+      }
+  
+      .reasons-submenu {
+        position: absolute;
+        left: 100%;
+        top: 0;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        min-width: 190px;
+        max-height: 250px;
+        overflow-y: auto;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 1001;
+        scrollbar-width: thin; 
+        scrollbar-color: rgba(0, 0, 0, 0.2) transparent; 
+  
+        li {
+          padding: 10px 15px;
+          cursor: pointer;
+  
+          &:hover {
+            background-color: #f5f5f5;
+          }
+        }
+
+        scrollbar-width: thin;
+        scrollbar-color: transparent transparent;
+
+      &::-webkit-scrollbar {
+        width: 6px;
+        background-color: transparent;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background-color: transparent;
+        border-radius: 3px;
+      }
+
+      &:hover {
+        &::-webkit-scrollbar-thumb {
+          background-color: rgba(0, 0, 0, 0.2);
+        }
+      }
+
+      // Dark mode styles
       .dark-mode & {
         background-color: #3a3d52;
         color: #fff;
         border-color: #4a4d62;
       }
     }
-
-    .cav-certification,
-    .certification {
-      position: relative;
-      .submenu-icon {
-        margin-left: 0.5rem;
+  }
+  
+    // Dark mode styles
+    &.dark-mode {
+      .submenu, .reasons-submenu {
+        background-color: #2c2c2c;
+        border-color: #444;
+        color: #ddd;
+  
+        li {
+          &:hover {
+            background-color: #444;
+          }
+        }
       }
-      &:hover .submenu {
-        display: block;
-      }
-    }
-
-    .submenu {
-      display: none;
     }
   
-
-    .submenu li {
-      padding: 10px;
-      cursor: pointer;
-    }
-
-    .submenu li:hover {
-      background-color: #f0f0f0;
-    }
-
-    .submenu-icon {
-      margin-left: 8px;
+    // Responsive adjustments
+    @media (max-width: 768px) {
+      .submenu-container, .reasons-submenu {
+        position: static;
+        width: 100%;
+      }
     }
   }
-  .table-container{
-    font-size: 14px;
-  }
-
-  
-
-
 }
+
